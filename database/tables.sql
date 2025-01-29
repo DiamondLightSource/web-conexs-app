@@ -60,6 +60,8 @@ COMMENT ON TABLE molecular_structure IS 'Table to hold molecular structures';
 
 CREATE TYPE orca_calculation_enum AS ENUM('xas', 'xes', 'opt');
 
+CREATE TYPE orca_solvent_enum AS ENUM('Water','Acetone', 'Acetonitrile',  'Ammonia', 'Benzene', 'CCl4', 'CH2Cl2', 'Chloroform', 'Cyclohexane', 'DMF', 'DMSO', 'Ethanol', 'Hexane', 'Methanol', 'Octanol', 'Pyridine', 'THF','Toluene');
+
 CREATE TABLE orca_simulation (
     simulation_id INTEGER PRIMARY KEY,
     simulation_type_id INTEGER GENERATED ALWAYS AS (1) STORED,
@@ -70,16 +72,31 @@ CREATE TABLE orca_simulation (
     basis_set TEXT NOT NULL,
     charge INTEGER NOT NULL,
     multiplicity INTEGER NOT NULL,
-    solvent TEXT,
-    orb_win_0_start INTEGER,
-    orb_win_0_stop INTEGER,
-    orb_win_1_start INTEGER,
-    orb_win_1_stop INTEGER,
+    solvent orca_solvent_enum,
+    orb_win_0_start INTEGER DEFAULT 0,
+    orb_win_0_stop INTEGER DEFAULT 0,
+    orb_win_1_start INTEGER DEFAULT 0,
+    orb_win_1_stop INTEGER DEFAULT 0,
     FOREIGN KEY(molecular_structure_id) REFERENCES molecular_structure (id),
     FOREIGN KEY(simulation_id, simulation_type_id) REFERENCES simulation (id,simulation_type_id)
 );
 
 COMMENT ON TABLE orca_simulation IS 'Specific information for an orca simulation';
+
+CREATE TYPE orca_spectrum_enum AS ENUM('abs', 'absq', 'xes', 'xesq');
+
+CREATE TABLE orca_simulation_spectrum(
+    id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    simulation_id INTEGER NOT NULL,
+    spectrum_type orca_spectrum_enum,
+    start INTEGER NOT NULL,
+    stop INTEGER NOT NULL,
+    broadening NUMERIC NOT NULL,
+    working_dir TEXT NOT NULL,
+
+    FOREIGN KEY(simulation_id) REFERENCES orca_simulation (simulation_id)
+
+);
 
 CREATE TABLE fdmnes_simulation (
     simulation_id INTEGER PRIMARY KEY,

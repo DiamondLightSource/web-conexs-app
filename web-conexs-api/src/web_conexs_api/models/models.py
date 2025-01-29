@@ -16,7 +16,7 @@ class Person(PersonInput, table=True):
 
 class SimulationType(SQLModel, table=True):
     __tablename__: str = "simulation_type"
-    id: str = Field(primary_key=True)
+    id: int = Field(primary_key=True)
     type: str
 
 
@@ -26,6 +26,16 @@ class SimulationStatus(enum.Enum):
     running = "running"
     completed = "completed"
     failed = "failed"
+
+
+class MolecularStructureInput(SQLModel):
+    label: str
+    structure: str
+
+
+class MolecularStructure(MolecularStructureInput, table=True):
+    __tablename__: str = "molecular_structure"
+    id: int | None = Field(primary_key=True, default=None)
 
 
 class SimulationBase(SQLModel):
@@ -59,6 +69,27 @@ class OrcaCalcuation(enum.Enum):
     opt = "opt"
 
 
+class OrcaSolvent(enum.Enum):
+    Water = "Water"
+    Acetone = "Acetone"
+    Acetonitrile = "Acetonitrile"
+    Ammonia = "Ammonia"
+    Benzene = "Benzene"
+    CCl4 = "CCl4"
+    CH2Cl2 = "CH2Cl2"
+    Chloroform = "Chloroform"
+    Cyclohexane = "Cyclohexane"
+    DMF = "DMF"
+    DMSO = "DMSO"
+    Ethanol = "Ethanol"
+    Hexane = "Hexane"
+    Methanol = "Methanol"
+    Octanol = "Octanol"
+    Pyridine = "Pyridine"
+    THF = "THF"
+    Toluene = "Toluene"
+
+
 class OrcaSimulationInput(SQLModel):
     molecular_structure_id: int
     memory_per_core: int
@@ -66,7 +97,7 @@ class OrcaSimulationInput(SQLModel):
     basis_set: str
     charge: int
     multiplicity: int
-    solvent: Optional[str] = None
+    solvent: Optional[OrcaSolvent] = None
     orb_win_0_start: Optional[int] = None
     orb_win_0_stop: Optional[int] = None
     orb_win_1_start: Optional[int] = None
@@ -87,6 +118,26 @@ class OrcaSimulation(OrcaSimulationInput, table=True):
             "foreign_keys": "[OrcaSimulation.simulation_id]",
         }
     )
+
+
+class OrcaSpectrum(enum.Enum):
+    abs = "abs"
+    absq = "absq"
+    xes = "xes"
+    xesq = "xesq"
+
+
+class OrcaSpectrumInput(SQLModel):
+    simulation_id: int
+    spectrum_type: OrcaSpectrum
+    start: int
+    stop: int
+    broadening: float
+
+
+class OrcaSpectrum(OrcaSpectrumInput, table=True):
+    __tablename__: str = "orca_simulation_spectrum"
+    id: int | None = Field(primary_key=True, default=None)
 
 
 class OrcaSimulationResponse(OrcaSimulationInput):
