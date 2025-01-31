@@ -13,6 +13,14 @@ from .models.models import (
 )
 
 
+def get_molecular_structures(session):
+    statement = select(MolecularStructure)
+
+    results = session.exec(statement)
+
+    return results.all()
+
+
 def get_molecular_structure(session, id):
     structure = session.get(MolecularStructure, id)
 

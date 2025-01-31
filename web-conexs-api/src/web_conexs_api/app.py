@@ -6,6 +6,7 @@ from sqlmodel import Session
 
 from .crud import (
     get_molecular_structure,
+    get_molecular_structures,
     get_orca_jobfile,
     get_orca_simulation,
     get_simulation,
@@ -105,3 +106,10 @@ async def upload_molecular_endpoint(
     structure: MolecularStructureInput, session: Session = Depends(get_session)
 ) -> MolecularStructure:
     return upload_molecular_structure(structure, session)
+
+
+@app.get("/api/molecules")
+async def get_molecular_list_endpoint(
+    session: Session = Depends(get_session),
+) -> List[MolecularStructure]:
+    return get_molecular_structures(session)

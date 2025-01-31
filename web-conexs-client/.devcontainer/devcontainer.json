@@ -1,0 +1,16 @@
+{
+  "image": "node:23-bookworm-slim",
+  "postCreateCommand": "yes | npm install -g pnpm",
+  "runArgs": [
+    "--network=host",
+    "--security-opt=label=type:container_runtime_t"
+  ],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  }
+}
