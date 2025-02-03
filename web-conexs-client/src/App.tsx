@@ -11,6 +11,7 @@ import WelcomePage from "./components/WelcomePage";
 import MoleculePage from "./components/MoleculePage";
 import { Route, Routes } from "react-router-dom";
 import SideDrawer from "./components/SideDrawer";
+import SimulationReviewPage from "./components/SimulationReviewPage";
 
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -45,6 +46,7 @@ function App() {
         <Routes>
           <Route path="/" element={<WelcomePage />} />
           <Route path="/molecule" element={<MoleculePage />} />
+          <Route path="/simulation" element={<SimulationReviewPage />} />
         </Routes>
       </Stack>
     </ThemeProvider>

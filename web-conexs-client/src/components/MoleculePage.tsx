@@ -1,8 +1,7 @@
 import { Button, Box, Typography, Stack } from "@mui/material";
-import { useState } from "react";
 import XYZFileEditor from "./XYZFileEditor";
 import useMoleculeAPI from "../hooks/useMoleculeAPI";
-import { Molecule, MoleculeInput } from "../models";
+import { MoleculeInput } from "../models";
 import React3dMol from "./React3dMol";
 import MoleculeTable from "./MoleculeTable";
 

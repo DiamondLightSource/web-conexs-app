@@ -147,3 +147,4 @@ class OrcaSimulationResponse(OrcaSimulationInput):
 class SimulationResponse(SimulationBase):
     id: int
     simulation_type: SimulationType
+    status: SimulationStatus
