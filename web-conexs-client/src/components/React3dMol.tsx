@@ -1,10 +1,12 @@
 import { useEffect, useRef } from "react";
 import * as mol3d from "3dmol";
-import { MoleculeInput } from "../models";
+import { CrystalInput, MoleculeInput } from "../models";
+import popperClasses from "@mui/material/Popper/popperClasses";
+import { crystalInputToCIF, moleculeInputToXYZ } from "../utils";
 
 interface Molecule3DProps {
   color: string;
-  moleculedata: MoleculeInput | null;
+  moleculedata: MoleculeInput | CrystalInput | null;
   style: string;
   orbital: Orbital | null;
 }
@@ -79,26 +81,41 @@ export default function React3dMol(props: Molecule3DProps) {
           ],
         });
       }
-    } else if (props.moleculedata) {
-      const lines =
-        (props.moleculedata.structure.match(/\n/g) || "").length + 1;
+    } else if (props.moleculedata && "lattice_params" in props.moleculedata) {
+      const crystaldata = props.moleculedata as CrystalInput;
 
-      const newMolecule =
-        lines.toString() + "\n\n" + props.moleculedata.structure;
+      const cif = crystalInputToCIF(crystaldata);
 
-      const model = viewer.addModel(newMolecule, "xyz");
+      const model = viewer.addModel(cif, "cif");
+      console.log(cif);
+      viewer.setStyle({}, { sphere: { color: "spectrum", radius: 0.5 } });
       viewer.addUnitCell(model, {
         box: { color: "purple" },
         alabel: "X",
         blabel: "Y",
         clabel: "Z",
       });
-    }
+    } else if (props.moleculedata) {
+      const xyz = moleculeInputToXYZ(props.moleculedata);
+      // const lines =
+      //   (props.moleculedata.structure.match(/\n/g) || "").length + 1;
 
-    if (props.style == "Stick") {
-      viewer.setStyle({}, { stick: { color: "spectrum" } });
-    } else if (props.style == "Sphere") {
-      viewer.setStyle({}, { sphere: { color: "spectrum", radius: 1 } });
+      // const newMolecule =
+      //   lines.toString() + "\n\n" + props.moleculedata.structure;
+
+      const model = viewer.addModel(xyz, "xyz");
+      viewer.addUnitCell(model, {
+        box: { color: "purple" },
+        alabel: "X",
+        blabel: "Y",
+        clabel: "Z",
+      });
+
+      if (props.style == "Stick") {
+        viewer.setStyle({}, { stick: { color: "spectrum" } });
+      } else if (props.style == "Sphere") {
+        viewer.setStyle({}, { sphere: { color: "spectrum", radius: 1 } });
+      }
     }
 
     viewer.zoomTo();

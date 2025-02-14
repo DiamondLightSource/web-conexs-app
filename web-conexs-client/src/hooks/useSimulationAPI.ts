@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { OrcaSimulation, Simulation } from "../models";
+import { OrcaSimulation, OrcaSimulationInput, Simulation } from "../models";
 
 const simulationUrl = "/api/simulations";
 const orcaUrl = "/api/orca";
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 export default function useSimulationAPI() {
   const [simulation, setSimulation] = useState<Simulation | null>(null);
@@ -31,6 +31,17 @@ export default function useSimulationAPI() {
     });
   }
 
+  function postOrcaSimulation(input: OrcaSimulationInput) {
+    axios
+      .post("/api/submit/orca", input)
+      .then(() => {
+        window.alert("Thank you for your submission");
+      })
+      .catch((reason: AxiosError) => {
+        window.alert(reason.message);
+      });
+  }
+
   return {
     simulation,
     getSimulation,
@@ -38,5 +49,6 @@ export default function useSimulationAPI() {
     simulationList,
     orcaSimulation,
     getOrcaSimulation,
+    postOrcaSimulation,
   };
 }

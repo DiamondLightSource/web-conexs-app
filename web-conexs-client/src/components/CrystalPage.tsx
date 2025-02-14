@@ -1,16 +1,24 @@
 import { Button, Box, Typography, Stack } from "@mui/material";
 import XYZFileEditor from "./XYZFileEditor";
 import useMoleculeAPI from "../hooks/useMoleculeAPI";
-import { MoleculeInput } from "../models";
+import { CrystalInput } from "../models";
 import React3dMol from "./React3dMol";
 import MoleculeTable from "./MoleculeTable";
 
-export default function MoleculePage() {
-  const templateMolecule: MoleculeInput = {
-    label: "Benzene",
-    structure:
-      "C   0.000000  1.402720  0.000000\nH   0.000000  2.490290  0.000000\nC  -1.214790  0.701360  0.000000\nH  -2.156660  1.245150  0.000000\nC  -1.214790 -0.701360  0.000000\nH  -2.156660 -1.245150  0.000000\nC   0.000000 -1.402720  0.000000\nH   0.000000 -2.490290  0.000000\nC   1.214790 -0.701360  0.000000\nH   2.156660 -1.245150  0.000000\nC   1.214790  0.701360  0.000000\nH   2.156660  1.245150  0.000000",
+export default function CrystalPage() {
+  const templateMolecule: CrystalInput = {
+    lattice_params: {
+      a: 4.1043564,
+      b: 4.1043564,
+      c: 4.1043564,
+      alpha: 90,
+      beta: 90,
+      gamma: 90,
+    },
+    label: "test",
+    structure: "Ag 0. 0. 0.\nAg 0.5 0.5 0.\nAg 0.5 0. 0.5\nAg 0. 0.5 0.5",
   };
+
   const {
     molecule,
     getMolecule,
@@ -44,7 +52,7 @@ export default function MoleculePage() {
   return (
     <Stack>
       <Typography variant="h4" padding="24px">
-        Molecules
+        Crystals
       </Typography>
       <Stack direction={"row"} height={"100vh"}>
         <Stack>
@@ -61,8 +69,8 @@ export default function MoleculePage() {
             </Button>
           </Stack>
           <XYZFileEditor
-            molecularInput={finalMolecule}
-            setMolecularInput={setNewMolecule}
+            molecularInput={templateMolecule}
+            setMolecularInput={() => {}}
           />
         </Stack>
         <Box height="100%vh">
