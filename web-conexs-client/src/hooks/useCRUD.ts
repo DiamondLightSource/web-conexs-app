@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 const LOADING_STATES = ["loading", "error", "success"];
 
-export default function useCRUD<A extends object>(url: string) {
+export default function useCRUD<A extends object, B extends object>(url: string) {
   const [data, setData] = useState<A>();
   const [dataList, setDataList] = useState<A[]>([]);
   const [error, setError] = useState();
@@ -41,8 +41,21 @@ export default function useCRUD<A extends object>(url: string) {
         });
     };
 
-    setTimeout(doGet, 5000);
+    setTimeout(doGet, 1000);
   }
 
-  return { data, getData, loadingStatus, dataList };
+  function insertData(input: B) {
+    axios
+      .post(url, input)
+      .then((res) => {
+        window.alert("Thank you for your submission");
+      })
+      .catch((reason: AxiosError) => {
+        window.alert(reason.message);
+      });
+  }
+
+  return { data, getData, loadingStatus, dataList, insertData};
+
+  
 }

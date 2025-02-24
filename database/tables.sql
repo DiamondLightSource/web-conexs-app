@@ -42,6 +42,18 @@ CREATE TABLE simulation (
 
 COMMENT ON TABLE simulation IS 'Base table for simulations';
 
+CREATE OR REPLACE FUNCTION notify_new_simulation() RETURNS trigger AS $$
+BEGIN
+  PERFORM pg_notify('simulation_notification', NEW.id::text);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER simulation_notify_trigger
+AFTER INSERT ON simulation
+FOR EACH ROW EXECUTE PROCEDURE notify_new_simulation();
+
+
 CREATE TABLE molecular_structure (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     label TEXT,

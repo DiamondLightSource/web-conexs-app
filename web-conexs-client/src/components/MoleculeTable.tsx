@@ -105,7 +105,7 @@ export default function MoleculeTable(props: {
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+        <Table sx={{ minWidth: 350 }} size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
               <TableCell align="left">ID</TableCell>

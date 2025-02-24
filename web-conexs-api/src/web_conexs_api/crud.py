@@ -48,6 +48,21 @@ def get_simulations(session) -> List[Simulation]:
     return results.all()
 
 
+def get_submitted_simulations(session) -> List[Simulation]:
+    statement = select(Simulation).where(
+        Simulation.status == SimulationStatus.requested
+    )
+    return session.exec(statement).all()
+
+
+def update_simulation(session, simulation: Simulation):
+    simulation.status = SimulationStatus.submitted
+    session.add(simulation)
+    session.commit()
+    session.refresh(simulation)
+    return simulation
+
+
 def get_simulation(session, id):
     simulation = session.get(Simulation, id)
 

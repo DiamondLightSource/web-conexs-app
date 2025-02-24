@@ -1,4 +1,4 @@
-import { Alert, Button, Grid2, TextField } from "@mui/material";
+import { Alert, Button, Grid2, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { LatticeParameter, MoleculeInput } from "../models";
 import LatticeEditor from "./LatticeEditor";
@@ -19,8 +19,8 @@ export default function XYZFileEditor(props: {
   });
   // const [atoms, setAtoms] = useState<number>(Number(initialSetup[0]));
   // const [comment, setComment] = useState<string>(initialSetup[1]);
-  const [data, setData] = useState<string | null>(null);
-  const [error, setError] = useState<string>([""]);
+  const [data, setData] = useState<string>("");
+  const [error, setError] = useState<string[]>([""]);
   const [isError, setIsError] = useState<boolean>(false);
 
   function validateMoleculeData(data: string): string {
@@ -80,43 +80,43 @@ export default function XYZFileEditor(props: {
   }
 
   return (
-    <Grid2 container spacing={2} height="100%">
-      <Grid2 size={8}>
-        <TextField
-          id="Label"
-          label="Label"
-          value={props.molecularInput.label}
-          onChange={(e) => setComment(e.target.value)}
-        />
-      </Grid2>
+    <Stack spacing={3} minWidth={"450px"}>
+      <TextField
+        id="Label"
+        label="Label"
+        value={props.molecularInput == null ? " " : props.molecularInput.label}
+        onChange={(e) => setComment(e.target.value)}
+      />
 
-      {"lattice_params" in props.molecularInput && (
-        <Grid2 size={8}>
+      {props.molecularInput != null &&
+        "lattice_params" in props.molecularInput && (
           <LatticeEditor
             lattice={lattice}
             setLattice={setLattice}
           ></LatticeEditor>
-        </Grid2>
-      )}
-      <Grid2 size={12}>
-        <TextField
-          sx={{ width: "100%" }}
-          id="datafilebox"
-          label="Atomic Coordinates (Angstroms)"
-          multiline
-          rows={12}
-          value={data == null ? props.molecularInput.structure : data}
-          onChange={(e) => {
-            // setAtoms(e.target.value.split("\n").filter((i) => i).length);
-            setData(e.target.value);
-          }}
-        />
-      </Grid2>
-      <Grid2 size={12}>
-        <Button variant="contained" onClick={renderMolecule}>
-          Render
-        </Button>
-      </Grid2>
+        )}
+
+      <TextField
+        sx={{ width: "100%" }}
+        id="datafilebox"
+        label="Atomic Coordinates (Angstroms)"
+        multiline
+        rows={12}
+        value={
+          data.length == 0 && props.molecularInput != null
+            ? props.molecularInput.structure
+            : data
+        }
+        onChange={(e) => {
+          // setAtoms(e.target.value.split("\n").filter((i) => i).length);
+          setData(e.target.value);
+        }}
+      />
+
+      <Button variant="contained" onClick={renderMolecule}>
+        Render
+      </Button>
+
       {isError ? (
         <Alert variant="filled" sx={{ m: 2, width: "100%" }} severity="error">
           <ul style={{ padding: 0 }}>
@@ -132,6 +132,6 @@ export default function XYZFileEditor(props: {
       ) : (
         <></>
       )}
-    </Grid2>
+    </Stack>
   );
 }
