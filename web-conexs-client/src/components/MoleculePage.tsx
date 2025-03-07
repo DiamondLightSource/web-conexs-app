@@ -4,7 +4,6 @@ import useMoleculeAPI from "../hooks/useMoleculeAPI";
 import { Molecule, MoleculeInput } from "../models";
 import React3dMol from "./React3dMol";
 import MoleculeTable from "./MoleculeTable";
-import { withAjvProps } from "@jsonforms/material-renderers";
 import { useState } from "react";
 
 export default function MoleculePage() {
@@ -53,14 +52,6 @@ export default function MoleculePage() {
             molecularInput={finalMolecule}
             setMolecularInput={setNewMolecule}
           />
-          <Button
-            onClick={() => {
-              insertMolecule(newMolecule);
-              setNewMolecule(null);
-            }}
-          >
-            Post
-          </Button>
         </Stack>
 
         <Box height="100%vh">

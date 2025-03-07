@@ -66,11 +66,15 @@ function SimulationMetadata(props: {
       <StyledTableCell align="left">
         {props.simulation?.id ?? "\xa0"}
       </StyledTableCell>
+
       <StyledTableCell align="center">
         {props.simulation?.simulation_type.type ?? ""}
       </StyledTableCell>
       <StyledTableCell align="center">
         {props.simulation?.status ?? ""}
+      </StyledTableCell>
+      <StyledTableCell align="left">
+        {props.simulation?.request_date ?? ""}
       </StyledTableCell>
     </StyledTableRow>
   );
@@ -110,6 +114,7 @@ export default function SimulationTable(props: {
               <TableCell align="left">ID</TableCell>
               <TableCell align="center">Type</TableCell>
               <TableCell align="center">Status</TableCell>
+              <TableCell align="left">Request Date</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

@@ -13,6 +13,8 @@ export default function useSimulationAPI() {
     null
   );
 
+  const [orcaSimulationLog, setOrcaSimulationLog] = useState<string>("");
+
   function getSimulation(id: number) {
     axios.get(simulationUrl + "/" + id).then((res) => {
       setSimulation(res.data);
@@ -28,6 +30,12 @@ export default function useSimulationAPI() {
   function getOrcaSimulation(id: number) {
     axios.get(orcaUrl + "/" + id).then((res) => {
       setOrcaSimulation(res.data);
+    });
+  }
+
+  function getOrcaSimulationLog(id: number) {
+    axios.get(orcaUrl + "/" + id + "/output").then((res) => {
+      setOrcaSimulationLog(res.data);
     });
   }
 
@@ -50,5 +58,7 @@ export default function useSimulationAPI() {
     orcaSimulation,
     getOrcaSimulation,
     postOrcaSimulation,
+    orcaSimulationLog,
+    getOrcaSimulationLog,
   };
 }

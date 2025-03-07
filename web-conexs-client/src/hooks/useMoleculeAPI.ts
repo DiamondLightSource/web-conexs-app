@@ -11,15 +11,17 @@ export default function useMoleculeAPI() {
   // const [molecule, setMolecule] = useState<Molecule | null>(null);
   const [moleculeList, setMoleculeList] = useState<Molecule[] | null>(null);
   const [newMolecule, setNewMolecule] = useState<MoleculeInput | null>(null);
-  const { data, getData, loadingStatus, dataList, insertData } =
-    useCRUD<Molecule, MoleculeInput>(moleculeUrl);
+  const { data, getData, loadingStatus, dataList, insertData } = useCRUD<
+    Molecule,
+    MoleculeInput
+  >(moleculeUrl);
 
   function getMoleculeGeneric(id: number) {
     getData(id);
   }
 
   function getMolecule(id: number) {
-    getData(id)
+    getData(id);
   }
 
   const getMolecules = useCallback(() => {
@@ -28,8 +30,11 @@ export default function useMoleculeAPI() {
     });
   }, []);
 
-  function insertMolecule(moleculeInput: MoleculeInput) {
-    insertData(moleculeInput)
+  function insertMolecule(
+    moleculeInput: MoleculeInput,
+    callbackDone: () => void
+  ) {
+    insertData(moleculeInput, callbackDone);
   }
 
   return {

@@ -1,3 +1,4 @@
+import datetime
 import enum
 from typing import Optional
 
@@ -48,6 +49,9 @@ class SimulationBase(SQLModel):
     memory: Optional[int] = 32
     message: Optional[str] = None
     job_id: Optional[int] = None
+    request_date: Optional[datetime.datetime]
+    submission_date: Optional[datetime.datetime] = None
+    completion_date: Optional[datetime.datetime] = None
 
 
 class Simulation(SimulationBase, table=True):
@@ -60,7 +64,14 @@ class Simulation(SimulationBase, table=True):
         }
     )
 
-    status: SimulationStatus
+    person: Person = Relationship(
+        sa_relationship_kwargs={
+            "lazy": "selectin",
+            "foreign_keys": "[Simulation.person_id]",
+        }
+    )
+
+    status: SimulationStatus = SimulationStatus.requested
 
 
 class OrcaCalcuation(enum.Enum):
@@ -148,3 +159,5 @@ class SimulationResponse(SimulationBase):
     id: int
     simulation_type: SimulationType
     status: SimulationStatus
+    request_date: Optional[datetime.datetime]
+    person: Person

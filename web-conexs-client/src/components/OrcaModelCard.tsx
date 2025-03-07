@@ -1,13 +1,17 @@
 import {
+  Button,
   Card,
   CardContent,
+  TextField,
   Typography,
 } from "@mui/material";
 import { OrcaSimulation } from "../models";
+import useSimulationAPI from "../hooks/useSimulationAPI";
 
 export default function OrcaModelCard(props: {
   orcaSimulation: OrcaSimulation;
 }) {
+  const { orcaSimulationLog, getOrcaSimulationLog } = useSimulationAPI();
   const orcaSimulation = props.orcaSimulation;
 
   return (
@@ -22,6 +26,12 @@ export default function OrcaModelCard(props: {
         <Typography variant="h6" component="div">
           {orcaSimulation.basis_set}
         </Typography>
+        <Button
+          onClick={() => getOrcaSimulationLog(orcaSimulation.simulation.id)}
+        >
+          Get Output
+        </Button>
+        <TextField value={orcaSimulationLog}></TextField>
       </CardContent>
     </Card>
   );

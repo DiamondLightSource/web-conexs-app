@@ -29,12 +29,15 @@ CREATE TABLE simulation (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     simulation_type_id INTEGER NOT NULL,
     person_id INTEGER NOT NULL,
-    working_directory TEXT NOT NULL,
+    working_directory TEXT,
     n_cores INTEGER NOT NULL DEFAULT 4,
     memory INTEGER NOT NULL DEFAULT 32,
     status simulation_status_enum DEFAULT 'requested',
     message TEXT,
     job_id INTEGER,
+    request_date TIMESTAMP DEFAULT current_timestamp,
+    submission_date TIMESTAMP,
+    completion_date TIMESTAMP,
     FOREIGN KEY(simulation_type_id) REFERENCES simulation_type (id),
     FOREIGN KEY(person_id) REFERENCES person (id),
     constraint simulation_altpk unique(id,simulation_type_id)
@@ -130,6 +133,8 @@ INSERT INTO person(identifier) VALUES('test_user');
 
 INSERT INTO simulation(simulation_type_id, person_id, working_directory) VALUES(1,1,'/working_dir');
 
-INSERT INTO molecular_structure(label, structure) VALUES('Helium', 'He 0 0 0');
+INSERT INTO molecular_structure(label, structure) VALUES('Water', 'H    0.7493682    0.0000000    0.4424329
+O    0.0000000    0.0000000   -0.1653507
+H   -0.7493682    0.0000000    0.4424329');
 
 INSERT INTO orca_simulation(simulation_id, calcuation_type, molecular_structure_id, memory_per_core, functional,basis_set, charge, multiplicity) VALUES(1, 'xas', 1, 1024, 'BP86','6-31G',0,1);

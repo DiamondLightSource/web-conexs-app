@@ -14,11 +14,12 @@ import SideDrawer from "./components/SideDrawer";
 import SimulationReviewPage from "./components/SimulationReviewPage";
 import OrcaSubmitPage from "./components/OrcaSubmitPage";
 import CrystalPage from "./components/CrystalPage";
+import CreateMoleculePage from "./components/CreateMoleculePage";
 
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const [mode, setMode] = useState<"light" | "dark">(
-    prefersDarkMode ? "dark" : "light"
+    prefersDarkMode ? "light" : "dark"
   );
 
   useMemo(
@@ -48,6 +49,7 @@ function App() {
         <Routes>
           <Route path="/" element={<WelcomePage />} />
           <Route path="/molecule" element={<MoleculePage />} />
+          <Route path="/createmolecule" element={<CreateMoleculePage />} />
           <Route path="/crystal" element={<CrystalPage />} />
           <Route path="/simulation" element={<SimulationReviewPage />} />
           <Route path="/orca" element={<OrcaSubmitPage />} />

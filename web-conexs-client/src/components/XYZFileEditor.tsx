@@ -2,6 +2,7 @@ import { Alert, Button, Grid2, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import { LatticeParameter, MoleculeInput } from "../models";
 import LatticeEditor from "./LatticeEditor";
+import { moleculeInputToXYZ } from "../utils";
 
 export default function XYZFileEditor(props: {
   molecularInput: MoleculeInput;
@@ -66,7 +67,7 @@ export default function XYZFileEditor(props: {
     if (errors == "") {
       setIsError(false);
       props.setMolecularInput({
-        label: "new molecule",
+        label: props.molecularInput.label,
         structure: data
           .split("\n")
           .filter((i) => i)
@@ -85,7 +86,13 @@ export default function XYZFileEditor(props: {
         id="Label"
         label="Label"
         value={props.molecularInput == null ? " " : props.molecularInput.label}
-        onChange={(e) => setComment(e.target.value)}
+        onChange={(e) => {
+          const newMolecule: MoleculeInput = {
+            ...props.molecularInput,
+            label: e.target.value,
+          };
+          props.setMolecularInput(newMolecule);
+        }}
       />
 
       {props.molecularInput != null &&

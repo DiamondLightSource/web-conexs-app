@@ -32,6 +32,9 @@ export interface Simulation {
   message: string | null;
   status: string;
   simulation_type: SimulationType;
+  request_date: string;
+  submission_date: string | null;
+  completion_date: string | null;
 }
 
 export interface OrcaSimulationInput {

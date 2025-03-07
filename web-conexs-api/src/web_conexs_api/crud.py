@@ -1,3 +1,4 @@
+import datetime
 from typing import List
 
 from fastapi import HTTPException
@@ -141,10 +142,14 @@ def get_orca_jobfile(session, id):
 def submit_orca_simulation(orca_input: OrcaSimulationInput, session: Session):
     smodel = {
         "person_id": 1,
-        "working_directory": "/working_directory_orca",
         "simulation_type_id": 1,
-        "status": SimulationStatus.requested,
+        "request_date": datetime.datetime.now(),
     }
+
+    #     "status": SimulationStatus.requested,
+    # "request_date":None,
+    # "submission_date":None,
+    # "completion_date":None,
 
     simulation = Simulation.model_validate(smodel)
     orca = OrcaSimulation.model_validate(orca_input)

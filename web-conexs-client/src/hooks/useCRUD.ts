@@ -3,59 +3,52 @@ import { useState, useEffect } from "react";
 
 const LOADING_STATES = ["loading", "error", "success"];
 
-export default function useCRUD<A extends object, B extends object>(url: string) {
+export default function useCRUD<A extends object, B extends object>(
+  url: string
+) {
   const [data, setData] = useState<A>();
   const [dataList, setDataList] = useState<A[]>([]);
   const [error, setError] = useState();
   const [loadingStatus, setLoadingStatus] = useState("loading");
 
   useEffect(() => {
-    function getDataUseEffect() {
-      axios
-        .get(url)
-        .then((result) => {
-          setDataList(result.data);
-          setLoadingStatus(LOADING_STATES[2]);
-        })
-        .catch((e) => {
-          setError(e);
-          setLoadingStatus(LOADING_STATES[1]);
-        });
-    }
-    setTimeout(getDataUseEffect, 2000);
+    axios
+      .get(url)
+      .then((result) => {
+        setDataList(result.data);
+        setLoadingStatus(LOADING_STATES[2]);
+      })
+      .catch((e) => {
+        setError(e);
+        setLoadingStatus(LOADING_STATES[1]);
+      });
   }, [url]);
 
   function getData(id: number) {
     setLoadingStatus(LOADING_STATES[0]);
 
-    const doGet = () => {
-      axios
-        .get(url + "/" + id)
-        .then((result) => {
-          setData(result.data);
-          setLoadingStatus(LOADING_STATES[2]);
-        })
-        .catch((e) => {
-          setError(e);
-          setLoadingStatus(LOADING_STATES[1]);
-        });
-    };
-
-    setTimeout(doGet, 1000);
-  }
-
-  function insertData(input: B) {
     axios
-      .post(url, input)
-      .then((res) => {
-        window.alert("Thank you for your submission");
+      .get(url + "/" + id)
+      .then((result) => {
+        setData(result.data);
+        setLoadingStatus(LOADING_STATES[2]);
       })
-      .catch((reason: AxiosError) => {
-        window.alert(reason.message);
+      .catch((e) => {
+        setError(e);
+        setLoadingStatus(LOADING_STATES[1]);
       });
   }
 
-  return { data, getData, loadingStatus, dataList, insertData};
+  function insertData(input: B, callbackDone: () => void) {
+    axios
+      .post(url, input)
+      .then((res) => {
+        if (callbackDone) callbackDone();
+      })
+      .catch((reason: AxiosError) => {
+        if (callbackDone) callbackDone();
+      });
+  }
 
-  
+  return { data, getData, loadingStatus, dataList, insertData };
 }

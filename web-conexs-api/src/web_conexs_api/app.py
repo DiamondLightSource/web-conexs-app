@@ -65,7 +65,6 @@ async def get_orca_output_endpoint(
     return get_orca_simulation(session, id)
 
 
-# TODO actually implement
 @app.get("/api/orca/{id}/jobfile")
 async def get_orca_jobfile_endpoint(
     id: int, session: Session = Depends(get_session)
@@ -73,25 +72,17 @@ async def get_orca_jobfile_endpoint(
     return PlainTextResponse(get_orca_jobfile(session, id))
 
 
+# TODO further orca endpoint
+# mapspc
 # @app.get("/api/orca/{id}/spectra")
-# async def get_orca_spectra_endpoint(
-#     id: int, session: Session = Depends(get_session)
-# ) -> OrcaSimulationResponse:
-#     return get_orca_simulation(session, id)
-
-
 # @app.get("/api/orca/{id}/spectra/{spectrum_id}")
-# async def get_orca_spectrum_endpoint(
-#     id: int, session: Session = Depends(get_session)
-# ) -> OrcaSimulationResponse:
-#     return get_orca_simulation(session, id)
-
-
+# request new mapspc call
 # @app.post("/api/orca/{id}/spectra/")
-# async def submit_orca_spectrum_endpoint(
-#     id: int, session: Session = Depends(get_session)
-# ) -> OrcaSimulationResponse:
-#     return get_orca_simulation(session, id)
+# orbital cube files
+# @app.get("/api/orca/{id}/orbitals")
+# @app.get("/api/orca/{id}/orbitals/{orbital_calculation_id}")
+# request new mapspc call
+# @app.post("/api/orca/{id}/orbitals/")
 
 
 @app.get("/api/molecules/{id}")
