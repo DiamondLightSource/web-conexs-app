@@ -10,11 +10,12 @@ import Header from "./components/Header";
 import WelcomePage from "./components/WelcomePage";
 import MoleculePage from "./components/MoleculePage";
 import { Route, Routes } from "react-router-dom";
-import SideDrawer from "./components/SideDrawer";
 import SimulationReviewPage from "./components/SimulationReviewPage";
 import OrcaSubmitPage from "./components/OrcaSubmitPage";
 import CrystalPage from "./components/CrystalPage";
 import CreateMoleculePage from "./components/CreateMoleculePage";
+import FdmnesSubmitPage from "./components/FdmnesSubmitPage";
+import CreateCystalPage from "./components/CreateCrystalPage";
 
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -51,8 +52,10 @@ function App() {
           <Route path="/molecule" element={<MoleculePage />} />
           <Route path="/createmolecule" element={<CreateMoleculePage />} />
           <Route path="/crystal" element={<CrystalPage />} />
+          <Route path="/createcrystal" element={<CreateCystalPage />} />
           <Route path="/simulation" element={<SimulationReviewPage />} />
           <Route path="/orca" element={<OrcaSubmitPage />} />
+          <Route path="/fdmnes" element={<FdmnesSubmitPage />} />
         </Routes>
       </Stack>
     </ThemeProvider>

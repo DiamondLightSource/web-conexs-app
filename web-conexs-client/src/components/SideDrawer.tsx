@@ -47,6 +47,13 @@ export default function SideDrawer() {
             </ListItemButton>
           </Link>
         </ListItem>
+        <ListItem key="Create Crystal" disablePadding>
+          <Link to={"/createcrystal"}>
+            <ListItemButton>
+              <ListItemText primary="Create Crystal" />
+            </ListItemButton>
+          </Link>
+        </ListItem>
         <ListItem key="Simulations" disablePadding>
           <Link to={"/simulation"}>
             <ListItemButton>
@@ -58,6 +65,13 @@ export default function SideDrawer() {
           <Link to={"/orca"}>
             <ListItemButton>
               <ListItemText primary="Submit Orca" />
+            </ListItemButton>
+          </Link>
+        </ListItem>
+        <ListItem key="Submit FDMNES" disablePadding>
+          <Link to={"/fdmnes"}>
+            <ListItemButton>
+              <ListItemText primary="Submit FDMNES" />
             </ListItemButton>
           </Link>
         </ListItem>

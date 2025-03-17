@@ -5,17 +5,28 @@ from fastapi.responses import PlainTextResponse
 from sqlmodel import Session
 
 from .crud import (
+    get_crystal_structure,
+    get_crystal_structures,
+    get_fdmnes_jobfile,
+    get_fdmnes_simulation,
     get_molecular_structure,
     get_molecular_structures,
     get_orca_jobfile,
     get_orca_simulation,
     get_simulation,
     get_simulations,
+    submit_fdmnes_simulation,
     submit_orca_simulation,
+    upload_crystal_structure,
     upload_molecular_structure,
 )
 from .database import get_session
 from .models.models import (
+    CrystalStructure,
+    CrystalStructureInput,
+    FdmnesSimulation,
+    FdmnesSimulationInput,
+    FdmnesSimulationResponse,
     MolecularStructure,
     MolecularStructureInput,
     OrcaSimulation,
@@ -29,21 +40,21 @@ app = FastAPI()
 
 # TODO paginated simulations endpoint
 @app.get("/api/simulations")
-async def get_simulations_endpoint(
+def get_simulations_endpoint(
     session: Session = Depends(get_session),
 ) -> List[SimulationResponse]:
     return get_simulations(session)
 
 
 @app.get("/api/simulations/{id}")
-async def get_simulation_endpoint(
+def get_simulation_endpoint(
     id: int, session: Session = Depends(get_session)
 ) -> SimulationResponse:
     return get_simulation(session, id)
 
 
 @app.post("/api/submit/orca")
-async def submit_orca(
+def submit_orca(
     orca_input: OrcaSimulationInput,
     session: Session = Depends(get_session),
 ) -> OrcaSimulation:
@@ -51,7 +62,7 @@ async def submit_orca(
 
 
 @app.get("/api/orca/{id}")
-async def get_orca_simulation_endpoint(
+def get_orca_simulation_endpoint(
     id: int, session: Session = Depends(get_session)
 ) -> OrcaSimulationResponse:
     return get_orca_simulation(session, id)
@@ -59,16 +70,13 @@ async def get_orca_simulation_endpoint(
 
 # TODO actually implement
 @app.get("/api/orca/{id}/output")
-async def get_orca_output_endpoint(
-    id: int, session: Session = Depends(get_session)
-) -> str:
-    return get_orca_simulation(session, id)
+def get_orca_output_endpoint(id: int, session: Session = Depends(get_session)) -> str:
+    return PlainTextResponse(get_orca_jobfile(session, id))
 
 
+# TODO replace with an actual implementation
 @app.get("/api/orca/{id}/jobfile")
-async def get_orca_jobfile_endpoint(
-    id: int, session: Session = Depends(get_session)
-) -> str:
+def get_orca_jobfile_endpoint(id: int, session: Session = Depends(get_session)) -> str:
     return PlainTextResponse(get_orca_jobfile(session, id))
 
 
@@ -86,21 +94,69 @@ async def get_orca_jobfile_endpoint(
 
 
 @app.get("/api/molecules/{id}")
-async def get_molecular_endpoint(
+def get_molecular_endpoint(
     id: int, session: Session = Depends(get_session)
 ) -> MolecularStructure:
     return get_molecular_structure(session, id)
 
 
 @app.post("/api/molecules")
-async def upload_molecular_endpoint(
+def upload_molecular_endpoint(
     structure: MolecularStructureInput, session: Session = Depends(get_session)
 ) -> MolecularStructure:
     return upload_molecular_structure(structure, session)
 
 
 @app.get("/api/molecules")
-async def get_molecular_list_endpoint(
+def get_molecular_list_endpoint(
     session: Session = Depends(get_session),
 ) -> List[MolecularStructure]:
     return get_molecular_structures(session)
+
+
+@app.get("/api/crystals/{id}")
+def get_crystal_endpoint(
+    id: int, session: Session = Depends(get_session)
+) -> CrystalStructure:
+    return get_crystal_structure(session, id)
+
+
+@app.post("/api/crystals")
+def upload_crystal_endpoint(
+    structure: CrystalStructureInput, session: Session = Depends(get_session)
+) -> CrystalStructure:
+    return upload_crystal_structure(structure, session)
+
+
+@app.get("/api/crystals")
+def get_crystal_list_endpoint(
+    session: Session = Depends(get_session),
+) -> List[CrystalStructure]:
+    return get_crystal_structures(session)
+
+
+@app.post("/api/submit/fdmnes")
+def submit_fdmnes(
+    fdmnes_input: FdmnesSimulationInput,
+    session: Session = Depends(get_session),
+) -> FdmnesSimulation:
+    return submit_fdmnes_simulation(fdmnes_input, session)
+
+
+@app.get("/api/fdmnes/{id}")
+def get_fdmnes_simulation_endpoint(
+    id: int, session: Session = Depends(get_session)
+) -> FdmnesSimulationResponse:
+    return get_fdmnes_simulation(session, id)
+
+
+@app.get("/api/fdmnes/{id}/jobfile")
+def get_fdmnes_jobfile_endpoint(
+    id: int, session: Session = Depends(get_session)
+) -> str:
+    return PlainTextResponse(get_fdmnes_jobfile(session, id))
+
+
+@app.get("/api/fdmnes/{id}/output")
+def get_fdmnes_output_endpoint(id: int, session: Session = Depends(get_session)) -> str:
+    return PlainTextResponse(get_fdmnes_jobfile(session, id))

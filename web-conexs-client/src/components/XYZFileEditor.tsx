@@ -1,28 +1,57 @@
-import { Alert, Button, Grid2, Stack, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
-import { LatticeParameter, MoleculeInput } from "../models";
+import { Alert, Button, Stack, TextField } from "@mui/material";
+import { useState } from "react";
+import { CrystalInput, MoleculeInput } from "../models";
 import LatticeEditor from "./LatticeEditor";
-import { moleculeInputToXYZ } from "../utils";
+
+interface LatticeParameter {
+  a: number;
+  b: number;
+  c: number;
+  alpha: number;
+  beta: number;
+  gamma: number;
+}
 
 export default function XYZFileEditor(props: {
-  molecularInput: MoleculeInput;
-  setMolecularInput: (molecularInput: MoleculeInput) => void;
+  structureInput: MoleculeInput | CrystalInput | null;
+  setStructureInput: (
+    structureInput: MoleculeInput | CrystalInput | null
+  ) => void;
+  isMolecule: boolean;
 }) {
-  // const initialSetup = props.molecularInput.structure.split("\n");
+  console.log(props.structureInput);
+  const lp: LatticeParameter =
+    !props.isMolecule &&
+    props.structureInput != null &&
+    "alpha" in props.structureInput
+      ? {
+          alpha: props.structureInput.alpha,
+          beta: props.structureInput.beta,
+          gamma: props.structureInput.gamma,
+          a: props.structureInput.a,
+          b: props.structureInput.b,
+          c: props.structureInput.c,
+        }
+      : {
+          a: 1,
+          b: 1,
+          c: 1,
+          alpha: 90,
+          beta: 90,
+          gamma: 90,
+        };
 
-  const [lattice, setLattice] = useState<LatticeParameter>({
-    a: 1,
-    b: 1,
-    c: 1,
-    alpha: 90,
-    beta: 90,
-    gamma: 90,
-  });
-  // const [atoms, setAtoms] = useState<number>(Number(initialSetup[0]));
-  // const [comment, setComment] = useState<string>(initialSetup[1]);
-  const [data, setData] = useState<string>("");
+  console.log(lp);
+
+  const [lattice, setLattice] = useState<LatticeParameter>(lp);
+
+  const [data, setData] = useState<string>(
+    props.structureInput != null ? props.structureInput.structure : ""
+  );
   const [error, setError] = useState<string[]>([""]);
   const [isError, setIsError] = useState<boolean>(false);
+
+  console.log(data);
 
   function validateMoleculeData(data: string): string {
     const a = data.split("\n");
@@ -55,24 +84,29 @@ export default function XYZFileEditor(props: {
     return errorList;
   }
 
-  // useEffect(() => {
-  //   const setup = props.moleculedata.split("\n");
-  //   setAtoms(Number(setup[0]));
-  //   setComment(setup[1]);
-  //   setData(setup.slice(2).join("\n"));
-  // }, [props.moleculedata]);
-
   function renderMolecule() {
     const errors = validateMoleculeData(data);
+
     if (errors == "") {
       setIsError(false);
-      props.setMolecularInput({
-        label: props.molecularInput.label,
+      const input = {
+        label: props.structureInput.label,
         structure: data
           .split("\n")
           .filter((i) => i)
           .join("\n"),
-      });
+      };
+
+      if ("alpha" in props.structureInput) {
+        input.alpha = lattice.alpha;
+        input.beta = lattice.beta;
+        input.gamma = lattice.gamma;
+        input.a = lattice.a;
+        input.b = lattice.b;
+        input.c = lattice.c;
+      }
+
+      props.setStructureInput(input);
     } else {
       const temp = errors.split("\n");
       temp.length = temp.length - 1;
@@ -85,23 +119,22 @@ export default function XYZFileEditor(props: {
       <TextField
         id="Label"
         label="Label"
-        value={props.molecularInput == null ? " " : props.molecularInput.label}
+        value={props.structureInput == null ? " " : props.structureInput.label}
         onChange={(e) => {
-          const newMolecule: MoleculeInput = {
-            ...props.molecularInput,
+          const newMolecule = {
+            ...props.structureInput,
             label: e.target.value,
           };
-          props.setMolecularInput(newMolecule);
+          props.setStructureInput(newMolecule);
         }}
       />
 
-      {props.molecularInput != null &&
-        "lattice_params" in props.molecularInput && (
-          <LatticeEditor
-            lattice={lattice}
-            setLattice={setLattice}
-          ></LatticeEditor>
-        )}
+      {!props.isMolecule && (
+        <LatticeEditor
+          lattice={lattice}
+          setLattice={setLattice}
+        ></LatticeEditor>
+      )}
 
       <TextField
         sx={{ width: "100%" }}
@@ -110,8 +143,8 @@ export default function XYZFileEditor(props: {
         multiline
         rows={12}
         value={
-          data.length == 0 && props.molecularInput != null
-            ? props.molecularInput.structure
+          data.length == 0 && props.structureInput != null
+            ? props.structureInput.structure
             : data
         }
         onChange={(e) => {
@@ -121,7 +154,7 @@ export default function XYZFileEditor(props: {
       />
 
       <Button variant="contained" onClick={renderMolecule}>
-        Render
+        Update Viewer
       </Button>
 
       {isError ? (

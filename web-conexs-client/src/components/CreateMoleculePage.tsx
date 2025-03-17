@@ -1,4 +1,4 @@
-import { Box, Button, Stack } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { MoleculeInput } from "../models";
 import { useState } from "react";
 import XYZFileEditor from "./XYZFileEditor";
@@ -26,8 +26,9 @@ export default function CreateMoleculePage() {
   return (
     <Stack direction={"row"}>
       <XYZFileEditor
-        molecularInput={molecule}
-        setMolecularInput={setMolecule}
+        structureInput={molecule}
+        setStructureInput={setMolecule}
+        isMolecule={true}
       />
       <React3dMol
         moleculedata={molecule}

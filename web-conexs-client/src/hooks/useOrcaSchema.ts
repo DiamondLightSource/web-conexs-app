@@ -213,7 +213,7 @@ export default function useOrcaSchema() {
   const [data, setData] = useState({ ...orcaDefaultValues });
   const [schema, setSchema] = useState({ ...schemaTemplate });
   const [hasData, setHasData] = useState(false);
-  const { dataList } = useMoleculeAPI();
+  const { dataList, getMolecule, data : molecule } = useMoleculeAPI();
 
   if (dataList.length != 0 && !hasData) {
     const tmpSchema = { ...schema };
@@ -232,5 +232,5 @@ export default function useOrcaSchema() {
     setHasData(true);
   }
 
-  return { data, setData, dataList, schema, uischema, hasData };
+  return { data, setData, dataList, schema, uischema, hasData, getMolecule, molecule };
 }

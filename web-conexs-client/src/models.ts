@@ -3,7 +3,7 @@ export interface MoleculeInput {
   structure: string;
 }
 
-export interface LatticeParameter {
+export interface CrystalInput extends MoleculeInput {
   a: number;
   b: number;
   c: number;
@@ -12,11 +12,11 @@ export interface LatticeParameter {
   gamma: number;
 }
 
-export interface CrystalInput extends MoleculeInput {
-  lattice_params: LatticeParameter;
+export interface Molecule extends MoleculeInput {
+  id: number;
 }
 
-export interface Molecule extends MoleculeInput {
+export interface Crystal extends CrystalInput {
   id: number;
 }
 
@@ -73,5 +73,29 @@ export const orcaDefaultValues: OrcaSimulationWithResource = {
   orb_win_0_stop: 0,
   orb_win_1_start: 0,
   orb_win_1_stop: 0,
+  n_cores: 4,
+};
+
+export interface FDMNESSimulationInput {
+  crystal_structure_id: number;
+  element: number;
+  edge: string;
+  greens_approach: boolean;
+  structure_type: string;
+  n_cores: number;
+  memory: number;
+}
+
+export interface FDMNESSimulation extends FDMNESSimulationInput {
+  simulation: Simulation;
+}
+
+export const fdmnesDefaultValues: FDMNESSimulationInput = {
+  crystal_structure_id: -1,
+  memory: 1024,
+  element: 1,
+  edge: "k",
+  greens_approach: false,
+  structure_type: "crystal",
   n_cores: 4,
 };

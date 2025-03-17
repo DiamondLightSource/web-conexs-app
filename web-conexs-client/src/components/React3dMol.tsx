@@ -81,13 +81,12 @@ export default function React3dMol(props: Molecule3DProps) {
           ],
         });
       }
-    } else if (props.moleculedata && "lattice_params" in props.moleculedata) {
+    } else if (props.moleculedata && "alpha" in props.moleculedata) {
       const crystaldata = props.moleculedata as CrystalInput;
 
       const cif = crystalInputToCIF(crystaldata);
 
       const model = viewer.addModel(cif, "cif");
-      console.log(cif);
       viewer.setStyle({}, { sphere: { color: "spectrum", radius: 0.5 } });
       viewer.addUnitCell(model, {
         box: { color: "purple" },

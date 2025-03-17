@@ -2,7 +2,6 @@ import { useCallback, useState } from "react";
 
 import { Molecule, MoleculeInput } from "../models";
 import axios from "axios";
-import { AxiosError } from "axios";
 import useCRUD from "./useCRUD";
 
 const moleculeUrl = "/api/molecules";

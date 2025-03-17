@@ -34,6 +34,20 @@ class MolecularStructureInput(SQLModel):
     structure: str
 
 
+class CrystalStructureInput(MolecularStructureInput):
+    a: float
+    b: float
+    c: float
+    alpha: float
+    beta: float
+    gamma: float
+
+
+class CrystalStructure(CrystalStructureInput, table=True):
+    __tablename__: str = "crystal_structure"
+    id: int | None = Field(primary_key=True, default=None)
+
+
 class MolecularStructure(MolecularStructureInput, table=True):
     __tablename__: str = "molecular_structure"
     id: int | None = Field(primary_key=True, default=None)
@@ -161,3 +175,48 @@ class SimulationResponse(SimulationBase):
     status: SimulationStatus
     request_date: Optional[datetime.datetime]
     person: Person
+
+
+class StructureType(enum.Enum):
+    crystal = "crystal"
+    molecule = "molecule"
+
+
+class Edge(enum.Enum):
+    k = "k"
+    l1 = "l1"
+    l2 = "l2"
+    l3 = "l3"
+    m1 = "m1"
+    m2 = "m2"
+    m3 = "m3"
+    m4 = "m4"
+    m5 = "m5"
+
+
+class FdmnesSimulationInput(SQLModel):
+    crystal_structure_id: int
+    element: int
+    structure_type: StructureType
+    edge: Edge
+    greens_approach: bool
+
+
+class FdmnesSimulation(FdmnesSimulationInput, table=True):
+    __tablename__: str = "fdmnes_simulation"
+    simulation_id: int = Field(
+        foreign_key="simulation.id",
+        default=None,
+        primary_key=True,
+    )
+
+    simulation: Simulation = Relationship(
+        sa_relationship_kwargs={
+            "lazy": "selectin",
+            "foreign_keys": "[FdmnesSimulation.simulation_id]",
+        }
+    )
+
+
+class FdmnesSimulationResponse(FdmnesSimulationInput):
+    simulation: Simulation

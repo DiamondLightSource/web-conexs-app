@@ -35,8 +35,8 @@ export default function LatticeEditor(props: {
   const secondRowKeys: string[] = ["alpha", "beta", "gamma"];
 
   return (
-    <Stack spacing={"4px"}>
-      <Stack direction={"row"} spacing={"4px"}>
+    <Stack spacing={"10px"}>
+      <Stack direction={"row"} spacing={"10px"}>
         {firstRowKeys.map((k) => (
           <NumberNoSpinner
             key={k}
@@ -51,7 +51,7 @@ export default function LatticeEditor(props: {
         ))}
       </Stack>
 
-      <Stack direction={"row"} spacing={"4px"}>
+      <Stack direction={"row"} spacing={"10px"}>
         {secondRowKeys.map((k) => (
           <NumberNoSpinner
             key={k}

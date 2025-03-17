@@ -1,5 +1,6 @@
 import { http, HttpResponse, delay } from "msw";
 import {
+  Crystal,
   Molecule,
   MoleculeInput,
   OrcaSimulation,
@@ -16,6 +17,21 @@ const mockMolecule: Molecule = {
   structure:
     "C   0.000000  1.402720  0.000000\nH   0.000000  2.490290  0.000000\nC  -1.214790  0.701360  0.000000\nH  -2.156660  1.245150  0.000000\nC  -1.214790 -0.701360  0.000000\nH  -2.156660 -1.245150  0.000000\nC   0.000000 -1.402720  0.000000\nH   0.000000 -2.490290  0.000000\nC   1.214790 -0.701360  0.000000\nH   2.156660 -1.245150  0.000000\nC   1.214790  0.701360  0.000000\nH   2.156660  1.245150  0.000000",
 };
+
+const mockCrystal: Crystal = {
+  id: 1,
+
+  a: 4.1043564,
+  b: 4.1043564,
+  c: 4.1043564,
+  alpha: 90,
+  beta: 90,
+  gamma: 90,
+  label: "test",
+  structure: "Ag 0. 0. 0.\nAg 0.5 0.5 0.\nAg 0.5 0. 0.5\nAg 0. 0.5 0.5",
+};
+
+const mockCrystalArray = [mockCrystal];
 
 const mockArray = [mockMolecule];
 
@@ -121,15 +137,20 @@ export const handlers = [
     return HttpResponse.json(responseSimulation, { status: 201 });
   }),
 
+  http.get("/api/crystals", async () => {
+    await delay();
 
-//   # mapspc
-// # @app.get("/api/orca/{id}/spectra")
-// # @app.get("/api/orca/{id}/spectra/{spectrum_id}")
-// # request new mapspc call
-// # @app.post("/api/orca/{id}/spectra/")
-// # orbital cube files
-// # @app.get("/api/orca/{id}/orbitals")
-// # @app.get("/api/orca/{id}/orbitals/{orbital_calculation_id}")
-// # request new mapspc call
-// # @app.post("/api/orca/{id}/orbitals/")
+    return HttpResponse.json(mockCrystalArray);
+  }),
+
+  //   # mapspc
+  // # @app.get("/api/orca/{id}/spectra")
+  // # @app.get("/api/orca/{id}/spectra/{spectrum_id}")
+  // # request new mapspc call
+  // # @app.post("/api/orca/{id}/spectra/")
+  // # orbital cube files
+  // # @app.get("/api/orca/{id}/orbitals")
+  // # @app.get("/api/orca/{id}/orbitals/{orbital_calculation_id}")
+  // # request new mapspc call
+  // # @app.post("/api/orca/{id}/orbitals/")
 ];

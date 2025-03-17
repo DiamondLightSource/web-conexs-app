@@ -5,6 +5,7 @@ import { Molecule, MoleculeInput } from "../models";
 import React3dMol from "./React3dMol";
 import MoleculeTable from "./MoleculeTable";
 import { useState } from "react";
+import XYZFileViewer from "./XYZFileViewer";
 
 export default function MoleculePage() {
   const { moleculeEdited, setMoleculeEdited } = useState<Molecule | null>();
@@ -48,10 +49,7 @@ export default function MoleculePage() {
           prevNext={null}
         ></MoleculeTable>
         <Stack spacing={"2px"}>
-          <XYZFileEditor
-            molecularInput={finalMolecule}
-            setMolecularInput={setNewMolecule}
-          />
+          <XYZFileViewer molecule={finalMolecule} />
         </Stack>
 
         <Box height="100%vh">

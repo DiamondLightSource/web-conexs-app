@@ -1,17 +1,51 @@
 import datetime
+import re
 from typing import List
 
 from fastapi import HTTPException
 from sqlmodel import Session, select
 
 from .models.models import (
+    CrystalStructure,
+    CrystalStructureInput,
+    FdmnesSimulation,
+    FdmnesSimulationInput,
     MolecularStructure,
     MolecularStructureInput,
     OrcaSimulation,
     OrcaSimulationInput,
     Simulation,
     SimulationStatus,
+    StructureType,
 )
+from .periodictable import periodic_table
+
+
+def get_crystal_structures(session):
+    statement = select(CrystalStructure)
+
+    results = session.exec(statement)
+
+    return results.all()
+
+
+def get_crystal_structure(session, id):
+    structure = session.get(CrystalStructure, id)
+
+    if structure:
+        return structure
+    else:
+        raise HTTPException(status_code=404, detail=f"No structure with id={id}")
+
+
+def upload_crystal_structure(structure: CrystalStructureInput, session):
+    crystal = CrystalStructure.model_validate(structure)
+
+    session.add(crystal)
+    session.commit()
+    session.refresh(crystal)
+
+    return crystal
 
 
 def get_molecular_structures(session):
@@ -133,6 +167,7 @@ def get_orca_jobfile(session, id):
         + str(orca_simulation.multiplicity)
         + "\n"
     )
+
     jobfile += structure.structure
     jobfile += "\nend"
 
@@ -160,3 +195,84 @@ def submit_orca_simulation(orca_input: OrcaSimulationInput, session: Session):
     session.refresh(orca)
 
     return orca
+
+
+def submit_fdmnes_simulation(fdmnes_input: FdmnesSimulationInput, session: Session):
+    smodel = {
+        "person_id": 1,
+        "simulation_type_id": 2,
+        "request_date": datetime.datetime.now(),
+    }
+
+    #     "status": SimulationStatus.requested,
+    # "request_date":None,
+    # "submission_date":None,
+    # "completion_date":None,
+
+    simulation = Simulation.model_validate(smodel)
+    fdmnes = FdmnesSimulation.model_validate(fdmnes_input)
+    fdmnes.simulation = simulation
+
+    session.add(fdmnes)
+    session.commit()
+    session.refresh(fdmnes)
+
+    return fdmnes
+
+
+def get_fdmnes_simulation(session, id) -> FdmnesSimulation:
+    simulation = session.get(FdmnesSimulation, id)
+
+    if simulation:
+        return simulation
+    else:
+        raise HTTPException(status_code=404, detail=f"No simulation with id={id}")
+
+
+def get_fdmnes_jobfile(session, id):
+    fdmnes_simulation = get_fdmnes_simulation(session, id)
+    structure = get_crystal_structure(session, fdmnes_simulation.crystal_structure_id)
+    jobfile = "Filout\nresult\n\nRange\n"
+    jobfile += "-10. 0.25 50 !E_min, step, E_intermediate, step ...\n\n"
+
+    jobfile += "Edge\n"
+    jobfile += str(fdmnes_simulation.edge.value).capitalize() + "\n\n"
+
+    jobfile += "Z_absorber\n"
+    jobfile += str(fdmnes_simulation.element) + "\n\n"
+
+    jobfile += "SCF         !Performs self-consistent calculation\n"
+    jobfile += (
+        "Energpho    !Output energy relative to the photon energy of absorbing atom\n\n"
+    )
+
+    if fdmnes_simulation.greens_approach:
+        jobfile += "Green\n"
+
+    jobfile += "Quadrupole\n"
+
+    if fdmnes_simulation.edge.value.startswith("l"):
+        jobfile += "Spinorbit\n"
+
+    jobfile += "\n"
+    jobfile += "Radius"
+    jobfile += "! Radius of the cluster where final state calculation is performed\n"
+    jobfile += "6" + "\n\n"
+
+    if fdmnes_simulation.structure_type == StructureType.crystal:
+        jobfile += "Crystal        ! Periodic material description (unit cell)\n"
+    else:
+        jobfile += "Molecule       ! Periodic or cylindrical or spherical coordinates\n"
+
+    jobfile += f"{structure.a} {structure.b} {structure.c}"
+    jobfile += f"{structure.alpha} {structure.beta} {structure.gamma}\n"
+
+    keys = (re.escape(k) for k in periodic_table.keys())
+    pattern = re.compile(r"\b(" + "|".join(keys) + r")\b")
+
+    result = pattern.sub(lambda x: str(periodic_table[x.group()]), structure.structure)
+    jobfile += result
+
+    jobfile += "\n\nConvolution\n\nEnd"
+
+    return jobfile

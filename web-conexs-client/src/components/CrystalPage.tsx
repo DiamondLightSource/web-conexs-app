@@ -1,78 +1,41 @@
-import { Button, Box, Typography, Stack } from "@mui/material";
-import XYZFileEditor from "./XYZFileEditor";
-import useMoleculeAPI from "../hooks/useMoleculeAPI";
-import { CrystalInput } from "../models";
+import { Box, Typography, Stack } from "@mui/material";
+
 import React3dMol from "./React3dMol";
 import MoleculeTable from "./MoleculeTable";
+import useCrystalAPI from "../hooks/useCrystalAPI";
+import XYZCrystalFileViewer from "./XYZCrystalFileViewer";
 
 export default function CrystalPage() {
-  const templateMolecule: CrystalInput = {
-    lattice_params: {
-      a: 4.1043564,
-      b: 4.1043564,
-      c: 4.1043564,
-      alpha: 90,
-      beta: 90,
-      gamma: 90,
-    },
-    label: "test",
-    structure: "Ag 0. 0. 0.\nAg 0.5 0.5 0.\nAg 0.5 0. 0.5\nAg 0. 0.5 0.5",
-  };
-
-  const {
-    molecule,
-    getMolecule,
-    getMolecules,
-    moleculeList,
-    insertMolecule,
-    setNewMolecule,
-    newMolecule,
-    data,
-    getMoleculeGeneric,
-    loadingStatus,
-  } = useMoleculeAPI();
+  const { data, getCrystal, dataList } = useCrystalAPI();
 
   // console.log(molecule);
-  // console.log(moleculeList);
-
-  let finalMolecule = newMolecule != null ? newMolecule : molecule;
+  let finalMolecule = data;
 
   if (finalMolecule == null) {
-    finalMolecule = templateMolecule;
+    finalMolecule = dataList.length != 0 ? dataList[0] : null;
   }
-
-  const lines =
-    finalMolecule == null
-      ? 0
-      : (finalMolecule.structure.match(/\n/g) || "").length + 1;
-  console.log(lines);
-
-  const renderMolecule = lines.toString() + "\n\n" + finalMolecule?.structure;
 
   return (
     <Stack>
       <Typography variant="h4" padding="24px">
         Crystals
       </Typography>
-      <Stack direction={"row"} height={"100vh"}>
-        <Stack>
-          <Stack direction="row">
-            <Button onClick={() => getMoleculeGeneric(2)}>Fetch</Button>
-            <Button onClick={getMolecules}>Fetch List</Button>
-            <Button
-              onClick={() => {
-                insertMolecule(newMolecule);
-                setNewMolecule(null);
-              }}
-            >
-              Post
-            </Button>
-          </Stack>
-          <XYZFileEditor
-            molecularInput={templateMolecule}
-            setMolecularInput={() => {}}
-          />
+      <Stack direction={"row"} height={"100vh"} spacing={3}>
+        <MoleculeTable
+          molecules={dataList == null ? [] : dataList}
+          selectedMolecule={undefined}
+          setSelectedMolecule={(data) => {
+            if (data) {
+              getCrystal(data.id);
+            }
+          }}
+          setCurrent={() => {}}
+          prevNext={null}
+        ></MoleculeTable>
+        <Stack spacing={"2px"}>
+          <XYZCrystalFileViewer crystal={finalMolecule} />
         </Stack>
+
         <Box height="100%vh">
           <React3dMol
             moleculedata={finalMolecule}
@@ -80,14 +43,6 @@ export default function CrystalPage() {
             style="Stick"
             orbital={null}
           ></React3dMol>
-
-          <MoleculeTable
-            molecules={moleculeList == null ? [] : moleculeList}
-            selectedMolecule={undefined}
-            setSelectedMolecule={(molecule) => getMolecule(molecule?.id)}
-            setCurrent={() => {}}
-            prevNext={null}
-          ></MoleculeTable>
         </Box>
       </Stack>
     </Stack>

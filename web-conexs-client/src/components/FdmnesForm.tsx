@@ -4,14 +4,15 @@ import {
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
 import { Box, Button, Grid, Grid2, Skeleton } from "@mui/material";
-import useOrcaSchema from "../hooks/useOrcaSchema";
+import useFDMNESSchema from "../hooks/useFdmnesAPI";
 import useSimulationAPI from "../hooks/useSimulationAPI";
 import React3dMol from "./React3dMol";
+// import useSimulationAPI from "../hooks/useSimulationAPI";
 
-export default function OrcaForm() {
-  const { data, setData, schema, uischema, hasData, getMolecule, molecule } =
-    useOrcaSchema();
-  const { postOrcaSimulation } = useSimulationAPI();
+export default function FdmnesForm() {
+  const { data, setData, schema, uischema, hasData, getCrystal, crystal } =
+    useFDMNESSchema();
+  const { postFdmnesSimulation } = useSimulationAPI();
 
   return (
     <Grid2 container>
@@ -25,7 +26,7 @@ export default function OrcaForm() {
             cells={materialCells}
             onChange={({ data, _errors }) => {
               setData(data);
-              getMolecule(data.molecular_structure_id);
+              getCrystal(data.crystal_structure_id);
             }}
           />
         ) : (
@@ -35,7 +36,7 @@ export default function OrcaForm() {
       <Grid2 size={6}>
         <Box height="100%vh">
           <React3dMol
-            moleculedata={molecule}
+            moleculedata={crystal}
             color="#3465A4"
             style="Stick"
             orbital={null}
@@ -46,11 +47,8 @@ export default function OrcaForm() {
         <Button
           onClick={() => {
             const localData = { ...data };
-            if (localData.solvent == "None") {
-              localData.solvent = null;
-            }
-
-            postOrcaSimulation(localData);
+            console.log(localData);
+            postFdmnesSimulation(localData);
           }}
         >
           Submit Simulation

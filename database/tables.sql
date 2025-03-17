@@ -68,7 +68,14 @@ COMMENT ON TABLE molecular_structure IS 'Table to hold molecular structures';
 CREATE TABLE crystal_structure (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     label TEXT,
-    structure TEXT
+    structure TEXT NOT NULL,
+    a NUMERIC NOT NULL,
+    b NUMERIC NOT NULL,
+    c NUMERIC NOT NULL,
+    alpha NUMERIC NOT NULL,
+    beta NUMERIC NOT NULL,
+    gamma NUMERIC NOT NULL
+
 );
 
 COMMENT ON TABLE molecular_structure IS 'Table to hold molecular structures';
@@ -113,9 +120,20 @@ CREATE TABLE orca_simulation_spectrum(
 
 );
 
+CREATE TYPE edge_enum AS ENUM('k', 'l1', 'l2', 'l3', 'm1', 'm2', 'm3', 'm4', 'm5');
+
+CREATE TYPE structure_enum AS ENUM('crystal', 'molecule');
+
 CREATE TABLE fdmnes_simulation (
     simulation_id INTEGER PRIMARY KEY,
     simulation_type_id INTEGER GENERATED ALWAYS AS (2) STORED,
+    crystal_structure_id INTEGER NOT NULL,
+    element INTEGER NOT NULL,
+    edge edge_enum NOT NULL,
+    greens_approach BOOLEAN NOT NULL,
+    structure_type structure_enum NOT NULL,
+
+    FOREIGN KEY(crystal_structure_id) REFERENCES crystal_structure (id),
     FOREIGN KEY(simulation_id, simulation_type_id) REFERENCES simulation (id,simulation_type_id)
 );
 

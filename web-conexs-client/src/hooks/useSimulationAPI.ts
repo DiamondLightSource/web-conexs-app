@@ -1,8 +1,15 @@
 import { useState } from "react";
-import { OrcaSimulation, OrcaSimulationInput, Simulation } from "../models";
+import {
+  FDMNESSimulation,
+  FDMNESSimulationInput,
+  OrcaSimulation,
+  OrcaSimulationInput,
+  Simulation,
+} from "../models";
 
 const simulationUrl = "/api/simulations";
 const orcaUrl = "/api/orca";
+const fdmnesUrl = "/api/fdmnes";
 
 import axios, { AxiosError } from "axios";
 
@@ -12,6 +19,8 @@ export default function useSimulationAPI() {
   const [orcaSimulation, setOrcaSimulation] = useState<OrcaSimulation | null>(
     null
   );
+  const [fdmnesSimulation, setFdmnesSimulation] =
+    useState<FDMNESSimulation | null>(null);
 
   const [orcaSimulationLog, setOrcaSimulationLog] = useState<string>("");
 
@@ -50,6 +59,23 @@ export default function useSimulationAPI() {
       });
   }
 
+  function getFdmnesSimulation(id: number) {
+    axios.get(fdmnesUrl + "/" + id).then((res) => {
+      setFdmnesSimulation(res.data);
+    });
+  }
+
+  function postFdmnesSimulation(input: FDMNESSimulationInput) {
+    axios
+      .post("/api/submit/fdmnes", input)
+      .then(() => {
+        window.alert("Thank you for your submission");
+      })
+      .catch((reason: AxiosError) => {
+        window.alert(reason.message);
+      });
+  }
+
   return {
     simulation,
     getSimulation,
@@ -60,5 +86,8 @@ export default function useSimulationAPI() {
     postOrcaSimulation,
     orcaSimulationLog,
     getOrcaSimulationLog,
+    getFdmnesSimulation,
+    postFdmnesSimulation,
+    fdmnesSimulation,
   };
 }
