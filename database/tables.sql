@@ -23,7 +23,7 @@ INSERT INTO "simulation_type" VALUES(2,'FDMNES');
 INSERT INTO "simulation_type" VALUES(3,'Quantum ESPRESSO');
 
 
-CREATE TYPE simulation_status_enum AS ENUM('requested', 'submitted', 'running', 'completed', 'failed');
+CREATE TYPE simulation_status_enum AS ENUM('requested', 'submitted', 'running', 'completed', 'failed', 'error');
 
 CREATE TABLE simulation (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,

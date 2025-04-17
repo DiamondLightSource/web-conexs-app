@@ -76,6 +76,9 @@ function SimulationMetadata(props: {
       <StyledTableCell align="left">
         {props.simulation?.request_date ?? ""}
       </StyledTableCell>
+      <StyledTableCell align="left">
+        {props.simulation?.submission_date ?? ""}
+      </StyledTableCell>
     </StyledTableRow>
   );
 }
@@ -115,6 +118,7 @@ export default function SimulationTable(props: {
               <TableCell align="center">Type</TableCell>
               <TableCell align="center">Status</TableCell>
               <TableCell align="left">Request Date</TableCell>
+              <TableCell align="left">Submission Date</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

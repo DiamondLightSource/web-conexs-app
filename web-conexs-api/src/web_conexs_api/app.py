@@ -8,10 +8,13 @@ from .crud import (
     get_crystal_structure,
     get_crystal_structures,
     get_fdmnes_jobfile,
+    get_fdmnes_output,
     get_fdmnes_simulation,
+    get_fdmnes_xas,
     get_molecular_structure,
     get_molecular_structures,
     get_orca_jobfile,
+    get_orca_output,
     get_orca_simulation,
     get_simulation,
     get_simulations,
@@ -71,7 +74,7 @@ def get_orca_simulation_endpoint(
 # TODO actually implement
 @app.get("/api/orca/{id}/output")
 def get_orca_output_endpoint(id: int, session: Session = Depends(get_session)) -> str:
-    return PlainTextResponse(get_orca_jobfile(session, id))
+    return PlainTextResponse(get_orca_output(session, id))
 
 
 # TODO replace with an actual implementation
@@ -159,4 +162,9 @@ def get_fdmnes_jobfile_endpoint(
 
 @app.get("/api/fdmnes/{id}/output")
 def get_fdmnes_output_endpoint(id: int, session: Session = Depends(get_session)) -> str:
-    return PlainTextResponse(get_fdmnes_jobfile(session, id))
+    return PlainTextResponse(get_fdmnes_output(session, id))
+
+
+@app.get("/api/fdmnes/{id}/xas")
+def get_fdmnes_xas_endpoint(id: int, session: Session = Depends(get_session)):
+    return get_fdmnes_xas(session, id)

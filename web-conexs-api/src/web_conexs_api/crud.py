@@ -1,9 +1,13 @@
 import datetime
+import os
 import re
+import uuid
+from pathlib import Path
 from typing import List
 
+import numpy as np
 from fastapi import HTTPException
-from sqlmodel import Session, select
+from sqlmodel import Session, or_, select
 
 from .models.models import (
     CrystalStructure,
@@ -19,6 +23,16 @@ from .models.models import (
     StructureType,
 )
 from .periodictable import periodic_table
+
+root_working_location = os.environ.get("ROOT_WORKING_DIRECTORY", "/iris")
+
+
+def get_working_directory(user, application):
+    p = Path(root_working_location) / Path(user) / Path(f"{application}_{uuid.uuid4()}")
+
+    p.mkdir(parents=True)
+
+    return str(p)
 
 
 def get_crystal_structures(session):
@@ -90,8 +104,17 @@ def get_submitted_simulations(session) -> List[Simulation]:
     return session.exec(statement).all()
 
 
+def get_active_simulations(session) -> List[Simulation]:
+    statement = select(Simulation).where(
+        or_(
+            Simulation.status == SimulationStatus.submitted,
+            Simulation.status == SimulationStatus.running,
+        )
+    )
+    return session.exec(statement).all()
+
+
 def update_simulation(session, simulation: Simulation):
-    simulation.status = SimulationStatus.submitted
     session.add(simulation)
     session.commit()
     session.refresh(simulation)
@@ -125,7 +148,7 @@ def get_orca_jobfile(session, id):
     jobfile = (
         "! "
         + orca_simulation.functional
-        + " DHK2 "
+        + " DKH2 "
         + orca_simulation.basis_set
         + " SARC/J"
     )
@@ -175,10 +198,13 @@ def get_orca_jobfile(session, id):
 
 
 def submit_orca_simulation(orca_input: OrcaSimulationInput, session: Session):
+    wd = get_working_directory("test_user", "Orca")
+
     smodel = {
         "person_id": 1,
         "simulation_type_id": 1,
         "request_date": datetime.datetime.now(),
+        "working_directory": wd,
     }
 
     #     "status": SimulationStatus.requested,
@@ -202,6 +228,7 @@ def submit_fdmnes_simulation(fdmnes_input: FdmnesSimulationInput, session: Sessi
         "person_id": 1,
         "simulation_type_id": 2,
         "request_date": datetime.datetime.now(),
+        "working_directory": get_working_directory("test_user", "Fdmnes"),
     }
 
     #     "status": SimulationStatus.requested,
@@ -256,7 +283,7 @@ def get_fdmnes_jobfile(session, id):
 
     jobfile += "\n"
     jobfile += "Radius"
-    jobfile += "! Radius of the cluster where final state calculation is performed\n"
+    jobfile += " ! Radius of the cluster where final state calculation is performed\n"
     jobfile += "6" + "\n\n"
 
     if fdmnes_simulation.structure_type == StructureType.crystal:
@@ -276,3 +303,43 @@ def get_fdmnes_jobfile(session, id):
     jobfile += "\n\nConvolution\n\nEnd"
 
     return jobfile
+
+
+def get_fdmnes_output(session, id):
+    fdmnes_simulation = get_fdmnes_simulation(session, id)
+
+    wd = fdmnes_simulation.simulation.working_directory
+
+    result_file = wd + "/fdmnes_result.txt"
+
+    with open(result_file) as fh:
+        file = fh.read()
+
+        return file
+
+
+def get_orca_output(session, id):
+    orca_simulation = get_orca_simulation(session, id)
+
+    wd = orca_simulation.simulation.working_directory
+
+    result_file = wd + "/orca_result.txt"
+
+    with open(result_file) as fh:
+        file = fh.read()
+
+        return file
+
+
+def get_fdmnes_xas(session, id):
+    fdmnes_simulation = get_fdmnes_simulation(session, id)
+
+    wd = fdmnes_simulation.simulation.working_directory
+
+    result_file = wd + "/result_conv.txt"
+
+    out = np.loadtxt(result_file, skiprows=1)
+
+    output = {"energy": out[:, 0].tolist(), "xas": out[:, 1].tolist()}
+
+    return output

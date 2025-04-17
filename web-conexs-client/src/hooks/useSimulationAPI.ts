@@ -5,6 +5,7 @@ import {
   OrcaSimulation,
   OrcaSimulationInput,
   Simulation,
+  XASData,
 } from "../models";
 
 const simulationUrl = "/api/simulations";
@@ -21,6 +22,14 @@ export default function useSimulationAPI() {
   );
   const [fdmnesSimulation, setFdmnesSimulation] =
     useState<FDMNESSimulation | null>(null);
+  const [fdmnesOutput, setFdmnesOutput] = useState("");
+
+  const [fdmnesXAS, setFdmnesXAS] = useState<XASData>({
+    energy: [0],
+    xas: [0],
+  });
+
+  console.log("USE API CALLED");
 
   const [orcaSimulationLog, setOrcaSimulationLog] = useState<string>("");
 
@@ -65,6 +74,25 @@ export default function useSimulationAPI() {
     });
   }
 
+  function getFdmnesSimulationOutput(id: number) {
+    axios.get(fdmnesUrl + "/" + id + "/output").then((res) => {
+      setFdmnesOutput(res.data);
+    });
+    // axios.get(fdmnesUrl + "/" + id + "/xas").then((res) => {
+    //   setFdmnesXAS(res.data);
+    // });
+  }
+
+  function getFdmnesSimulationXAS(id: number) {
+    axios.get(fdmnesUrl + "/" + id + "/xas").then((res) => {
+      console.log("Set called");
+      // setFdmnesOutput({test : res.statusText});
+      setFdmnesXAS(res.data);
+    });
+  }
+
+  // const testFunction = useCallback(getFdmnesSimulation, [id]);
+
   function postFdmnesSimulation(input: FDMNESSimulationInput) {
     axios
       .post("/api/submit/fdmnes", input)
@@ -89,5 +117,9 @@ export default function useSimulationAPI() {
     getFdmnesSimulation,
     postFdmnesSimulation,
     fdmnesSimulation,
+    fdmnesOutput,
+    getFdmnesSimulationOutput,
+    getFdmnesSimulationXAS,
+    fdmnesXAS,
   };
 }

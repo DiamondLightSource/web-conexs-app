@@ -25,6 +25,11 @@ export interface SimulationType {
   id: number;
 }
 
+export interface XASData {
+  energy: number[];
+  xas: number[];
+}
+
 export interface Simulation {
   id: number;
   person_id: number;

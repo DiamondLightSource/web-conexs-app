@@ -1,7 +1,9 @@
 import {
+  Box,
   Button,
   Card,
   CardContent,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
@@ -15,24 +17,36 @@ export default function OrcaModelCard(props: {
   const orcaSimulation = props.orcaSimulation;
 
   return (
-    <Card variant="outlined">
-      <CardContent>
-        <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-          Orca Simulation
-        </Typography>
-        <Typography variant="h5" component="div">
-          {orcaSimulation.functional}
-        </Typography>
-        <Typography variant="h6" component="div">
-          {orcaSimulation.basis_set}
-        </Typography>
-        <Button
-          onClick={() => getOrcaSimulationLog(orcaSimulation.simulation.id)}
-        >
-          Get Output
-        </Button>
-        <TextField value={orcaSimulationLog}></TextField>
-      </CardContent>
-    </Card>
+    <Stack height={"100%"}>
+      <Card variant="outlined">
+        <CardContent>
+          <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            Orca Simulation
+          </Typography>
+          <Typography variant="h5" component="div">
+            {orcaSimulation.functional}
+          </Typography>
+          <Typography variant="h6" component="div">
+            {orcaSimulation.basis_set}
+          </Typography>
+        </CardContent>
+      </Card>
+
+      <Button
+        onClick={() => getOrcaSimulationLog(orcaSimulation.simulation.id)}
+      >
+        Get Output
+      </Button>
+      <Typography
+        maxHeight={"20em"}
+        sx={{
+          fontFamily: "Monospace",
+          whiteSpace: "pre-wrap",
+          overflowY: "scroll",
+        }}
+      >
+        {orcaSimulationLog}
+      </Typography>
+    </Stack>
   );
 }

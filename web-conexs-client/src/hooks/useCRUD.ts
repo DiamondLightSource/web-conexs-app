@@ -7,7 +7,6 @@ export default function useCRUD<A extends object, B extends object>(
   url: string
 ) {
   const [data, setData] = useState<A | null>(null);
-  data;
   const [dataList, setDataList] = useState<A[]>([]);
   const [error, setError] = useState();
   const [loadingStatus, setLoadingStatus] = useState("loading");

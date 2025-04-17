@@ -27,6 +27,7 @@ class SimulationStatus(enum.Enum):
     running = "running"
     completed = "completed"
     failed = "failed"
+    error = "error"
 
 
 class MolecularStructureInput(SQLModel):
