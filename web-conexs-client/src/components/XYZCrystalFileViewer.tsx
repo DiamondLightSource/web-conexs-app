@@ -1,6 +1,6 @@
-import {Stack, TextField } from "@mui/material";
+import { Stack, TextField, Typography } from "@mui/material";
 
-import { CrystalInput} from "../models";
+import { CrystalInput } from "../models";
 import LatticeEditor from "./LatticeEditor";
 
 interface LatticeParameter {
@@ -36,6 +36,9 @@ export default function XYZCrystalFileViewer(props: {
 
   return (
     <Stack spacing={3} minWidth={"450px"}>
+      <Typography>
+        {props.crystal == null ? " " : props.crystal.ibrav}
+      </Typography>
       <TextField
         id="Label"
         label="Label"

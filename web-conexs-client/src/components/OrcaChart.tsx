@@ -12,6 +12,6 @@ export default function OrcaChart(props: { id: number }) {
   if (query.data) {
     return <XASChart xas={query.data}></XASChart>;
   } else {
-    return <Box></Box>;
+    return <Box>Simulation File Not Available</Box>;
   }
 }

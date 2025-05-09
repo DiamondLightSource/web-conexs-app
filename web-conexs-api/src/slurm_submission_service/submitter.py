@@ -18,11 +18,7 @@ from web_conexs_api.crud import (
     update_simulation,
 )
 from web_conexs_api.database import get_session
-from web_conexs_api.models.models import (
-    Simulation,
-    SimulationStatus,
-    OrcaCalculation
-)
+from web_conexs_api.models.models import OrcaCalculation, Simulation, SimulationStatus
 
 logger = logging.getLogger(__name__)
 
@@ -31,13 +27,13 @@ CLUSTER_ROOT_DIR = os.environ.get("CONEXS_CLUSTER_ROOT_DIR")
 
 SLURM_TOKEN = os.environ.get("SLURM_TOKEN")
 SLURM_TOKEN_FILE = os.environ.get("SLURM_TOKEN_FILE")
-SLURM_USER = os.environ.get("USER")
-SLURM_API = os.environ.get('SLURM_API')
-SLURM_PARTITION = os.environ.get('SLURM_PARTITION')
+SLURM_USER = os.environ.get("SLURM_USER")
+SLURM_API = os.environ.get("SLURM_API")
+SLURM_PARTITION = os.environ.get("SLURM_PARTITION")
 
-ORCA_IMAGE = os.environ.get('ORCA_IMAGE')
-FDMNES_IMAGE = os.environ.get('FDMNES_IMAGE')
-CONTAINER_IMAGE_DIR = os.environ.get('CONTAINER_IMAGE_DIR')
+ORCA_IMAGE = os.environ.get("ORCA_IMAGE")
+FDMNES_IMAGE = os.environ.get("FDMNES_IMAGE")
+CONTAINER_IMAGE_DIR = os.environ.get("CONTAINER_IMAGE_DIR")
 
 JOB_RUNNING = "RUNNING"
 JOB_COMPLETED = "COMPLETED"
@@ -45,14 +41,13 @@ JOB_FAILED = "FAILED"
 
 
 def get_token():
-
     if SLURM_TOKEN is None and SLURM_TOKEN_FILE is None:
         raise Exception("No slurm token available")
 
     if SLURM_TOKEN is not None:
         return SLURM_TOKEN
 
-    with open(SLURM_TOKEN_FILE,'r') as fh:
+    with open(SLURM_TOKEN_FILE, "r") as fh:
         return fh.read()
 
 
@@ -80,8 +75,6 @@ def build_job_and_run(
     url_submit = SLURM_API + "/job/submit"
 
     slurm_token = get_token()
-
-
 
     headers = {
         "X-SLURM-USER-NAME": SLURM_USER,
@@ -130,37 +123,32 @@ def submit_orca(session, sim: Simulation):
 
     orca_sif = os.path.join(CONTAINER_IMAGE_DIR, ORCA_IMAGE)
 
-    #myarr=($(grep -A 24 -m 1 "COMBINED ELECTRIC DIPOLE" orca_result.txt | tail -n +6 | awk '{print $2}'))
-    #lowEv=$(echo "${myarr[0]}/8065.544" | bc -l)
-    #highEv=$(echo "${myarr[-1]}/8065.544" | bc -l)
-    #difEv=$(echo "$highEv - $lowEv" | bc -l)
-    #deltaEv=$(echo "$difEv * 0.1" | bc -l)
-    #lowDeltaEv=$(echo "$lowEv - $deltaEv" | bc -l)
-    #highDeltaEv=$(echo "$highEv + $deltaEv" | bc -l)
-    #f"singularity exec {orca_sif} /opt/orca/4.2.1/orca_mapspc orca_result.txt {keyword} -eV -x0$lowDeltaEv -x1$highDeltaEv -w1 -n1000" )
-
-
     if keyword == OrcaCalculation.opt:
         script = (
-        "#!/bin/bash\n"
-        +"set -e\n"
-        + f"singularity exec {orca_sif} /opt/orca/4.2.1/orca job.inp > orca_result.txt"
+            "#!/bin/bash\n"
+            + "set -e\n"
+            + f"singularity exec {orca_sif}"
+            + " /opt/orca/4.2.1/orca job.inp > orca_result.txt"
         )
     else:
         spc_keyword = "ABSQ" if keyword == OrcaCalculation.xas else "XES"
         script = (
-        "#!/bin/bash\n"
-        +"set -e\n"
-        + f"singularity exec {orca_sif} /opt/orca/4.2.1/orca job.inp > orca_result.txt\n"
-        + "myarr=($(grep -A 24 -m 1 'COMBINED ELECTRIC DIPOLE' orca_result.txt | tail -n +6 | awk '{print $2}'))\n"
-        + 'lowEv=$(echo "${myarr[0]}/8065.544" | bc -l)\n'
-        + 'highEv=$(echo "${myarr[-1]}/8065.544" | bc -l)\n'
-        + 'difEv=$(echo "$highEv - $lowEv" | bc -l)\n'
-        + 'deltaEv=$(echo "$difEv * 0.1" | bc -l)\n'
-        + 'lowDeltaEv=$(echo "$lowEv - $deltaEv" | bc -l)\n'
-        + 'highDeltaEv=$(echo "$highEv + $deltaEv" | bc -l)\n'
-        + f"singularity exec {orca_sif} /opt/orca/4.2.1/orca_mapspc orca_result.txt {spc_keyword} -eV -x0$lowDeltaEv -x1$highDeltaEv -w1 -n1000"
-    )
+            "#!/bin/bash\n"
+            + "set -e\n"
+            + f"singularity exec {orca_sif} /opt/orca/4.2.1/orca job.inp "
+            + "> orca_result.txt\n"
+            + "myarr=($(grep -A 24 -m 1 'COMBINED ELECTRIC DIPOLE' orca_result.txt "
+            + "| tail -n +6 | awk '{print $2}'))\n"
+            + 'lowEv=$(echo "${myarr[0]}/8065.544" | bc -l)\n'
+            + 'highEv=$(echo "${myarr[-1]}/8065.544" | bc -l)\n'
+            + 'difEv=$(echo "$highEv - $lowEv" | bc -l)\n'
+            + 'deltaEv=$(echo "$difEv * 0.1" | bc -l)\n'
+            + 'lowDeltaEv=$(echo "$lowEv - $deltaEv" | bc -l)\n'
+            + 'highDeltaEv=$(echo "$highEv + $deltaEv" | bc -l)\n'
+            + f"singularity exec {orca_sif} /opt/orca/4.2.1/orca_mapspc"
+            + f" orca_result.txt {spc_keyword} -eV -x0$lowDeltaEv -x1$highDeltaEv"
+            + " -w1 -n1000"
+        )
 
     try:
         job_id = build_job_and_run(
@@ -268,8 +256,14 @@ def run_update():
 
         job_map = {}
 
+        print(SLURM_USER)
+
+        # for j in jobs:
+        #     print(j["account"])
+
         for j in jobs:
             if j["account"] == SLURM_USER:
+                print("FOUND")
                 job_map[j["job_id"]] = {"state": j["job_state"][0]}
 
         print(f"Number of active jobs {len(active)}")
@@ -308,8 +302,9 @@ def test_read():
         sims = get_submitted_simulations(session)
         for sim in sims:
             if sim.simulation_type_id == 1:
-                jf, calc = get_orca_jobfile_with_technique(session,sim.id)
+                jf, calc = get_orca_jobfile_with_technique(session, sim.id)
                 print(jf)
+
 
 def main():
     # test_read()
@@ -318,4 +313,3 @@ def main():
         run_update()
         time.sleep(10)
         print("Loop iteration complete")
-

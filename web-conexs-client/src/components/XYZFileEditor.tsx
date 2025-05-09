@@ -10,6 +10,7 @@ interface LatticeParameter {
   alpha: number;
   beta: number;
   gamma: number;
+  ibrav: string;
 }
 
 export default function XYZFileEditor(props: {
@@ -31,6 +32,7 @@ export default function XYZFileEditor(props: {
           a: props.structureInput.a,
           b: props.structureInput.b,
           c: props.structureInput.c,
+          ibrav: props.structureInput.ibrav,
         }
       : {
           a: 1,
@@ -39,6 +41,7 @@ export default function XYZFileEditor(props: {
           alpha: 90,
           beta: 90,
           gamma: 90,
+          ibrav: "0",
         };
 
   console.log(lp);
@@ -104,6 +107,7 @@ export default function XYZFileEditor(props: {
         input.a = lattice.a;
         input.b = lattice.b;
         input.c = lattice.c;
+        input.ibrav = lattice.ibrav;
       }
 
       props.setStructureInput(input);

@@ -42,6 +42,7 @@ class CrystalStructureInput(MolecularStructureInput):
     alpha: float
     beta: float
     gamma: float
+    ibrav: int
 
 
 class CrystalStructure(CrystalStructureInput, table=True):
@@ -95,6 +96,7 @@ class OrcaCalculation(enum.Enum):
     xas = "xas"
     xes = "xes"
     opt = "opt"
+
 
 class OrcaSolvent(enum.Enum):
     Water = "Water"

@@ -10,7 +10,7 @@ export default function FdmnesModelCard(props: { fdmnesSimulationId: number }) {
     queryKey: ["fdmnes", props.fdmnesSimulationId],
     queryFn: () => getFdmnesSimulation(props.fdmnesSimulationId),
   });
-  const [showLog, setShowLog] = useState(false);
+
   const fdmnesSimulation = query.data;
 
   if (!fdmnesSimulation) {
@@ -30,8 +30,6 @@ export default function FdmnesModelCard(props: { fdmnesSimulationId: number }) {
           {fdmnesSimulation.element}
         </Typography>
       </CardContent>
-      <Button onClick={() => setShowLog(true)}>Get Output</Button>
-      {showLog && <FdmnesLogViewer id={fdmnesSimulation.simulation.id} />}
     </Card>
   );
 }

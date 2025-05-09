@@ -17,7 +17,8 @@
                    "ORCA_IMAGE": "${localEnv:ORCA_IMAGE}",
                    "FDMNES_IMAGE": "${localEnv:FDMNES_IMAGE}",
                    "CONTAINER_IMAGE_DIR": "${localEnv:SLURM_PARTITION}",
-                   "SLURM_TOKEN": "${localEnv:SLURM_TOKEN}" },
+                   "SLURM_TOKEN": "${localEnv:SLURM_TOKEN}",
+                   "POSTGRESURL": "${localEnv:POSTGRESURL}" },
 
   "mounts" :["source=/dls/tmp/vdp96513/conexs,target=/dls/tmp/vdp96513/conexs,type=bind,consistency=cached"],
   "customizations": {

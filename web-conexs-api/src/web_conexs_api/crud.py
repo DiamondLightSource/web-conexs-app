@@ -3,12 +3,16 @@ import os
 import re
 import uuid
 from pathlib import Path
-from typing import List
+from typing import List, TypeVar
 
 import numpy as np
 from fastapi import HTTPException
+from fastapi_pagination.cursor import CursorPage
+from fastapi_pagination.customization import (
+    CustomizedPage,
+    UseQuotedCursor,
+)
 from fastapi_pagination.ext.sqlalchemy import paginate
-
 from sqlmodel import Session, or_, select
 
 from .models.models import (
@@ -18,22 +22,14 @@ from .models.models import (
     FdmnesSimulationInput,
     MolecularStructure,
     MolecularStructureInput,
+    OrcaCalculation,
     OrcaSimulation,
     OrcaSimulationInput,
     Simulation,
     SimulationStatus,
     StructureType,
-    OrcaCalculation
 )
 from .periodictable import periodic_table
-
-from fastapi_pagination.cursor import CursorPage, CursorParams
-from fastapi_pagination.cursor import CursorPage, Query
-from fastapi_pagination import Page
-from fastapi_pagination.customization import CustomizedPage, UseParamsFields,UseQuotedCursor
-from typing import TypeVar
-
-from fastapi_pagination import set_params, set_page
 
 # T = TypeVar("T")
 
@@ -52,6 +48,7 @@ CursorPageNotQuotedCursor = CustomizedPage[
     CursorPage[T],
     UseQuotedCursor(False),
 ]
+
 
 def get_working_directory(user, application):
     p = Path(root_working_location) / Path(user) / Path(f"{application}_{uuid.uuid4()}")
@@ -125,18 +122,13 @@ def get_simulations(session) -> List[Simulation]:
 
 
 def get_simulations_page(session) -> CursorPage[Simulation]:
-
     # set_page(CursorPage[Simulation])
     # set_params(CursorParams(size=10))
     # set_page(CursorPageNotQuotedCursor[Simulation])
 
     statement = select(Simulation)
 
-    return paginate(
-        session,
-        statement.order_by(Simulation.id.desc())
-    )
-
+    return paginate(session, statement.order_by(Simulation.id.desc()))
 
 
 def get_submitted_simulations(session) -> List[Simulation]:
@@ -183,8 +175,7 @@ def get_orca_simulation(session, id) -> OrcaSimulation:
         raise HTTPException(status_code=404, detail=f"No simulation with id={id}")
 
 
-
-def get_orca_jobfile(session,id):
+def get_orca_jobfile(session, id):
     return get_orca_jobfile[0]
 
 
@@ -195,10 +186,9 @@ def get_orca_jobfile_with_technique(session, id):
     calc_type = orca_simulation.calculation_type
 
     if calc_type == OrcaCalculation.xas:
-        prefix = '! '
+        prefix = "! "
     else:
-        prefix = '! UKS '
-
+        prefix = "! UKS "
 
     jobfile = (
         prefix
@@ -208,9 +198,8 @@ def get_orca_jobfile_with_technique(session, id):
         + " SARC/J"
     )
 
-    if (orca_simulation.solvent is not None):
-         jobfile += 'CPCM(' + orca_simulation.solvent + ') '
-
+    if orca_simulation.solvent is not None:
+        jobfile += "CPCM(" + orca_simulation.solvent + ") "
 
     jobfile += "\n"
 
@@ -241,13 +230,13 @@ def get_orca_jobfile_with_technique(session, id):
         jobfile += "maxdim 10" + "\n"
         jobfile += "end" + "\n\n"
     else:
-        jobfile += '%xes' + "\n"
-        jobfile += 'CoreOrb 0,1' + "\n"
-        jobfile += 'OrbOp 0,1' + "\n"
-        jobfile += 'DoSOC true' + "\n"
-        jobfile += 'Normalize true' + "\n"
-        jobfile += 'MDOriginAdjustMethod 1' + "\n"
-        jobfile += 'end' + "\n\n"
+        jobfile += "%xes" + "\n"
+        jobfile += "CoreOrb 0,1" + "\n"
+        jobfile += "OrbOp 0,1" + "\n"
+        jobfile += "DoSOC true" + "\n"
+        jobfile += "Normalize true" + "\n"
+        jobfile += "MDOriginAdjustMethod 1" + "\n"
+        jobfile += "end" + "\n\n"
 
     jobfile += (
         "*xyz "
@@ -404,11 +393,15 @@ def get_fdmnes_xas(session, id):
 
     result_file = wd + "/result_conv.txt"
 
+    if not os.path.isfile(result_file):
+        raise HTTPException(status_code=404, detail="Item not found")
+
     out = np.loadtxt(result_file, skiprows=1)
 
     output = {"energy": out[:, 0].tolist(), "xas": out[:, 1].tolist()}
 
     return output
+
 
 def get_orca_xas(session, id):
     orca_simulation = get_orca_simulation(session, id)
@@ -417,8 +410,30 @@ def get_orca_xas(session, id):
 
     result_file = wd + "/orca_result.txt.absq.dat"
 
-    out = np.loadtxt(result_file)
+    result_stk = wd + "/orca_result.txt.absq.stk"
 
-    output = {"energy": out[:, 0].tolist(), "xas": out[:, 1].tolist()}
+    if not os.path.isfile(result_file):
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    out = np.loadtxt(result_file)
+    out_stk = np.loadtxt(result_stk)
+
+    stk_energy = np.zeros_like(out_stk[:, 0], shape=[out_stk[:, 0].shape[0] * 3])
+    stk_energy[0::3] = out_stk[:, 0]
+    stk_energy[1::3] = out_stk[:, 0]
+    stk_energy[2::3] = out_stk[:, 0]
+
+    print(out_stk.shape)
+    print(out_stk)
+
+    stk_xas = np.zeros_like(out_stk[:, 0], shape=[out_stk[:, 0].shape[0] * 3])
+    stk_xas[1::3] = out_stk[:, 1]
+
+    output = {
+        "energy": out[:, 0].tolist(),
+        "xas": out[:, 1].tolist(),
+        "stk_energy": stk_energy.tolist(),
+        "stk_xas": stk_xas.tolist(),
+    }
 
     return output

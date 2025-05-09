@@ -8,8 +8,6 @@ import {
 } from "@mui/material";
 
 import { useQuery } from "@tanstack/react-query";
-import OrcaLogViewer from "./OrcaLogViewer";
-import { useState } from "react";
 import { getOrcaSimulation } from "../queryfunctions";
 
 export default function OrcaModelCard(props: { orcaSimulationId: number }) {

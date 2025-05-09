@@ -2,10 +2,8 @@ from typing import List
 
 from fastapi import Depends, FastAPI
 from fastapi.responses import PlainTextResponse
-from fastapi_pagination.cursor import CursorPage, CursorParams
 from fastapi_pagination import add_pagination
-
-from fastapi_pagination import set_params, set_page
+from fastapi_pagination.cursor import CursorPage
 from sqlmodel import Session
 
 from .crud import (
@@ -20,14 +18,14 @@ from .crud import (
     get_orca_jobfile,
     get_orca_output,
     get_orca_simulation,
+    get_orca_xas,
     get_simulation,
     get_simulations,
+    get_simulations_page,
     submit_fdmnes_simulation,
     submit_orca_simulation,
     upload_crystal_structure,
     upload_molecular_structure,
-    get_simulations_page,
-    get_orca_xas
 )
 from .database import get_session
 from .models.models import (
@@ -55,6 +53,7 @@ def get_simulations_endpoint(
     session: Session = Depends(get_session),
 ) -> List[SimulationResponse]:
     return get_simulations(session)
+
 
 @app.get("/api/simulationsp")
 def get_simulations_pagination_endpoint(

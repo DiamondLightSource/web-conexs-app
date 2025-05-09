@@ -169,4 +169,3 @@ Ag 0.0 0.5 0.5');
 
 INSERT INTO crystal_structure(label, person_id,a,b,c,alpha,beta,gamma,ibrav,structure) VALUES('KCl',1,6.28,6.28,6.28,90,90,90,'2','K 0.0 0.0 0.0
 Cl 0.5 0.0 0.0');
-

@@ -27,7 +27,6 @@ export interface TransferFunction {
 
 export default function React3dMol(props: Molecule3DProps) {
   const moleculeViewer = useRef<HTMLDivElement>(null);
-  console.log(moleculeViewer.current);
 
   useEffect(() => {
     if (moleculeViewer.current) {

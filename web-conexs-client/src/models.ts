@@ -10,6 +10,7 @@ export interface CrystalInput extends MoleculeInput {
   alpha: number;
   beta: number;
   gamma: number;
+  ibrav: string;
 }
 
 export interface Molecule extends MoleculeInput {
@@ -28,6 +29,8 @@ export interface SimulationType {
 export interface XASData {
   energy: number[];
   xas: number[];
+  stk_energy: number[] | undefined;
+  stk_xas: number[] | undefined;
 }
 
 export interface Simulation {
