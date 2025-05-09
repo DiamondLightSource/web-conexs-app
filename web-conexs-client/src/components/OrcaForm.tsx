@@ -5,13 +5,39 @@ import {
 import { JsonForms } from "@jsonforms/react";
 import { Box, Button, Grid2, Skeleton } from "@mui/material";
 import useOrcaSchema from "../hooks/useOrcaSchema";
-import useSimulationAPI from "../hooks/useSimulationAPI";
 import React3dMol from "./React3dMol";
+import { postOrca } from "../queryfunctions";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 export default function OrcaForm() {
   const { data, setData, schema, uischema, hasData, getMolecule, molecule } =
     useOrcaSchema();
-  const { postOrcaSimulation } = useSimulationAPI();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const callback = () => {
+    window.alert("Thank you for your submission");
+    navigate("/simulation");
+  };
+
+  const errorCallback = () => {
+    window.alert("Error Submitting Job!");
+  };
+
+  const mutation = useMutation({
+    mutationFn: postOrca,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["orca"] });
+      callback();
+    },
+    onError: () => {
+      errorCallback();
+    },
+  });
+
+  console.log(mutation.isError);
 
   return (
     <Grid2 container>
@@ -23,7 +49,7 @@ export default function OrcaForm() {
             renderers={materialRenderers}
             uischema={uischema}
             cells={materialCells}
-            onChange={({ data, _errors }) => {
+            onChange={({ data }) => {
               setData(data);
               getMolecule(data.molecular_structure_id);
             }}
@@ -50,7 +76,7 @@ export default function OrcaForm() {
               localData.solvent = null;
             }
 
-            postOrcaSimulation(localData);
+            mutation.mutate(localData);
           }}
         >
           Submit Simulation

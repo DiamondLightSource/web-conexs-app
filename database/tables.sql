@@ -45,25 +45,31 @@ CREATE TABLE simulation (
 
 COMMENT ON TABLE simulation IS 'Base table for simulations';
 
-CREATE OR REPLACE FUNCTION notify_new_simulation() RETURNS trigger AS $$
-BEGIN
-  PERFORM pg_notify('simulation_notification', NEW.id::text);
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
+--CREATE OR REPLACE FUNCTION notify_new_simulation() RETURNS trigger AS $$
+--BEGIN
+--  PERFORM pg_notify('simulation_notification', NEW.id::text);
+--  RETURN NEW;
+--END;
+--$$ LANGUAGE plpgsql;
 
-CREATE TRIGGER simulation_notify_trigger
-AFTER INSERT ON simulation
-FOR EACH ROW EXECUTE PROCEDURE notify_new_simulation();
+--CREATE TRIGGER simulation_notify_trigger
+--AFTER INSERT ON simulation
+--FOR EACH ROW EXECUTE PROCEDURE notify_new_simulation();
 
 
 CREATE TABLE molecular_structure (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     label TEXT,
-    structure TEXT
+    structure TEXT,
+    person_id INTEGER NOT NULL
+
 );
 
 COMMENT ON TABLE molecular_structure IS 'Table to hold molecular structures';
+
+
+CREATE TYPE ibrav_enum AS ENUM('1', '2', '3','-3', '4', '5','-5', '6', '7', '8', '9','-9','91', '10', '11', '12','-12', '13','-13', '14');
+
 
 CREATE TABLE crystal_structure (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -74,8 +80,9 @@ CREATE TABLE crystal_structure (
     c NUMERIC NOT NULL,
     alpha NUMERIC NOT NULL,
     beta NUMERIC NOT NULL,
-    gamma NUMERIC NOT NULL
-
+    gamma NUMERIC NOT NULL,
+    ibrav ibrav_enum NOT NULL,
+    person_id INTEGER NOT NULL
 );
 
 COMMENT ON TABLE molecular_structure IS 'Table to hold molecular structures';
@@ -87,7 +94,7 @@ CREATE TYPE orca_solvent_enum AS ENUM('Water','Acetone', 'Acetonitrile',  'Ammon
 CREATE TABLE orca_simulation (
     simulation_id INTEGER PRIMARY KEY,
     simulation_type_id INTEGER GENERATED ALWAYS AS (1) STORED,
-    calcuation_type orca_calculation_enum,
+    calculation_type orca_calculation_enum,
     molecular_structure_id INTEGER NOT NULL,
     memory_per_core INTEGER NOT NULL,
     functional TEXT NOT NULL,
@@ -149,10 +156,17 @@ COMMENT ON TABLE qe_simulation IS 'Specific information for a Quantum ESPRESSO s
 
 INSERT INTO person(identifier) VALUES('test_user');
 
-INSERT INTO simulation(simulation_type_id, person_id, working_directory) VALUES(1,1,'/working_dir');
-
-INSERT INTO molecular_structure(label, structure) VALUES('Water', 'H    0.7493682    0.0000000    0.4424329
+INSERT INTO molecular_structure(label, person_id, structure) VALUES('Water', 1, 'H    0.7493682    0.0000000    0.4424329
 O    0.0000000    0.0000000   -0.1653507
 H   -0.7493682    0.0000000    0.4424329');
 
-INSERT INTO orca_simulation(simulation_id, calcuation_type, molecular_structure_id, memory_per_core, functional,basis_set, charge, multiplicity) VALUES(1, 'xas', 1, 1024, 'BP86','6-31G',0,1);
+
+INSERT INTO crystal_structure(label, person_id,a,b,c,alpha,beta,gamma,ibrav,structure) VALUES('Silver',1,4.1043564,4.1043564,4.1043564,90,90,90,'2','Ag 0.0 0.0 0.0
+Ag 0.5 0.5 0.0
+Ag 0.5 0.0 0.5
+Ag 0.0 0.5 0.5');
+
+
+INSERT INTO crystal_structure(label, person_id,a,b,c,alpha,beta,gamma,ibrav,structure) VALUES('KCl',1,6.28,6.28,6.28,90,90,90,'2','K 0.0 0.0 0.0
+Cl 0.5 0.0 0.0');
+

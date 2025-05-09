@@ -181,7 +181,7 @@ function XASChart(props: { xas: XASData }) {
           domain={domain}
           showGrid={useGrid}
           curveType={curveOption}
-          scaleType={ScaleType.SymLog}
+          scaleType={ScaleType.Linear}
         />
       </Box>
     </Paper>

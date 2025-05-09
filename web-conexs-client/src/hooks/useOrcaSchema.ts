@@ -5,8 +5,8 @@ import useMoleculeAPI from "./useMoleculeAPI";
 const orb_rule = {
   effect: "DISABLE",
   condition: {
-    scope: "#/properties/technique",
-    schema: { not: { const: "XAS" } },
+    scope: "#/properties/calculation_type",
+    schema: { not: { const: "xas" } },
   },
 };
 
@@ -22,10 +22,10 @@ const schemaTemplate = {
         },
       ],
     },
-    technique: {
+    calculation_type: {
       title: "Technique",
-      enum: ["XAS", "XES", "OPT"],
-      default: "XAS",
+      enum: ["xas", "xes", "opt"],
+      default: "xas",
     },
     functional: {
       title: "Functional",
@@ -138,7 +138,7 @@ const uischema = {
           elements: [
             {
               type: "Control",
-              scope: "#/properties/technique",
+              scope: "#/properties/calculation_type",
             },
             {
               type: "Control",
@@ -213,7 +213,7 @@ export default function useOrcaSchema() {
   const [data, setData] = useState({ ...orcaDefaultValues });
   const [schema, setSchema] = useState({ ...schemaTemplate });
   const [hasData, setHasData] = useState(false);
-  const { dataList, getMolecule, data : molecule } = useMoleculeAPI();
+  const { dataList, getMolecule, data: molecule } = useMoleculeAPI();
 
   if (dataList.length != 0 && !hasData) {
     const tmpSchema = { ...schema };
@@ -232,5 +232,14 @@ export default function useOrcaSchema() {
     setHasData(true);
   }
 
-  return { data, setData, dataList, schema, uischema, hasData, getMolecule, molecule };
+  return {
+    data,
+    setData,
+    dataList,
+    schema,
+    uischema,
+    hasData,
+    getMolecule,
+    molecule,
+  };
 }

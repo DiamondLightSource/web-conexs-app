@@ -1,7 +1,6 @@
 import { useEffect, useRef } from "react";
 import * as mol3d from "3dmol";
 import { CrystalInput, MoleculeInput } from "../models";
-import popperClasses from "@mui/material/Popper/popperClasses";
 import { crystalInputToCIF, moleculeInputToXYZ } from "../utils";
 
 interface Molecule3DProps {
@@ -28,6 +27,7 @@ export interface TransferFunction {
 
 export default function React3dMol(props: Molecule3DProps) {
   const moleculeViewer = useRef<HTMLDivElement>(null);
+  console.log(moleculeViewer.current);
 
   useEffect(() => {
     if (moleculeViewer.current) {
@@ -37,88 +37,88 @@ export default function React3dMol(props: Molecule3DProps) {
           existingViewers[index].remove();
         }
       }
-    }
 
-    const viewer = mol3d.createViewer(moleculeViewer.current, {
-      backgroundColor: props.color,
-    });
-
-    if (props.orbital) {
-      viewer.addModel(props.orbital.cubeData, "cube");
-      const voldata = new mol3d.VolumeData(props.orbital.cubeData, "cube");
-
-      const {
-        positiveColor,
-        negativeColor,
-        positiveMin,
-        positiveMax,
-        negativeMin,
-        negativeMax,
-        isosurface,
-      } = props.orbital.transferfn;
-
-      if (isosurface) {
-        viewer.addIsosurface(voldata, {
-          isoval: positiveMin,
-          color: positiveColor,
-          alpha: 0.95,
-          smoothness: 10,
-        });
-        viewer.addIsosurface(voldata, {
-          isoval: -1 * negativeMin,
-          color: negativeColor,
-          alpha: 0.95,
-          smoothness: 10,
-        });
-      } else {
-        viewer.addVolumetricRender(voldata, {
-          transferfn: [
-            { color: positiveColor, opacity: 0.075, value: positiveMax },
-            { color: positiveColor, opacity: 0.001, value: positiveMin },
-            { color: "white", opacity: 0, value: 0 },
-            { color: negativeColor, opacity: 0.001, value: negativeMin * -1 },
-            { color: negativeColor, opacity: 0.075, value: negativeMax * -1 },
-          ],
-        });
-      }
-    } else if (props.moleculedata && "alpha" in props.moleculedata) {
-      const crystaldata = props.moleculedata as CrystalInput;
-
-      const cif = crystalInputToCIF(crystaldata);
-
-      const model = viewer.addModel(cif, "cif");
-      viewer.setStyle({}, { sphere: { color: "spectrum", radius: 0.5 } });
-      viewer.addUnitCell(model, {
-        box: { color: "purple" },
-        alabel: "X",
-        blabel: "Y",
-        clabel: "Z",
-      });
-    } else if (props.moleculedata) {
-      const xyz = moleculeInputToXYZ(props.moleculedata);
-      // const lines =
-      //   (props.moleculedata.structure.match(/\n/g) || "").length + 1;
-
-      // const newMolecule =
-      //   lines.toString() + "\n\n" + props.moleculedata.structure;
-
-      const model = viewer.addModel(xyz, "xyz");
-      viewer.addUnitCell(model, {
-        box: { color: "purple" },
-        alabel: "X",
-        blabel: "Y",
-        clabel: "Z",
+      const viewer = mol3d.createViewer(moleculeViewer.current, {
+        backgroundColor: props.color,
       });
 
-      if (props.style == "Stick") {
-        viewer.setStyle({}, { stick: { color: "spectrum" } });
-      } else if (props.style == "Sphere") {
-        viewer.setStyle({}, { sphere: { color: "spectrum", radius: 1 } });
-      }
-    }
+      if (props.orbital) {
+        viewer.addModel(props.orbital.cubeData, "cube");
+        const voldata = new mol3d.VolumeData(props.orbital.cubeData, "cube");
 
-    viewer.zoomTo();
-    viewer.render();
+        const {
+          positiveColor,
+          negativeColor,
+          positiveMin,
+          positiveMax,
+          negativeMin,
+          negativeMax,
+          isosurface,
+        } = props.orbital.transferfn;
+
+        if (isosurface) {
+          viewer.addIsosurface(voldata, {
+            isoval: positiveMin,
+            color: positiveColor,
+            alpha: 0.95,
+            smoothness: 10,
+          });
+          viewer.addIsosurface(voldata, {
+            isoval: -1 * negativeMin,
+            color: negativeColor,
+            alpha: 0.95,
+            smoothness: 10,
+          });
+        } else {
+          viewer.addVolumetricRender(voldata, {
+            transferfn: [
+              { color: positiveColor, opacity: 0.075, value: positiveMax },
+              { color: positiveColor, opacity: 0.001, value: positiveMin },
+              { color: "white", opacity: 0, value: 0 },
+              { color: negativeColor, opacity: 0.001, value: negativeMin * -1 },
+              { color: negativeColor, opacity: 0.075, value: negativeMax * -1 },
+            ],
+          });
+        }
+      } else if (props.moleculedata && "alpha" in props.moleculedata) {
+        const crystaldata = props.moleculedata as CrystalInput;
+
+        const cif = crystalInputToCIF(crystaldata);
+
+        const model = viewer.addModel(cif, "cif");
+        viewer.setStyle({}, { sphere: { color: "spectrum", radius: 0.5 } });
+        viewer.addUnitCell(model, {
+          box: { color: "purple" },
+          alabel: "X",
+          blabel: "Y",
+          clabel: "Z",
+        });
+      } else if (props.moleculedata) {
+        const xyz = moleculeInputToXYZ(props.moleculedata);
+        // const lines =
+        //   (props.moleculedata.structure.match(/\n/g) || "").length + 1;
+
+        // const newMolecule =
+        //   lines.toString() + "\n\n" + props.moleculedata.structure;
+
+        const model = viewer.addModel(xyz, "xyz");
+        viewer.addUnitCell(model, {
+          box: { color: "purple" },
+          alabel: "X",
+          blabel: "Y",
+          clabel: "Z",
+        });
+
+        if (props.style == "Stick") {
+          viewer.setStyle({}, { stick: { color: "spectrum" } });
+        } else if (props.style == "Sphere") {
+          viewer.setStyle({}, { sphere: { color: "spectrum", radius: 1 } });
+        }
+      }
+
+      viewer.zoomTo();
+      viewer.render();
+    }
   });
 
   return (

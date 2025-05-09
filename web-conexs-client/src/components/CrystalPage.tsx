@@ -2,19 +2,28 @@ import { Box, Typography, Stack } from "@mui/material";
 
 import React3dMol from "./React3dMol";
 import MoleculeTable from "./MoleculeTable";
-import useCrystalAPI from "../hooks/useCrystalAPI";
 import XYZCrystalFileViewer from "./XYZCrystalFileViewer";
+import { getCrystals } from "../queryfunctions";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 
 export default function CrystalPage() {
-  const { data, getCrystal, dataList } = useCrystalAPI();
+  const query = useQuery({
+    queryKey: ["crystals"],
+    queryFn: getCrystals,
+  });
+
+  const [selectedCrystalId, setSelectedCrystalId] = useState<number | null>();
 
   // console.log(molecule);
-  let finalMolecule = data;
+  let finalCrystal = null;
 
-  if (finalMolecule == null) {
-    finalMolecule = dataList.length != 0 ? dataList[0] : null;
+  if (query.data && query.data.length != 0 && selectedCrystalId) {
+    finalCrystal = query.data.find((d) => d.id == selectedCrystalId);
+    if (finalCrystal == undefined) {
+      finalCrystal = null;
+    }
   }
-
   return (
     <Stack>
       <Typography variant="h4" padding="24px">
@@ -22,23 +31,23 @@ export default function CrystalPage() {
       </Typography>
       <Stack direction={"row"} height={"100vh"} spacing={3}>
         <MoleculeTable
-          molecules={dataList == null ? [] : dataList}
+          molecules={query.data ? query.data : []}
           selectedMolecule={undefined}
           setSelectedMolecule={(data) => {
             if (data) {
-              getCrystal(data.id);
+              setSelectedCrystalId(data.id);
             }
           }}
           setCurrent={() => {}}
           prevNext={null}
         ></MoleculeTable>
         <Stack spacing={"2px"}>
-          <XYZCrystalFileViewer crystal={finalMolecule} />
+          <XYZCrystalFileViewer crystal={finalCrystal} />
         </Stack>
 
         <Box height="100%vh">
           <React3dMol
-            moleculedata={finalMolecule}
+            moleculedata={finalCrystal}
             color="#3465A4"
             style="Stick"
             orbital={null}

@@ -16,6 +16,9 @@ import CrystalPage from "./components/CrystalPage";
 import CreateMoleculePage from "./components/CreateMoleculePage";
 import FdmnesSubmitPage from "./components/FdmnesSubmitPage";
 import CreateCystalPage from "./components/CreateCrystalPage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
@@ -45,19 +48,21 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <Stack height="100vh" width="100vw" spacing={1}>
-        <Header />
-        <Routes>
-          <Route path="/" element={<WelcomePage />} />
-          <Route path="/molecule" element={<MoleculePage />} />
-          <Route path="/createmolecule" element={<CreateMoleculePage />} />
-          <Route path="/crystal" element={<CrystalPage />} />
-          <Route path="/createcrystal" element={<CreateCystalPage />} />
-          <Route path="/simulation" element={<SimulationReviewPage />} />
-          <Route path="/orca" element={<OrcaSubmitPage />} />
-          <Route path="/fdmnes" element={<FdmnesSubmitPage />} />
-        </Routes>
-      </Stack>
+      <QueryClientProvider client={queryClient}>
+        <Stack height="100vh" width="100vw" spacing={1}>
+          <Header />
+          <Routes>
+            <Route path="/" element={<WelcomePage />} />
+            <Route path="/molecule" element={<MoleculePage />} />
+            <Route path="/createmolecule" element={<CreateMoleculePage />} />
+            <Route path="/crystal" element={<CrystalPage />} />
+            <Route path="/createcrystal" element={<CreateCystalPage />} />
+            <Route path="/simulation" element={<SimulationReviewPage />} />
+            <Route path="/orca" element={<OrcaSubmitPage />} />
+            <Route path="/fdmnes" element={<FdmnesSubmitPage />} />
+          </Routes>
+        </Stack>
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

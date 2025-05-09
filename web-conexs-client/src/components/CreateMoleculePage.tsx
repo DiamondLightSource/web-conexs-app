@@ -3,8 +3,9 @@ import { MoleculeInput } from "../models";
 import { useState } from "react";
 import XYZFileEditor from "./XYZFileEditor";
 import React3dMol from "./React3dMol";
-import useMoleculeAPI from "../hooks/useMoleculeAPI";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { postMolecule } from "../queryfunctions";
 
 const templateMolecule: MoleculeInput = {
   label: "Benzene",
@@ -15,13 +16,22 @@ const templateMolecule: MoleculeInput = {
 
 export default function CreateMoleculePage() {
   const [molecule, setMolecule] = useState<MoleculeInput>(templateMolecule);
-  const { insertMolecule } = useMoleculeAPI();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const callback = () => {
     window.alert("Thank you for your submission");
     navigate("/molecule");
   };
+
+  const mutation = useMutation({
+    mutationFn: postMolecule,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["molecules"] });
+      callback();
+    },
+  });
 
   return (
     <Stack direction={"row"}>
@@ -38,7 +48,7 @@ export default function CreateMoleculePage() {
       ></React3dMol>
       <Button
         onClick={() => {
-          insertMolecule(molecule, callback);
+          mutation.mutate(molecule);
         }}
       >
         Create

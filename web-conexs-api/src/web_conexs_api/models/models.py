@@ -47,11 +47,13 @@ class CrystalStructureInput(MolecularStructureInput):
 class CrystalStructure(CrystalStructureInput, table=True):
     __tablename__: str = "crystal_structure"
     id: int | None = Field(primary_key=True, default=None)
+    person_id: Optional[int] = Field(foreign_key="person.id", default=None)
 
 
 class MolecularStructure(MolecularStructureInput, table=True):
     __tablename__: str = "molecular_structure"
     id: int | None = Field(primary_key=True, default=None)
+    person_id: Optional[int] = Field(foreign_key="person.id", default=None)
 
 
 class SimulationBase(SQLModel):
@@ -89,11 +91,10 @@ class Simulation(SimulationBase, table=True):
     status: SimulationStatus = SimulationStatus.requested
 
 
-class OrcaCalcuation(enum.Enum):
+class OrcaCalculation(enum.Enum):
     xas = "xas"
     xes = "xes"
     opt = "opt"
-
 
 class OrcaSolvent(enum.Enum):
     Water = "Water"
@@ -123,6 +124,7 @@ class OrcaSimulationInput(SQLModel):
     basis_set: str
     charge: int
     multiplicity: int
+    calculation_type: OrcaCalculation
     solvent: Optional[OrcaSolvent] = None
     orb_win_0_start: Optional[int] = None
     orb_win_0_stop: Optional[int] = None

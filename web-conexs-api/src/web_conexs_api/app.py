@@ -2,6 +2,10 @@ from typing import List
 
 from fastapi import Depends, FastAPI
 from fastapi.responses import PlainTextResponse
+from fastapi_pagination.cursor import CursorPage, CursorParams
+from fastapi_pagination import add_pagination
+
+from fastapi_pagination import set_params, set_page
 from sqlmodel import Session
 
 from .crud import (
@@ -22,6 +26,8 @@ from .crud import (
     submit_orca_simulation,
     upload_crystal_structure,
     upload_molecular_structure,
+    get_simulations_page,
+    get_orca_xas
 )
 from .database import get_session
 from .models.models import (
@@ -40,6 +46,8 @@ from .models.models import (
 
 app = FastAPI()
 
+add_pagination(app)
+
 
 # TODO paginated simulations endpoint
 @app.get("/api/simulations")
@@ -47,6 +55,12 @@ def get_simulations_endpoint(
     session: Session = Depends(get_session),
 ) -> List[SimulationResponse]:
     return get_simulations(session)
+
+@app.get("/api/simulationsp")
+def get_simulations_pagination_endpoint(
+    session: Session = Depends(get_session),
+) -> CursorPage[SimulationResponse]:
+    return get_simulations_page(session)
 
 
 @app.get("/api/simulations/{id}")
@@ -168,3 +182,8 @@ def get_fdmnes_output_endpoint(id: int, session: Session = Depends(get_session))
 @app.get("/api/fdmnes/{id}/xas")
 def get_fdmnes_xas_endpoint(id: int, session: Session = Depends(get_session)):
     return get_fdmnes_xas(session, id)
+
+
+@app.get("/api/orca/{id}/xas")
+def get_orca_xas_endpoint(id: int, session: Session = Depends(get_session)):
+    return get_orca_xas(session, id)

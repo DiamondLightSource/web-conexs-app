@@ -1,15 +1,22 @@
-import {
-  Button,
-  Card,
-  CardContent,
-  TextField,
-  Typography,
-} from "@mui/material";
-import { FDMNESSimulation } from "../models";
+import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 
-export default function FdmnesModelCard(props: {
-  fdmnesSimulation: FDMNESSimulation;
-}) {
+import { useQuery } from "@tanstack/react-query";
+import { getFdmnesSimulation } from "../queryfunctions";
+import { useState } from "react";
+import FdmnesLogViewer from "./FdmnesLogViewer";
+
+export default function FdmnesModelCard(props: { fdmnesSimulationId: number }) {
+  const query = useQuery({
+    queryKey: ["fdmnes", props.fdmnesSimulationId],
+    queryFn: () => getFdmnesSimulation(props.fdmnesSimulationId),
+  });
+  const [showLog, setShowLog] = useState(false);
+  const fdmnesSimulation = query.data;
+
+  if (!fdmnesSimulation) {
+    return <Box>Loading...</Box>;
+  }
+
   return (
     <Card variant="outlined">
       <CardContent>
@@ -17,12 +24,14 @@ export default function FdmnesModelCard(props: {
           FDMNES Simulation
         </Typography>
         <Typography variant="h5" component="div">
-          {props.fdmnesSimulation.element}
+          {fdmnesSimulation.element}
         </Typography>
         <Typography variant="h6" component="div">
-          {props.fdmnesSimulation.element}
+          {fdmnesSimulation.element}
         </Typography>
       </CardContent>
+      <Button onClick={() => setShowLog(true)}>Get Output</Button>
+      {showLog && <FdmnesLogViewer id={fdmnesSimulation.simulation.id} />}
     </Card>
   );
 }

@@ -42,8 +42,17 @@ export interface Simulation {
   completion_date: string | null;
 }
 
+export interface SimulationPage {
+  items: Simulation[];
+  total: string | null;
+  current_page: string;
+  current_page_backwards: string;
+  previous_page: string | null;
+  next_page: string | null;
+}
+
 export interface OrcaSimulationInput {
-  technique: string;
+  calculation_type: string;
   molecular_structure_id: number;
   memory_per_core: number;
   functional: string;
@@ -66,7 +75,7 @@ export interface OrcaSimulationWithResource extends OrcaSimulationInput {
 }
 
 export const orcaDefaultValues: OrcaSimulationWithResource = {
-  technique: "XAS",
+  calculation_type: "xas",
   molecular_structure_id: -1,
   memory_per_core: 1024,
   functional: "B3LYP RIJCOSX",

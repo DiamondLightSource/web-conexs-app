@@ -1,12 +1,12 @@
 import XASChart from "./XASChart";
 import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { getFdmnesXas } from "../queryfunctions";
+import { getOrcaXas } from "../queryfunctions";
 
-export default function FdmnesChart(props: { id: number }) {
+export default function OrcaChart(props: { id: number }) {
   const query = useQuery({
-    queryKey: ["fdmnes", "xas", props.id],
-    queryFn: () => getFdmnesXas(props.id),
+    queryKey: ["orca", "xas", props.id],
+    queryFn: () => getOrcaXas(props.id),
   });
 
   if (query.data) {

@@ -3,16 +3,40 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { Box, Button, Grid, Grid2, Skeleton } from "@mui/material";
+import { Box, Button, Grid2, Skeleton } from "@mui/material";
 import useFDMNESSchema from "../hooks/useFdmnesAPI";
-import useSimulationAPI from "../hooks/useSimulationAPI";
+
 import React3dMol from "./React3dMol";
-// import useSimulationAPI from "../hooks/useSimulationAPI";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { postFdmnes } from "../queryfunctions";
+import { useNavigate } from "react-router-dom";
 
 export default function FdmnesForm() {
+  const navigate = useNavigate();
+  const mutation = useMutation({
+    mutationFn: postFdmnes,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["fdmnes"] });
+      callback();
+    },
+    onError: () => {
+      errorCallback();
+    },
+  });
+
+  const queryClient = useQueryClient();
+  const callback = () => {
+    window.alert("Thank you for your submission");
+    navigate("/simulation");
+  };
+
+  const errorCallback = () => {
+    window.alert("Error Submitting Job!");
+  };
+
   const { data, setData, schema, uischema, hasData, getCrystal, crystal } =
     useFDMNESSchema();
-  const { postFdmnesSimulation } = useSimulationAPI();
 
   return (
     <Grid2 container>
@@ -24,7 +48,7 @@ export default function FdmnesForm() {
             renderers={materialRenderers}
             uischema={uischema}
             cells={materialCells}
-            onChange={({ data, _errors }) => {
+            onChange={({ data }) => {
               setData(data);
               getCrystal(data.crystal_structure_id);
             }}
@@ -47,8 +71,7 @@ export default function FdmnesForm() {
         <Button
           onClick={() => {
             const localData = { ...data };
-            console.log(localData);
-            postFdmnesSimulation(localData);
+            mutation.mutate(localData);
           }}
         >
           Submit Simulation

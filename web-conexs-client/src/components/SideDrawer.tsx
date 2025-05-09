@@ -1,7 +1,7 @@
 import {
   Box,
-  Button,
   Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
@@ -9,6 +9,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+
+import MenuIcon from "@mui/icons-material/Menu";
 
 export default function SideDrawer() {
   const [open, setOpen] = useState(false);
@@ -81,7 +83,13 @@ export default function SideDrawer() {
 
   return (
     <>
-      <Button onClick={toggleDrawer(true)}>...</Button>
+      <IconButton
+        color:primary
+        aria-label="add an alarm"
+        onClick={toggleDrawer(true)}
+      >
+        <MenuIcon />
+      </IconButton>
       <Drawer open={open} onClose={toggleDrawer(false)}>
         {DrawerList}
       </Drawer>

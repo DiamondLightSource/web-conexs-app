@@ -1,11 +1,11 @@
-import { Box, Button, Stack } from "@mui/material";
-import { CrystalInput, MoleculeInput } from "../models";
+import { Button, Stack } from "@mui/material";
+import { CrystalInput } from "../models";
 import { useState } from "react";
 import XYZFileEditor from "./XYZFileEditor";
 import React3dMol from "./React3dMol";
-import useMoleculeAPI from "../hooks/useMoleculeAPI";
 import { useNavigate } from "react-router-dom";
-import useCrystalAPI from "../hooks/useCrystalAPI";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { postCrystal } from "../queryfunctions";
 
 const templateCrystal: CrystalInput = {
   a: 4.1043564,
@@ -19,16 +19,24 @@ const templateCrystal: CrystalInput = {
 };
 
 export default function CreateCystalPage() {
-  const [crystal, setCrytal] = useState<CrystalInput>(templateCrystal);
-  const { insertCrystal } = useCrystalAPI();
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
-
-  console.log(crystal);
 
   const callback = () => {
     window.alert("Thank you for your submission");
     navigate("/crystal");
   };
+
+  const mutation = useMutation({
+    mutationFn: postCrystal,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["crystals"] });
+      callback();
+    },
+  });
+
+  const [crystal, setCrytal] = useState<CrystalInput>(templateCrystal);
 
   return (
     <Stack direction={"row"}>
@@ -45,7 +53,7 @@ export default function CreateCystalPage() {
       ></React3dMol>
       <Button
         onClick={() => {
-          insertCrystal(crystal, callback);
+          mutation.mutate(crystal);
         }}
       >
         Create

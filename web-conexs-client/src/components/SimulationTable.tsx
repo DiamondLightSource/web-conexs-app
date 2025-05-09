@@ -8,8 +8,6 @@ import {
   Table,
   Paper,
   TableBody,
-  Stack,
-  Button,
   Box,
 } from "@mui/material";
 
@@ -18,7 +16,7 @@ import { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
 import { useState } from "react";
 
-const nResults = 7;
+const nResults = 10;
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -44,12 +42,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function SimulationMetadata(props: {
   key: number;
   simulation: Simulation | null;
-  selected: Simulation | undefined;
+  selected: number | undefined;
   selectedRow: number;
   clickSimulation: (simulation: Simulation | null) => void;
   setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
 }): JSX.Element {
-  const className = props.simulation === props.selected ? "activeclicked" : "";
+  const className =
+    props.simulation?.id === props.selected ? "activeclicked" : "";
 
   return (
     <StyledTableRow
@@ -85,20 +84,10 @@ function SimulationMetadata(props: {
 
 export default function SimulationTable(props: {
   simulations: Simulation[];
-  selectedSimulation: Simulation | undefined;
+  selectedSimulation: number | undefined;
   setSelectedSimulation: (x: Simulation | null) => void;
-  setCurrent: (cursor: string | null) => void;
-  prevNext: string[] | null;
 }) {
   const [selectedRow, setSelectedRow] = useState(-1);
-
-  const nextPage = () => {
-    props.setCurrent(props.prevNext == null ? null : props.prevNext[1]);
-  };
-
-  const prevPage = () => {
-    props.setCurrent(props.prevNext == null ? null : props.prevNext[0]);
-  };
 
   const simulationList: (Simulation | null)[] = [...props.simulations];
 
@@ -135,22 +124,6 @@ export default function SimulationTable(props: {
           </TableBody>
         </Table>
       </TableContainer>
-      <Stack direction="row" spacing={2}>
-        <Button
-          variant="contained"
-          disabled={props.prevNext == null || props.prevNext[0] == null}
-          onClick={prevPage}
-        >
-          &lt;
-        </Button>
-        <Button
-          variant="contained"
-          disabled={props.prevNext == null || props.prevNext[1] == null}
-          onClick={nextPage}
-        >
-          &gt;
-        </Button>
-      </Stack>
     </Box>
   );
 }

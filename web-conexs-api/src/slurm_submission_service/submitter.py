@@ -13,7 +13,7 @@ import requests
 from web_conexs_api.crud import (
     get_active_simulations,
     get_fdmnes_jobfile,
-    get_orca_jobfile,
+    get_orca_jobfile_with_technique,
     get_submitted_simulations,
     update_simulation,
 )
@@ -21,6 +21,7 @@ from web_conexs_api.database import get_session
 from web_conexs_api.models.models import (
     Simulation,
     SimulationStatus,
+    OrcaCalculation
 )
 
 logger = logging.getLogger(__name__)
@@ -28,15 +29,15 @@ logger = logging.getLogger(__name__)
 ROOT_DIR = os.environ.get("CONEXS_ROOT_DIR")
 CLUSTER_ROOT_DIR = os.environ.get("CONEXS_CLUSTER_ROOT_DIR")
 
-slurm_token = os.environ.get("SLURM_TOKEN")
-slurm_token_file = os.environ.get("SLURM_TOKEN_FILE")
-slurm_user = os.environ.get("USER")
-slurm_api = "https://slurm-rest.diamond.ac.uk:8443/slurm/v0.0.40/"
-# os.environ.get('SLURM_API')
-slurm_partition = "cs05r"  # os.environ.get('SLURM_PARTITION')
-ORCA_IMAGE = "orca-4.2.1__openmpi-3.1.4__centos-7.sif"  # os.environ.get('ORCA_IMAGE')
-FDMNES_IMAGE = "fdmnes__openmpi-3.1.4__parmetis-4.0.3__scotch-6.1.0__mumps-5.4.0.sif"
-IMAGE_DIR = "/dls/science/groups/das/singularity_images/"  # os.environ.get('IMAGE_DIR')
+SLURM_TOKEN = os.environ.get("SLURM_TOKEN")
+SLURM_TOKEN_FILE = os.environ.get("SLURM_TOKEN_FILE")
+SLURM_USER = os.environ.get("USER")
+SLURM_API = os.environ.get('SLURM_API')
+SLURM_PARTITION = os.environ.get('SLURM_PARTITION')
+
+ORCA_IMAGE = os.environ.get('ORCA_IMAGE')
+FDMNES_IMAGE = os.environ.get('FDMNES_IMAGE')
+CONTAINER_IMAGE_DIR = os.environ.get('CONTAINER_IMAGE_DIR')
 
 JOB_RUNNING = "RUNNING"
 JOB_COMPLETED = "COMPLETED"
@@ -44,9 +45,15 @@ JOB_FAILED = "FAILED"
 
 
 def get_token():
-    return "TOKEN"
-    # with open(slurm_token_file,'r') as fh:
-    #     return fh.read()
+
+    if SLURM_TOKEN is None and SLURM_TOKEN_FILE is None:
+        raise Exception("No slurm token available")
+
+    if SLURM_TOKEN is not None:
+        return SLURM_TOKEN
+
+    with open(SLURM_TOKEN_FILE,'r') as fh:
+        return fh.read()
 
 
 def build_job_and_run(
@@ -54,7 +61,7 @@ def build_job_and_run(
 ):
     job_request = {
         "job": {
-            "partition": slurm_partition,
+            "partition": SLURM_PARTITION,
             "name": job_name,
             "nodes": 1,
             "tasks": cpus,
@@ -63,28 +70,30 @@ def build_job_and_run(
             "current_working_directory": str(cluster_dir),
             "environment": {
                 "PATH": "/bin:/usr/bin/:/usr/local/bin/",
-                "USER": slurm_user,
+                "USER": SLURM_USER,
                 "LD_LIBRARY_PATH": "/lib/:/lib64/:/usr/local/lib",
             },
         },
         "script": script,
     }
 
-    url_submit = slurm_api + "/job/submit"
+    url_submit = SLURM_API + "/job/submit"
 
-    # slurm_token = get_token()
+    slurm_token = get_token()
 
-    if slurm_token is None:
-        print("TOKEN IS NONE")
-        raise Exception("TOKEN IS NONE")
+
 
     headers = {
-        "X-SLURM-USER-NAME": slurm_user,
+        "X-SLURM-USER-NAME": SLURM_USER,
         "X-SLURM-USER-TOKEN": slurm_token,
         "Content-Type": "application/json",
     }
 
     r = requests.post(url_submit, data=json.dumps(job_request), headers=headers)
+
+    if r.status_code != 200:
+        print(r.status_code)
+        raise Exception("Job submission response not successful")
 
     response = r.json()
 
@@ -101,10 +110,12 @@ def build_job_and_run(
 
 
 def submit_orca(session, sim: Simulation):
-    job_string = get_orca_jobfile(session, sim.id)
+    job_string, keyword = get_orca_jobfile_with_technique(session, sim.id)
     application_name = "orca"
     user = sim.person.identifier
     uid = uuid.uuid4()
+
+    print(f"{ROOT_DIR} {user}")
 
     job_name = application_name + "-" + str(uid)
     working_dir = ROOT_DIR + user + "/" + job_name
@@ -117,11 +128,38 @@ def submit_orca(session, sim: Simulation):
     with open(input_file, "w+") as f:
         f.write(job_string)
 
-    orca_sif = os.path.join(IMAGE_DIR, ORCA_IMAGE)
+    orca_sif = os.path.join(CONTAINER_IMAGE_DIR, ORCA_IMAGE)
 
-    script = (
+    #myarr=($(grep -A 24 -m 1 "COMBINED ELECTRIC DIPOLE" orca_result.txt | tail -n +6 | awk '{print $2}'))
+    #lowEv=$(echo "${myarr[0]}/8065.544" | bc -l)
+    #highEv=$(echo "${myarr[-1]}/8065.544" | bc -l)
+    #difEv=$(echo "$highEv - $lowEv" | bc -l)
+    #deltaEv=$(echo "$difEv * 0.1" | bc -l)
+    #lowDeltaEv=$(echo "$lowEv - $deltaEv" | bc -l)
+    #highDeltaEv=$(echo "$highEv + $deltaEv" | bc -l)
+    #f"singularity exec {orca_sif} /opt/orca/4.2.1/orca_mapspc orca_result.txt {keyword} -eV -x0$lowDeltaEv -x1$highDeltaEv -w1 -n1000" )
+
+
+    if keyword == OrcaCalculation.opt:
+        script = (
         "#!/bin/bash\n"
+        +"set -e\n"
         + f"singularity exec {orca_sif} /opt/orca/4.2.1/orca job.inp > orca_result.txt"
+        )
+    else:
+        spc_keyword = "ABSQ" if keyword == OrcaCalculation.xas else "XES"
+        script = (
+        "#!/bin/bash\n"
+        +"set -e\n"
+        + f"singularity exec {orca_sif} /opt/orca/4.2.1/orca job.inp > orca_result.txt\n"
+        + "myarr=($(grep -A 24 -m 1 'COMBINED ELECTRIC DIPOLE' orca_result.txt | tail -n +6 | awk '{print $2}'))\n"
+        + 'lowEv=$(echo "${myarr[0]}/8065.544" | bc -l)\n'
+        + 'highEv=$(echo "${myarr[-1]}/8065.544" | bc -l)\n'
+        + 'difEv=$(echo "$highEv - $lowEv" | bc -l)\n'
+        + 'deltaEv=$(echo "$difEv * 0.1" | bc -l)\n'
+        + 'lowDeltaEv=$(echo "$lowEv - $deltaEv" | bc -l)\n'
+        + 'highDeltaEv=$(echo "$highEv + $deltaEv" | bc -l)\n'
+        + f"singularity exec {orca_sif} /opt/orca/4.2.1/orca_mapspc orca_result.txt {spc_keyword} -eV -x0$lowDeltaEv -x1$highDeltaEv -w1 -n1000"
     )
 
     try:
@@ -162,7 +200,7 @@ def submit_fdmnes(session, sim: Simulation):
             + "job.txt"
         )
 
-    fdmnes_sif = os.path.join(IMAGE_DIR, FDMNES_IMAGE)
+    fdmnes_sif = os.path.join(CONTAINER_IMAGE_DIR, FDMNES_IMAGE)
 
     script = (
         "#!/bin/bash\n"
@@ -210,21 +248,28 @@ def run_update():
 
         active = get_active_simulations(session)
 
-        url_jobs = slurm_api + "/jobs"
+        slurm_token = get_token()
+
+        url_jobs = SLURM_API + "/jobs"
         headers = {
-            "X-SLURM-USER-NAME": slurm_user,
+            "X-SLURM-USER-NAME": SLURM_USER,
             "X-SLURM-USER-TOKEN": slurm_token,
             "Content-Type": "application/json",
         }
 
         r = requests.get(url_jobs, headers=headers)
+
+        if r.status_code != 200:
+            print(r.status_code)
+            raise Exception("Response not successful")
+
         response = r.json()
         jobs = response["jobs"]
 
         job_map = {}
 
         for j in jobs:
-            if j["account"] == slurm_user:
+            if j["account"] == SLURM_USER:
                 job_map[j["job_id"]] = {"state": j["job_state"][0]}
 
         print(f"Number of active jobs {len(active)}")
@@ -256,12 +301,21 @@ def run_update():
     # print(sims)
 
 
+def test_read():
+    with contextmanager(get_session)() as session:
+        # sessions = get_session()
+        # session = next(sessions)
+        sims = get_submitted_simulations(session)
+        for sim in sims:
+            if sim.simulation_type_id == 1:
+                jf, calc = get_orca_jobfile_with_technique(session,sim.id)
+                print(jf)
+
 def main():
+    # test_read()
+    print("Running main loop")
     while True:
         run_update()
         time.sleep(10)
         print("Loop iteration complete")
 
-
-if __name__ == "__main__":
-    main()

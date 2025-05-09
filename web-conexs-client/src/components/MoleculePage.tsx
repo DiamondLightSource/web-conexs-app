@@ -1,38 +1,26 @@
-import { Button, Box, Typography, Stack } from "@mui/material";
-import XYZFileEditor from "./XYZFileEditor";
-import useMoleculeAPI from "../hooks/useMoleculeAPI";
-import { Molecule, MoleculeInput } from "../models";
+import { Box, Typography, Stack } from "@mui/material";
 import React3dMol from "./React3dMol";
 import MoleculeTable from "./MoleculeTable";
 import { useState } from "react";
 import XYZFileViewer from "./XYZFileViewer";
+import { useQuery } from "@tanstack/react-query";
+import { getMolecules } from "../queryfunctions";
 
 export default function MoleculePage() {
-  const { moleculeEdited, setMoleculeEdited } = useState<Molecule | null>();
-  // const templateMolecule: MoleculeInput = {
-  //   label: "Benzene",
-  //   structure:
-  //     "C   0.000000  1.402720  0.000000\nH   0.000000  2.490290  0.000000\nC  -1.214790  0.701360  0.000000\nH  -2.156660  1.245150  0.000000\nC  -1.214790 -0.701360  0.000000\nH  -2.156660 -1.245150  0.000000\nC   0.000000 -1.402720  0.000000\nH   0.000000 -2.490290  0.000000\nC   1.214790 -0.701360  0.000000\nH   2.156660 -1.245150  0.000000\nC   1.214790  0.701360  0.000000\nH   2.156660  1.245150  0.000000",
-  // };
-  const {
-    data,
-    getMolecule,
-    getMolecules,
-    moleculeList,
-    insertMolecule,
-    setNewMolecule,
-    newMolecule,
-    getMoleculeGeneric,
-    loadingStatus,
-    dataList,
-  } = useMoleculeAPI();
+  const query = useQuery({
+    queryKey: ["molecules"],
+    queryFn: getMolecules,
+  });
 
-  // console.log(molecule);
-  // console.log(moleculeList);
-  let finalMolecule = data;
+  const [selectedMoleculeId, setSelectedMoleculeId] = useState<number | null>();
 
-  if (finalMolecule == null) {
-    finalMolecule = dataList.length != 0 ? dataList[0] : null;
+  let finalMolecule = null;
+
+  if (query.data && query.data.length != 0 && selectedMoleculeId) {
+    finalMolecule = query.data.find((d) => d.id == selectedMoleculeId);
+    if (finalMolecule == undefined) {
+      finalMolecule = null;
+    }
   }
 
   return (
@@ -42,9 +30,9 @@ export default function MoleculePage() {
       </Typography>
       <Stack direction={"row"} height={"100vh"} spacing={3}>
         <MoleculeTable
-          molecules={dataList == null ? [] : dataList}
+          molecules={query.data ? query.data : []}
           selectedMolecule={undefined}
-          setSelectedMolecule={(data) => getMolecule(data?.id)}
+          setSelectedMolecule={(data) => setSelectedMoleculeId(data?.id)}
           setCurrent={() => {}}
           prevNext={null}
         ></MoleculeTable>

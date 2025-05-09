@@ -7,6 +7,8 @@ from typing import List
 
 import numpy as np
 from fastapi import HTTPException
+from fastapi_pagination.ext.sqlalchemy import paginate
+
 from sqlmodel import Session, or_, select
 
 from .models.models import (
@@ -21,11 +23,35 @@ from .models.models import (
     Simulation,
     SimulationStatus,
     StructureType,
+    OrcaCalculation
 )
 from .periodictable import periodic_table
 
-root_working_location = os.environ.get("ROOT_WORKING_DIRECTORY", "/iris")
+from fastapi_pagination.cursor import CursorPage, CursorParams
+from fastapi_pagination.cursor import CursorPage, Query
+from fastapi_pagination import Page
+from fastapi_pagination.customization import CustomizedPage, UseParamsFields,UseQuotedCursor
+from typing import TypeVar
 
+from fastapi_pagination import set_params, set_page
+
+# T = TypeVar("T")
+
+# CustomPage = CustomizedPage[
+#     Page[T],
+#     UseParamsFields(
+#         # change default size to be 5, increase upper limit to 1 000
+#         size=Query(5, ge=1, le=1_000),
+#     ),
+# ]
+
+root_working_location = os.environ.get("ROOT_WORKING_DIRECTORY", "/iris")
+T = TypeVar("T")
+
+CursorPageNotQuotedCursor = CustomizedPage[
+    CursorPage[T],
+    UseQuotedCursor(False),
+]
 
 def get_working_directory(user, application):
     p = Path(root_working_location) / Path(user) / Path(f"{application}_{uuid.uuid4()}")
@@ -81,6 +107,7 @@ def get_molecular_structure(session, id):
 
 def upload_molecular_structure(structure: MolecularStructureInput, session):
     molecule = MolecularStructure.model_validate(structure)
+    molecule.person_id = 1
 
     session.add(molecule)
     session.commit()
@@ -95,6 +122,21 @@ def get_simulations(session) -> List[Simulation]:
     results = session.exec(statement)
 
     return results.all()
+
+
+def get_simulations_page(session) -> CursorPage[Simulation]:
+
+    # set_page(CursorPage[Simulation])
+    # set_params(CursorParams(size=10))
+    # set_page(CursorPageNotQuotedCursor[Simulation])
+
+    statement = select(Simulation)
+
+    return paginate(
+        session,
+        statement.order_by(Simulation.id.desc())
+    )
+
 
 
 def get_submitted_simulations(session) -> List[Simulation]:
@@ -141,19 +183,34 @@ def get_orca_simulation(session, id) -> OrcaSimulation:
         raise HTTPException(status_code=404, detail=f"No simulation with id={id}")
 
 
-def get_orca_jobfile(session, id):
+
+def get_orca_jobfile(session,id):
+    return get_orca_jobfile[0]
+
+
+def get_orca_jobfile_with_technique(session, id):
     orca_simulation = get_orca_simulation(session, id)
     structure = get_molecular_structure(session, orca_simulation.molecular_structure_id)
 
+    calc_type = orca_simulation.calculation_type
+
+    if calc_type == OrcaCalculation.xas:
+        prefix = '! '
+    else:
+        prefix = '! UKS '
+
+
     jobfile = (
-        "! "
+        prefix
         + orca_simulation.functional
         + " DKH2 "
         + orca_simulation.basis_set
         + " SARC/J"
     )
 
-    # TODO solvent
+    if (orca_simulation.solvent is not None):
+         jobfile += 'CPCM(' + orca_simulation.solvent + ') '
+
 
     jobfile += "\n"
 
@@ -161,27 +218,36 @@ def get_orca_jobfile(session, id):
     jobfile += "%pal nprocs " + str(orca_simulation.simulation.n_cores) + "\n"
     jobfile += "end" + "\n\n"
 
-    jobfile += "%tddft" + "\n"
+    if calc_type == OrcaCalculation.xas:
+        jobfile += "%tddft" + "\n"
 
-    jobfile += (
-        "orbWin[0] = "
-        + str(orca_simulation.orb_win_0_start)
-        + ","
-        + str(orca_simulation.orb_win_0_stop)
-        + ",-1,-1\n"
-    )
-    jobfile += (
-        "orbWin[1] = "
-        + str(orca_simulation.orb_win_1_start)
-        + ","
-        + str(orca_simulation.orb_win_1_stop)
-        + ",-1,-1\n"
-    )
+        jobfile += (
+            "orbWin[0] = "
+            + str(orca_simulation.orb_win_0_start)
+            + ","
+            + str(orca_simulation.orb_win_0_stop)
+            + ",-1,-1\n"
+        )
+        jobfile += (
+            "orbWin[1] = "
+            + str(orca_simulation.orb_win_1_start)
+            + ","
+            + str(orca_simulation.orb_win_1_stop)
+            + ",-1,-1\n"
+        )
 
-    jobfile += "doquad true" + "\n"
-    jobfile += "nroots 20" + "\n"
-    jobfile += "maxdim 10" + "\n"
-    jobfile += "end" + "\n\n"
+        jobfile += "doquad true" + "\n"
+        jobfile += "nroots 20" + "\n"
+        jobfile += "maxdim 10" + "\n"
+        jobfile += "end" + "\n\n"
+    else:
+        jobfile += '%xes' + "\n"
+        jobfile += 'CoreOrb 0,1' + "\n"
+        jobfile += 'OrbOp 0,1' + "\n"
+        jobfile += 'DoSOC true' + "\n"
+        jobfile += 'Normalize true' + "\n"
+        jobfile += 'MDOriginAdjustMethod 1' + "\n"
+        jobfile += 'end' + "\n\n"
 
     jobfile += (
         "*xyz "
@@ -194,7 +260,7 @@ def get_orca_jobfile(session, id):
     jobfile += structure.structure
     jobfile += "\nend"
 
-    return jobfile
+    return jobfile, orca_simulation.calculation_type
 
 
 def submit_orca_simulation(orca_input: OrcaSimulationInput, session: Session):
@@ -339,6 +405,19 @@ def get_fdmnes_xas(session, id):
     result_file = wd + "/result_conv.txt"
 
     out = np.loadtxt(result_file, skiprows=1)
+
+    output = {"energy": out[:, 0].tolist(), "xas": out[:, 1].tolist()}
+
+    return output
+
+def get_orca_xas(session, id):
+    orca_simulation = get_orca_simulation(session, id)
+
+    wd = orca_simulation.simulation.working_directory
+
+    result_file = wd + "/orca_result.txt.absq.dat"
+
+    out = np.loadtxt(result_file)
 
     output = {"energy": out[:, 0].tolist(), "xas": out[:, 1].tolist()}
 
