@@ -262,11 +262,6 @@ def submit_orca_simulation(orca_input: OrcaSimulationInput, session: Session):
         "working_directory": wd,
     }
 
-    #     "status": SimulationStatus.requested,
-    # "request_date":None,
-    # "submission_date":None,
-    # "completion_date":None,
-
     simulation = Simulation.model_validate(smodel)
     orca = OrcaSimulation.model_validate(orca_input)
     orca.simulation = simulation
