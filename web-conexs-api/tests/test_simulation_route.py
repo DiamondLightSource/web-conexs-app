@@ -1,0 +1,33 @@
+from fastapi.testclient import TestClient
+from sqlmodel import Session, SQLModel, create_engine
+from sqlmodel.pool import StaticPool
+
+from utils import build_test_database
+from web_conexs_api.app import app
+from web_conexs_api.database import get_session
+
+
+def test_router():
+    engine = create_engine(
+        "sqlite://",
+        connect_args={"check_same_thread": False},
+        poolclass=StaticPool,
+    )
+    SQLModel.metadata.create_all(engine)
+
+    with Session(engine) as session:
+        build_test_database(session)
+
+        def get_session_override():
+            return session
+
+        client = TestClient(app)
+        app.dependency_overrides[get_session] = get_session_override
+
+        response = client.get("/api/simulations/")
+
+        assert response.status_code == 200
+
+        json = response.json()
+
+        assert json[0]["person_id"] == 1

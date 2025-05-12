@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: postgres:12
+    restart: always
+    user: root
+    environment:
+        POSTGRES_USER: webconexsadmin
+        POSTGRES_PASSWORD: password
+        POSTGRES_DB: webconexsdb
+    ports:
+        - '5432:5432'
+    volumes:
+        - postgres-data:/var/lib/postgresql/data
+        - ./database/tables.sql:/docker-entrypoint-initdb.d/create_tables.sql
+
+volumes:
+    postgres-data:
