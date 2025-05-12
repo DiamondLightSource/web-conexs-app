@@ -39,6 +39,7 @@ export default function FdmnesForm() {
     window.alert("Error Submitting Job!");
   };
 
+
   const { data, setData, schema, uischema, hasData } = useFDMNESSchema();
 
   if (data != null && data.crystal_structure_id != selectedCrystalID) {

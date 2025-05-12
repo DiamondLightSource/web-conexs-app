@@ -3,6 +3,7 @@ import { orcaDefaultValues } from "../models";
 import { useQuery } from "@tanstack/react-query";
 import { getMolecules } from "../queryfunctions";
 
+
 const orb_rule = {
   effect: "DISABLE",
   condition: {
@@ -227,6 +228,7 @@ export default function useOrcaSchema() {
       const: m.id,
       title: m.id + " " + m.label,
     }));
+
     tmpSchema.properties.molecular_structure_id.oneOf = output;
     const tmpData = { ...data };
     tmpData.molecular_structure_id = output[0].const;
