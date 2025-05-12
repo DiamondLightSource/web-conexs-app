@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
 
 async function enableMocking() {
-  return;
+  // return;
   if (process.env.NODE_ENV !== "development") {
     return;
   }

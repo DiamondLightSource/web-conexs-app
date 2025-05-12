@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { fdmnesDefaultValues } from "../models";
-import useCrystalAPI from "./useCrystalAPI";
 import { periodic_table } from "../periodictable";
+import { useQuery } from "@tanstack/react-query";
+import { getCrystals } from "../queryfunctions";
 
 const schemaTemplate = {
   type: "object",
@@ -125,12 +126,17 @@ export default function useFDMNESSchema() {
   const [data, setData] = useState({ ...fdmnesDefaultValues });
   const [schema, setSchema] = useState({ ...schemaTemplate });
   const [hasData, setHasData] = useState(false);
-  const { dataList, getCrystal, data: crystal } = useCrystalAPI();
 
-  if (dataList.length != 0 && !hasData) {
+  const query = useQuery({
+    queryKey: ["crystals"],
+    queryFn: getCrystals,
+  });
+
+
+  if (query.data != null && query.data.length != 0 && !hasData) {
     const tmpSchema = { ...schema };
 
-    const output = dataList.map((m) => ({
+    const output = query.data.map((m) => ({
       const: m.id,
       title: m.id + " " + m.label,
     }));
@@ -146,11 +152,8 @@ export default function useFDMNESSchema() {
   return {
     data,
     setData,
-    dataList,
     schema,
     uischema,
     hasData,
-    getCrystal,
-    crystal,
   };
 }

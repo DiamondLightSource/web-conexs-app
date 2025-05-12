@@ -4,14 +4,18 @@ import {
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
 import { Box, Button, Grid2, Skeleton } from "@mui/material";
-import useFDMNESSchema from "../hooks/useFdmnesAPI";
+import useFDMNESSchema from "../hooks/useFdmnesSchema";
 
-import React3dMol from "./React3dMol";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postFdmnes } from "../queryfunctions";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import CrystalViewer from "./CrystalViewer";
 
 export default function FdmnesForm() {
+  const [selectedCrystalID, setSelectedCrystalId] = useState<null | number>(
+    null
+  );
   const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: postFdmnes,
@@ -35,8 +39,11 @@ export default function FdmnesForm() {
     window.alert("Error Submitting Job!");
   };
 
-  const { data, setData, schema, uischema, hasData, getCrystal, crystal } =
-    useFDMNESSchema();
+  const { data, setData, schema, uischema, hasData } = useFDMNESSchema();
+
+  if (data != null && data.crystal_structure_id != selectedCrystalID) {
+    setSelectedCrystalId(data.crystal_structure_id);
+  }
 
   return (
     <Grid2 container>
@@ -50,7 +57,7 @@ export default function FdmnesForm() {
             cells={materialCells}
             onChange={({ data }) => {
               setData(data);
-              getCrystal(data.crystal_structure_id);
+              setSelectedCrystalId(data.crystal_structure_id);
             }}
           />
         ) : (
@@ -59,12 +66,7 @@ export default function FdmnesForm() {
       </Grid2>
       <Grid2 size={6}>
         <Box height="100%vh">
-          <React3dMol
-            moleculedata={crystal}
-            color="#3465A4"
-            style="Stick"
-            orbital={null}
-          ></React3dMol>
+          {selectedCrystalID && <CrystalViewer id={selectedCrystalID} />}
         </Box>
       </Grid2>
       <Grid2 size={12}>
