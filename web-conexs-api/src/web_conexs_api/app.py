@@ -45,6 +45,7 @@ app = FastAPI()
 
 add_pagination(app)
 
+
 @app.get("/api/simulations")
 def get_simulations_pagination_endpoint(
     session: Session = Depends(get_session),
