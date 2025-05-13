@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { orcaDefaultValues } from "../models";
-import useMoleculeAPI from "./useMoleculeAPI";
+import { useQuery } from "@tanstack/react-query";
+import { getMolecules } from "../queryfunctions";
+
 
 const orb_rule = {
   effect: "DISABLE",
@@ -213,16 +215,19 @@ export default function useOrcaSchema() {
   const [data, setData] = useState({ ...orcaDefaultValues });
   const [schema, setSchema] = useState({ ...schemaTemplate });
   const [hasData, setHasData] = useState(false);
-  const { dataList, getMolecule, data: molecule } = useMoleculeAPI();
+  const query = useQuery({
+    queryKey: ["molecules"],
+    queryFn: getMolecules,
+  });
 
-  if (dataList.length != 0 && !hasData) {
+
+  if (query.data && query.data.length != 0 && !hasData) {
     const tmpSchema = { ...schema };
 
-    const output = dataList.map((m) => ({
+    const output = query.data.map((m) => ({
       const: m.id,
       title: m.id + " " + m.label,
     }));
-    console.log(output);
 
     tmpSchema.properties.molecular_structure_id.oneOf = output;
     const tmpData = { ...data };
@@ -235,11 +240,8 @@ export default function useOrcaSchema() {
   return {
     data,
     setData,
-    dataList,
     schema,
     uischema,
     hasData,
-    getMolecule,
-    molecule,
   };
 }

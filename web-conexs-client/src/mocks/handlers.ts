@@ -6,6 +6,7 @@ import {
   OrcaSimulation,
   OrcaSimulationInput,
   Simulation,
+  SimulationPage,
 } from "../models";
 
 const orcaMockOutput = "********\n**ORCA RESULT**\n********";
@@ -27,6 +28,7 @@ const mockCrystal: Crystal = {
   alpha: 90,
   beta: 90,
   gamma: 90,
+  ibrav: "0",
   label: "test",
   structure: "Ag 0. 0. 0.\nAg 0.5 0.5 0.\nAg 0.5 0. 0.5\nAg 0. 0.5 0.5",
 };
@@ -60,7 +62,7 @@ const mockOrcaSimulation: OrcaSimulation = {
   orb_win_1_stop: null,
   simulation: mockSimulation,
   solvent: "None",
-  technique: "mock",
+  calculation_type: "mock",
 };
 
 const mockSimulations = [mockSimulation];
@@ -96,7 +98,15 @@ export const handlers = [
   }),
 
   http.get("/api/simulations", () => {
-    return HttpResponse.json([mockSimulation]);
+
+    const page : SimulationPage = {items: [mockSimulation],
+      next_page: "test",
+      total: null,
+      current_page: "test",
+      current_page_backwards: "test",
+      previous_page: null}
+
+    return HttpResponse.json(page);
   }),
 
   http.get("/api/simulations/:id", ({ params }) => {

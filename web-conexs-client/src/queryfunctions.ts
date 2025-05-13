@@ -12,7 +12,7 @@ import {
   XASData,
 } from "./models";
 
-const simulationUrl = "/api/simulationsp";
+const simulationUrl = "/api/simulations";
 const orcaUrl = "/api/orca";
 const fdmnesUrl = "/api/fdmnes";
 const moleculeUrl = "/api/molecules";

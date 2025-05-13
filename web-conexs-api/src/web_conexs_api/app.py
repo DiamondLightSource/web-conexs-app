@@ -20,7 +20,6 @@ from .crud import (
     get_orca_simulation,
     get_orca_xas,
     get_simulation,
-    get_simulations,
     get_simulations_page,
     submit_fdmnes_simulation,
     submit_orca_simulation,
@@ -47,15 +46,7 @@ app = FastAPI()
 add_pagination(app)
 
 
-# TODO paginated simulations endpoint
 @app.get("/api/simulations")
-def get_simulations_endpoint(
-    session: Session = Depends(get_session),
-) -> List[SimulationResponse]:
-    return get_simulations(session)
-
-
-@app.get("/api/simulationsp")
 def get_simulations_pagination_endpoint(
     session: Session = Depends(get_session),
 ) -> CursorPage[SimulationResponse]:

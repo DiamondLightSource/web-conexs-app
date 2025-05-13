@@ -5,14 +5,18 @@ import {
 import { JsonForms } from "@jsonforms/react";
 import { Box, Button, Grid2, Skeleton } from "@mui/material";
 import useOrcaSchema from "../hooks/useOrcaSchema";
-import React3dMol from "./React3dMol";
+// import React3dMol from "./React3dMol";
 import { postOrca } from "../queryfunctions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import OrcaMoleculeViewer from "./OrcaMoleculeViewer";
 
 export default function OrcaForm() {
-  const { data, setData, schema, uischema, hasData, getMolecule, molecule } =
-    useOrcaSchema();
+  const [selectedMoleculeID, setSelectedMoleculeId] = useState<null | number>(
+    null
+  );
+  const { data, setData, schema, uischema, hasData } = useOrcaSchema();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -37,7 +41,9 @@ export default function OrcaForm() {
     },
   });
 
-  console.log(mutation.isError);
+  if (data != null && data.molecular_structure_id != selectedMoleculeID) {
+    setSelectedMoleculeId(data.molecular_structure_id);
+  }
 
   return (
     <Grid2 container>
@@ -51,7 +57,7 @@ export default function OrcaForm() {
             cells={materialCells}
             onChange={({ data }) => {
               setData(data);
-              getMolecule(data.molecular_structure_id);
+              setSelectedMoleculeId(data.molecular_structure_id);
             }}
           />
         ) : (
@@ -60,12 +66,9 @@ export default function OrcaForm() {
       </Grid2>
       <Grid2 size={6}>
         <Box height="100%vh">
-          <React3dMol
-            moleculedata={molecule}
-            color="#3465A4"
-            style="Stick"
-            orbital={null}
-          ></React3dMol>
+          {selectedMoleculeID != null && (
+            <OrcaMoleculeViewer orcaSimulationid={selectedMoleculeID} />
+          )}
         </Box>
       </Grid2>
       <Grid2 size={12}>
