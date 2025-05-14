@@ -136,7 +136,6 @@ class OrcaSimulationInput(SQLModel):
 
 class OrcaSimulation(OrcaSimulationInput, table=True):
     __tablename__: str = "orca_simulation"
-    simulation_type_id: int = 1
     simulation_id: int = Field(
         foreign_key="simulation.id",
         default=None,

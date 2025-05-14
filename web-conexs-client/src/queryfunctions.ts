@@ -17,8 +17,6 @@ const orcaUrl = "/api/orca";
 const fdmnesUrl = "/api/fdmnes";
 const moleculeUrl = "/api/molecules";
 const crystalUrl = "/api/crystals";
-const orcaSubmitUrl = "/api/submit/orca";
-const fdmnesSubmitUrl = "/api/submit/fdmnes";
 
 export const getSimulationPage = async (cursor: string | null) => {
   let url = simulationUrl + "?size=10";
@@ -87,7 +85,7 @@ export const postCrystal = async (input: CrystalInput) => {
 };
 
 export const postOrca = async (input: OrcaSimulationInput) => {
-  const response = await axios.post(orcaSubmitUrl, input);
+  const response = await axios.post(orcaUrl, input);
 
   if (response.status != 200) {
     throw new Error("Failed to submit job");
@@ -123,7 +121,7 @@ export const getOrcaXas = async (id: number) => {
 };
 
 export const postFdmnes = async (input: FDMNESSimulationInput) => {
-  const response = await axios.post(fdmnesSubmitUrl, input);
+  const response = await axios.post(fdmnesUrl, input);
 
   if (response.status != 200) {
     throw new Error("Failed to submit job");

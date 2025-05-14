@@ -38,6 +38,7 @@ CONTAINER_IMAGE_DIR = os.environ.get("CONTAINER_IMAGE_DIR")
 JOB_RUNNING = "RUNNING"
 JOB_COMPLETED = "COMPLETED"
 JOB_FAILED = "FAILED"
+JOB_PENDING = "PENDING"
 
 
 def get_token():
@@ -158,7 +159,6 @@ def submit_orca(session, sim: Simulation):
         sim.working_directory = working_dir
         sim.submission_date = datetime.datetime.now()
         sim.status = SimulationStatus.submitted
-        print(sim)
         update_simulation(session, sim)
     except Exception:
         sim.status = SimulationStatus.failed
@@ -256,14 +256,13 @@ def run_update():
 
         job_map = {}
 
-        print(SLURM_USER)
+        # print(SLURM_USER)
 
         # for j in jobs:
         #     print(j["account"])
 
         for j in jobs:
             if j["account"] == SLURM_USER:
-                print("FOUND")
                 job_map[j["job_id"]] = {"state": j["job_state"][0]}
 
         print(f"Number of active jobs {len(active)}")
@@ -276,6 +275,9 @@ def run_update():
                 if state == JOB_RUNNING and a.status != SimulationStatus.running:
                     a.status = SimulationStatus.running
                     update_simulation(session, a)
+                elif state == JOB_PENDING and a.status != SimulationStatus.submitted:
+                    a.status = SimulationStatus.completed
+                    update_simulation(session, a)
                 elif state == JOB_COMPLETED and a.status != SimulationStatus.completed:
                     a.status = SimulationStatus.completed
                     update_simulation(session, a)
@@ -284,7 +286,8 @@ def run_update():
                     update_simulation(session, a)
 
             else:
-                a.status = SimulationStatus.completed
+                # TODO better state for whatever slurm might return
+                a.status = SimulationStatus.failed
                 update_simulation(session, a)
 
     # try:

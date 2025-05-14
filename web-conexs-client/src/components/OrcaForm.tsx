@@ -11,6 +11,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import OrcaMoleculeViewer from "./OrcaMoleculeViewer";
+import MoleculeViewer from "./MoleculeViewer";
 
 export default function OrcaForm() {
   const [selectedMoleculeID, setSelectedMoleculeId] = useState<null | number>(
@@ -67,7 +68,7 @@ export default function OrcaForm() {
       <Grid2 size={6}>
         <Box height="100%vh">
           {selectedMoleculeID != null && (
-            <OrcaMoleculeViewer orcaSimulationid={selectedMoleculeID} />
+            <MoleculeViewer id={selectedMoleculeID} />
           )}
         </Box>
       </Grid2>
