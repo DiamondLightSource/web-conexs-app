@@ -1,10 +1,20 @@
 import { Box, Grid2, Stack } from "@mui/material";
 import OrcaModelCard from "./OrcaModelCard";
-import OrcaChart from "./OrcaChart";
 import MoleculeViewer from "./MoleculeViewer";
 import OrcaResultsTabs from "./OrcaResultsTabs";
+import OrcaMoleculeViewer from "./OrcaMoleculeViewer";
+import { useQuery } from "@tanstack/react-query";
+import { getOrcaSimulation } from "../queryfunctions";
 
 export default function OrcaResults(props: { orcaSimulationId: number }) {
+  const query = useQuery({
+    queryKey: ["orca", props.orcaSimulationId],
+    queryFn: () => getOrcaSimulation(props.orcaSimulationId),
+  });
+
+  if (!query.data) {
+    return <Box>Loading</Box>;
+  }
   return (
     <Grid2 container spacing={2} height="100%">
       <Grid2 size={4}>
@@ -12,12 +22,15 @@ export default function OrcaResults(props: { orcaSimulationId: number }) {
           <OrcaModelCard
             orcaSimulationId={props.orcaSimulationId}
           ></OrcaModelCard>
-          <MoleculeViewer id={props.orcaSimulationId} />
+          <OrcaMoleculeViewer orcaSimulationid={props.orcaSimulationId} />
         </Stack>
       </Grid2>
 
       <Grid2 size={8}>
-        <OrcaResultsTabs orcaSimulationId={props.orcaSimulationId} />
+        <OrcaResultsTabs
+          orcaSimulationId={props.orcaSimulationId}
+          isOpt={query.data.calculation_type == "opt"}
+        />
       </Grid2>
     </Grid2>
   );

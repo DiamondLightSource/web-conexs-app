@@ -39,6 +39,7 @@ JOB_RUNNING = "RUNNING"
 JOB_COMPLETED = "COMPLETED"
 JOB_FAILED = "FAILED"
 JOB_PENDING = "PENDING"
+JOB_TIMEOUT = "TIMEOUT"
 
 
 def get_token():
@@ -216,7 +217,6 @@ def run_update():
         sims = get_submitted_simulations(session)
 
         for sim in sims:
-            print(sim)
             # if slurm_token_file is None:
             #     print(slurm_token)
             # sr = SimulationResponse.model_validate(sim)
@@ -282,6 +282,9 @@ def run_update():
                     a.status = SimulationStatus.completed
                     update_simulation(session, a)
                 elif state == JOB_FAILED and a.status != SimulationStatus.failed:
+                    a.status = SimulationStatus.failed
+                    update_simulation(session, a)
+                elif state == JOB_TIMEOUT and a.status != SimulationStatus.failed:
                     a.status = SimulationStatus.failed
                     update_simulation(session, a)
 

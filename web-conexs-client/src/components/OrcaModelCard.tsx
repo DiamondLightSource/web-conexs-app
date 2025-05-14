@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 
 import { useQuery } from "@tanstack/react-query";
 import { getOrcaSimulation } from "../queryfunctions";
@@ -32,10 +25,12 @@ export default function OrcaModelCard(props: { orcaSimulationId: number }) {
           {orcaSimulation.calculation_type.toUpperCase()} Calculation
         </Typography>
         <Typography variant="h6" component="div">
-          {orcaSimulation.functional}
+          {orcaSimulation.functional} {orcaSimulation.basis_set}
         </Typography>
         <Typography variant="h6" component="div">
-          {orcaSimulation.basis_set}
+          {orcaSimulation.solvent == null
+            ? "No Solvent"
+            : orcaSimulation.solvent}
         </Typography>
       </CardContent>
     </Card>

@@ -65,10 +65,10 @@ def build_orca_input_file(
 ):
     calc_type = orca_simulation.calculation_type
 
-    if calc_type == OrcaCalculation.xas.value:
-        prefix = "! "
-    else:
+    if calc_type == OrcaCalculation.xes:
         prefix = "! UKS "
+    else:
+        prefix = "! "
 
     jobfile = (
         prefix
@@ -77,6 +77,9 @@ def build_orca_input_file(
         + orca_simulation.basis_set
         + " SARC/J"
     )
+
+    if calc_type == OrcaCalculation.opt:
+        jobfile += " OPT "
 
     if orca_simulation.solvent is not None:
         jobfile += "CPCM(" + orca_simulation.solvent + ") "
@@ -87,7 +90,7 @@ def build_orca_input_file(
     jobfile += "%pal nprocs " + str(orca_simulation.simulation.n_cores) + "\n"
     jobfile += "end" + "\n\n"
 
-    if calc_type == OrcaCalculation.xas.value:
+    if calc_type == OrcaCalculation.xas:
         jobfile += "%tddft" + "\n"
 
         jobfile += (
@@ -109,7 +112,7 @@ def build_orca_input_file(
         jobfile += "nroots 20" + "\n"
         jobfile += "maxdim 10" + "\n"
         jobfile += "end" + "\n\n"
-    else:
+    elif calc_type == OrcaCalculation.xes:
         jobfile += "%xes" + "\n"
         jobfile += "CoreOrb 0,1" + "\n"
         jobfile += "OrbOp 0,1" + "\n"
