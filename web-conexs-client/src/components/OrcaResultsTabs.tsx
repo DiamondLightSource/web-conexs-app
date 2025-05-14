@@ -3,6 +3,7 @@ import { Tab, Tabs, Box } from "@mui/material";
 import { useState } from "react";
 import OrcaChart from "./OrcaChart";
 import OrcaLogViewer from "./OrcaLogViewer";
+import OrcaXYZViewer from "./OrcaXYZViewer";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -33,7 +34,10 @@ function a11yProps(index: number) {
   };
 }
 
-export default function OrcaResultsTabs(props: { orcaSimulationId: number }) {
+export default function OrcaResultsTabs(props: {
+  orcaSimulationId: number;
+  isOpt: boolean;
+}) {
   const [value, setValue] = useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -48,13 +52,24 @@ export default function OrcaResultsTabs(props: { orcaSimulationId: number }) {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="XAS Plot" {...a11yProps(0)} />
+          {props.isOpt ? (
+            <Tab label="Results XYZ" {...a11yProps(0)} />
+          ) : (
+            <Tab label="XAS Plot" {...a11yProps(0)} />
+          )}
           <Tab label="Results Log" {...a11yProps(1)} />
         </Tabs>
       </Box>
-      <CustomTabPanel value={value} index={0}>
-        <OrcaChart id={props.orcaSimulationId}></OrcaChart>
-      </CustomTabPanel>
+      {props.isOpt ? (
+        <CustomTabPanel value={value} index={0}>
+          <OrcaXYZViewer id={props.orcaSimulationId} />
+        </CustomTabPanel>
+      ) : (
+        <CustomTabPanel value={value} index={0}>
+          <OrcaChart id={props.orcaSimulationId}></OrcaChart>
+        </CustomTabPanel>
+      )}
+
       <CustomTabPanel value={value} index={1}>
         <OrcaLogViewer id={props.orcaSimulationId} />
       </CustomTabPanel>

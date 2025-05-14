@@ -15,6 +15,7 @@ from fastapi_pagination.customization import (
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlmodel import Session, or_, select
 
+from .jobfilebuilders import build_orca_input_file
 from .models.models import (
     CrystalStructure,
     CrystalStructureInput,
@@ -22,7 +23,6 @@ from .models.models import (
     FdmnesSimulationInput,
     MolecularStructure,
     MolecularStructureInput,
-    OrcaCalculation,
     OrcaSimulation,
     OrcaSimulationInput,
     Simulation,
@@ -183,71 +183,9 @@ def get_orca_jobfile_with_technique(session, id):
     orca_simulation = get_orca_simulation(session, id)
     structure = get_molecular_structure(session, orca_simulation.molecular_structure_id)
 
-    calc_type = orca_simulation.calculation_type
-
-    if calc_type == OrcaCalculation.xas:
-        prefix = "! "
-    else:
-        prefix = "! UKS "
-
-    jobfile = (
-        prefix
-        + orca_simulation.functional
-        + " DKH2 "
-        + orca_simulation.basis_set
-        + " SARC/J"
-    )
-
-    if orca_simulation.solvent is not None:
-        jobfile += "CPCM(" + orca_simulation.solvent + ") "
-
-    jobfile += "\n"
-
-    jobfile += "%maxcore " + str(orca_simulation.memory_per_core) + "\n\n"
-    jobfile += "%pal nprocs " + str(orca_simulation.simulation.n_cores) + "\n"
-    jobfile += "end" + "\n\n"
-
-    if calc_type == OrcaCalculation.xas:
-        jobfile += "%tddft" + "\n"
-
-        jobfile += (
-            "orbWin[0] = "
-            + str(orca_simulation.orb_win_0_start)
-            + ","
-            + str(orca_simulation.orb_win_0_stop)
-            + ",-1,-1\n"
-        )
-        jobfile += (
-            "orbWin[1] = "
-            + str(orca_simulation.orb_win_1_start)
-            + ","
-            + str(orca_simulation.orb_win_1_stop)
-            + ",-1,-1\n"
-        )
-
-        jobfile += "doquad true" + "\n"
-        jobfile += "nroots 20" + "\n"
-        jobfile += "maxdim 10" + "\n"
-        jobfile += "end" + "\n\n"
-    else:
-        jobfile += "%xes" + "\n"
-        jobfile += "CoreOrb 0,1" + "\n"
-        jobfile += "OrbOp 0,1" + "\n"
-        jobfile += "DoSOC true" + "\n"
-        jobfile += "Normalize true" + "\n"
-        jobfile += "MDOriginAdjustMethod 1" + "\n"
-        jobfile += "end" + "\n\n"
-
-    jobfile += (
-        "*xyz "
-        + str(orca_simulation.charge)
-        + " "
-        + str(orca_simulation.multiplicity)
-        + "\n"
-    )
-
-    jobfile += structure.structure
-    jobfile += "\nend"
+    print(orca_simulation)
+    jobfile = build_orca_input_file(orca_simulation, structure)
+    print(jobfile)
 
     return jobfile, orca_simulation.calculation_type
 
@@ -374,6 +312,19 @@ def get_orca_output(session, id):
     wd = orca_simulation.simulation.working_directory
 
     result_file = wd + "/orca_result.txt"
+
+    with open(result_file) as fh:
+        file = fh.read()
+
+        return file
+
+
+def get_orca_xyz(session, id):
+    orca_simulation = get_orca_simulation(session, id)
+
+    wd = orca_simulation.simulation.working_directory
+
+    result_file = wd + "/job.xyz"
 
     with open(result_file) as fh:
         file = fh.read()

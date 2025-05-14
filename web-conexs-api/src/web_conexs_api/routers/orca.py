@@ -7,6 +7,7 @@ from ..crud import (
     get_orca_output,
     get_orca_simulation,
     get_orca_xas,
+    get_orca_xyz,
     submit_orca_simulation,
 )
 from ..database import get_session
@@ -25,6 +26,11 @@ def get_orca_simulation_endpoint(
 @router.get("/api/orca/{id}/output")
 def get_orca_output_endpoint(id: int, session: Session = Depends(get_session)) -> str:
     return PlainTextResponse(get_orca_output(session, id))
+
+
+@router.get("/api/orca/{id}/xyz")
+def get_orca_xyz_output(id: int, session: Session = Depends(get_session)) -> str:
+    return PlainTextResponse(get_orca_xyz(session, id))
 
 
 @router.get("/api/orca/{id}/jobfile")

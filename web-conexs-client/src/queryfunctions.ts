@@ -99,6 +99,13 @@ export const getOrcaLog = async (id: number) => {
   return data;
 };
 
+export const getOrcaXyz = async (id: number) => {
+  const { data } = await axios.get<string, AxiosResponse<string>>(
+    orcaUrl + "/" + id + "/xyz"
+  );
+  return data;
+};
+
 export const getFdmnesLog = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
     fdmnesUrl + "/" + id + "/output"
