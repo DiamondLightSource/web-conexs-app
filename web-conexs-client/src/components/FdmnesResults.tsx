@@ -4,7 +4,7 @@ import FdmnesModelCard from "./FdmnesModelCard";
 
 import FdmnesChart from "./FdmnesChart";
 import FdmnesResultsTabs from "./FdmnesResultsTabs";
-import CrystalViewer from "./CrystalViewer";
+import FdmnesCrystalViewer from "./FdmnesCrystalViewer";
 
 export default function FdmnesResults(props: { fdmnesSimulationId: number }) {
   return (
@@ -14,7 +14,7 @@ export default function FdmnesResults(props: { fdmnesSimulationId: number }) {
           <FdmnesModelCard
             fdmnesSimulationId={props.fdmnesSimulationId}
           ></FdmnesModelCard>
-          <CrystalViewer id={props.fdmnesSimulationId} />
+          <FdmnesCrystalViewer fdmnesSimulationid={props.fdmnesSimulationId} />
         </Stack>
       </Grid2>
 

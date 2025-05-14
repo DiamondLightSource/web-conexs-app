@@ -60,7 +60,6 @@ def build_test_database(session: Session):
     )
 
     orca_sim = OrcaSimulation.model_validate(orca_input)
-    # orca_sim.simulation_type_id = 1
     orca_sim.simulation = simulation
     session.add(orca_sim)
 

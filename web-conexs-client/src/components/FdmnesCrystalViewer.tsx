@@ -3,7 +3,9 @@ import React3dMol from "./React3dMol";
 import { getFdmnesSimulation, getCrystal } from "../queryfunctions";
 import { useQuery } from "@tanstack/react-query";
 
-export default function CrystalViewer(props: { fdmnesSimulationid: number }) {
+export default function FdmnesCrystalViewer(props: {
+  fdmnesSimulationid: number;
+}) {
   const { data: fdmnesSim } = useQuery({
     queryKey: ["fdmnes", props.fdmnesSimulationid],
     queryFn: () => getFdmnesSimulation(props.fdmnesSimulationid),
