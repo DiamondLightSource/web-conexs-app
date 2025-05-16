@@ -25,12 +25,16 @@ export default function SimulationReviewPage() {
     }
   }
 
+  console.log(simId);
+
   return (
     <Box height={"100%"}>
       <SimulationTable
         simulations={query.data ? query.data.items : []}
         selectedSimulation={simId}
         setSelectedSimulation={(simulation) => {
+          console.log(simulation);
+          console.log(simulation.id);
           setSimId(simulation?.id);
         }}
       ></SimulationTable>

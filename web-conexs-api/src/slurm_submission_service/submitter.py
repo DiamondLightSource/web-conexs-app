@@ -10,15 +10,16 @@ from pprint import pformat
 
 import requests
 
-from web_conexs_api.crud import (
+from web_conexs_api.database import get_session
+from web_conexs_api.models.models import OrcaCalculation, Simulation, SimulationStatus
+
+from .crud import (
     get_active_simulations,
     get_fdmnes_jobfile,
     get_orca_jobfile_with_technique,
     get_submitted_simulations,
     update_simulation,
 )
-from web_conexs_api.database import get_session
-from web_conexs_api.models.models import OrcaCalculation, Simulation, SimulationStatus
 
 logger = logging.getLogger(__name__)
 

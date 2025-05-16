@@ -12,6 +12,8 @@ export default function OrcaResults(props: { orcaSimulationId: number }) {
     queryFn: () => getOrcaSimulation(props.orcaSimulationId),
   });
 
+  console.log(props.orcaSimulationId);
+
   if (!query.data) {
     return <Box>Loading</Box>;
   }
