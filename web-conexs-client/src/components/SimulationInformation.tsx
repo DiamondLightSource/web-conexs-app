@@ -22,6 +22,10 @@ export function SimulationInformation(props: { simId: number }) {
     queryFn: () => getSim(props.simId),
   });
 
+  console.log(props.simId);
+  if (query.data) {
+    console.log(query.data.id);
+  }
   return (
     <Box width={"100%"} height={"100%"}>
       {query.data && query.data.simulation_type.id == 1 && (

@@ -18,6 +18,8 @@ def test_router():
     )
     SQLModel.metadata.create_all(engine)
 
+    headers = {"Authorization": "Bearer test_user"}
+
     with Session(engine) as session:
         build_test_database(session)
 
@@ -29,7 +31,12 @@ def test_router():
 
         response = client.get("/api/simulations/")
 
-        assert response.status_code == 200
+        print(response)
+
+        assert response.status_code == 403
+
+        headers = headers
+        response = client.get("/api/simulations/", headers=headers)
 
         json = response.json()
 
