@@ -3,15 +3,14 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { Box, Button, Grid2, Skeleton } from "@mui/material";
-import useOrcaSchema from "../hooks/useOrcaSchema";
+import { Box, Button, Skeleton, Stack } from "@mui/material";
+import useOrcaSchema from "../../hooks/useOrcaSchema";
 // import React3dMol from "./React3dMol";
-import { postOrca } from "../queryfunctions";
+import { postOrca } from "../../queryfunctions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import OrcaMoleculeViewer from "./OrcaMoleculeViewer";
-import MoleculeViewer from "./MoleculeViewer";
+import MoleculeViewer from "../molecules/MoleculeViewer";
 
 export default function OrcaForm() {
   const [selectedMoleculeID, setSelectedMoleculeId] = useState<null | number>(
@@ -47,8 +46,12 @@ export default function OrcaForm() {
   }
 
   return (
-    <Grid2 container>
-      <Grid2 size={6} className="jsonFormsContainer">
+    <Stack
+      className="jsonFormsContainer"
+      direction="row"
+      justifyContent="space-between"
+    >
+      <Box>
         {hasData ? (
           <JsonForms
             schema={schema}
@@ -64,16 +67,15 @@ export default function OrcaForm() {
         ) : (
           <Skeleton animation="wave" width={210} height={118} />
         )}
-      </Grid2>
-      <Grid2 size={6}>
-        <Box height="100%vh">
+      </Box>
+      <Stack flex={1}>
+        <Box flex={1}>
           {selectedMoleculeID != null && (
             <MoleculeViewer id={selectedMoleculeID} />
           )}
         </Box>
-      </Grid2>
-      <Grid2 size={12}>
         <Button
+          variant="contained"
           onClick={() => {
             const localData = { ...data };
             if (localData.solvent == "None") {
@@ -85,7 +87,7 @@ export default function OrcaForm() {
         >
           Submit Simulation
         </Button>
-      </Grid2>
-    </Grid2>
+      </Stack>
+    </Stack>
   );
 }

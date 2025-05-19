@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { getOrcaXyz } from "../queryfunctions";
+import { getOrcaXyz } from "../../queryfunctions";
 
 export default function OrcaXYZViewer(props: { id: number }) {
   const query = useQuery({
@@ -10,11 +10,10 @@ export default function OrcaXYZViewer(props: { id: number }) {
 
   return (
     <Typography
-      maxHeight={"20em"}
       sx={{
         fontFamily: "Monospace",
         whiteSpace: "pre-wrap",
-        overflowY: "scroll",
+        overflowY: "auto",
       }}
     >
       {query.data ? query.data : "No XYZ"}

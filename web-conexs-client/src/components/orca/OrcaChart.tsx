@@ -1,7 +1,7 @@
-import XASChart from "./XASChart";
+import XASChart from "../XASChart";
 import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { getOrcaXas } from "../queryfunctions";
+import { getOrcaXas } from "../../queryfunctions";
 
 export default function OrcaChart(props: { id: number }) {
   const query = useQuery({

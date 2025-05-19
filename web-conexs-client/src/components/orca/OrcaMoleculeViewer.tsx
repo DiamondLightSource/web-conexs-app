@@ -1,6 +1,6 @@
 import { Box } from "@mui/material";
-import React3dMol from "./React3dMol";
-import { getMolecule, getOrcaSimulation } from "../queryfunctions";
+import React3dMol from "../React3dMol";
+import { getMolecule, getOrcaSimulation } from "../../queryfunctions";
 import { useQuery } from "@tanstack/react-query";
 
 export default function OrcaMoleculeViewer(props: {
@@ -18,7 +18,7 @@ export default function OrcaMoleculeViewer(props: {
   });
 
   return (
-    <Box height="100%vh">
+    <Box height="100%">
       {query.data && (
         <React3dMol
           moleculedata={query.data}

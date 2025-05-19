@@ -1,9 +1,7 @@
-import { Box, Button, Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Typography } from "@mui/material";
 
 import { useQuery } from "@tanstack/react-query";
-import { getFdmnesSimulation } from "../queryfunctions";
-import { useState } from "react";
-import FdmnesLogViewer from "./FdmnesLogViewer";
+import { getFdmnesSimulation } from "../../queryfunctions";
 
 export default function FdmnesModelCard(props: { fdmnesSimulationId: number }) {
   const query = useQuery({
@@ -18,7 +16,7 @@ export default function FdmnesModelCard(props: { fdmnesSimulationId: number }) {
   }
 
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{ overflow: "auto" }}>
       <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           FDMNES Simulation

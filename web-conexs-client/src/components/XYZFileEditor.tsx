@@ -1,7 +1,7 @@
 import { Alert, Button, Stack, TextField } from "@mui/material";
 import { useState } from "react";
 import { CrystalInput, MoleculeInput } from "../models";
-import LatticeEditor from "./LatticeEditor";
+import LatticeEditor from "./crystals/LatticeEditor";
 
 interface LatticeParameter {
   a: number;

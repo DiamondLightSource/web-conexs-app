@@ -11,18 +11,18 @@ interface TabPanelProps {
 }
 
 function CustomTabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
+  const { children, value, index } = props;
+
+  if (value != index) {
+    return null;
+  }
 
   return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
+    <Box
+      sx={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}
     >
-      {value === index && <Box sx={{ p: 1 }}>{children}</Box>}
-    </div>
+      {value == index && children}
+    </Box>
   );
 }
 
@@ -43,8 +43,10 @@ export default function FdmnesResultsTabs(props: {
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+    <Box
+      sx={{ flex: 1, display: "flex", flexDirection: "column", minHeight: 0 }}
+    >
+      <Box sx={{ borderBottom: 1, borderColor: "divider", display: "flex" }}>
         <Tabs
           value={value}
           onChange={handleChange}

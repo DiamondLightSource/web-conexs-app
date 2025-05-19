@@ -1,16 +1,16 @@
 import { Box } from "@mui/material";
-import React3dMol from "./React3dMol";
-import { getMolecule } from "../queryfunctions";
+import React3dMol from "../React3dMol";
+import { getCrystal } from "../../queryfunctions";
 import { useQuery } from "@tanstack/react-query";
 
-export default function MoleculeViewer(props: { id: number }) {
+export default function CrystalViewer(props: { id: number }) {
   const query = useQuery({
-    queryKey: ["molecule", props.id],
-    queryFn: () => getMolecule(props.id),
+    queryKey: ["crystal", props.id],
+    queryFn: () => getCrystal(props.id),
   });
 
   return (
-    <Box height="100%vh">
+    <Box height="100%" width="100%">
       {query.data && (
         <React3dMol
           moleculedata={query.data}

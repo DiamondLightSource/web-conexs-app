@@ -1,6 +1,6 @@
 import { Stack, TextField, Typography } from "@mui/material";
 
-import { CrystalInput } from "../models";
+import { CrystalInput } from "../../models";
 import LatticeEditor from "./LatticeEditor";
 
 interface LatticeParameter {

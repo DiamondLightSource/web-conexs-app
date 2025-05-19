@@ -1,14 +1,27 @@
-import { AppBar, Toolbar, Typography } from "@mui/material";
+import { AppBar, Checkbox, Stack, Toolbar, Typography } from "@mui/material";
 import SideDrawer from "./SideDrawer";
 
-export default function Header() {
+import { LightMode, DarkMode } from "@mui/icons-material";
+
+export default function Header(props: {
+  colorMode: string;
+  toggleColorMode: () => void;
+}) {
   return (
     <AppBar style={{ position: "static" }}>
       <Toolbar sx={{ justifyContent: "space-between", alignItems: "center" }}>
         <SideDrawer />
-        <Typography variant="h4" component="div" sx={{ flexGrow: 1 }}>
+        <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
           Web-CONEXS
         </Typography>
+        <Stack direction="row" alignItems={"center"}>
+          <Checkbox
+            icon={<LightMode />}
+            checkedIcon={<DarkMode />}
+            checked={props.colorMode === "dark"}
+            onChange={props.toggleColorMode}
+          ></Checkbox>
+        </Stack>
       </Toolbar>
     </AppBar>
   );

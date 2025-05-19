@@ -6,14 +6,14 @@ import {
   TableRow,
   TableCell,
   Table,
-  Paper,
   TableBody,
   Box,
+  Typography,
 } from "@mui/material";
 
 import { tableCellClasses } from "@mui/material/TableCell";
 
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
 import { useState } from "react";
 
 const nResults = 10;
@@ -50,6 +50,34 @@ function SimulationMetadata(props: {
   const className =
     props.simulation?.id === props.selected ? "activeclicked" : "";
 
+  const theme = useTheme();
+
+  let color = theme.palette.text.primary;
+
+  if (props.simulation?.status == "completed") {
+    color = theme.palette.success.main;
+  } else if (props.simulation?.status == "failed") {
+    color = theme.palette.error.main;
+  }
+
+  const request = props.simulation?.request_date;
+
+  let request_string = "";
+
+  if (request) {
+    const d = new Date(request);
+    request_string = d.toDateString() + " " + d.toLocaleTimeString();
+  }
+
+  const complete = props.simulation?.submission_date;
+
+  let complete_string = "";
+
+  if (complete) {
+    const d = new Date(complete);
+    complete_string = d.toDateString() + " " + d.toLocaleTimeString();
+  }
+
   return (
     <StyledTableRow
       onClick={() => {
@@ -70,14 +98,10 @@ function SimulationMetadata(props: {
         {props.simulation?.simulation_type.type ?? ""}
       </StyledTableCell>
       <StyledTableCell align="center">
-        {props.simulation?.status ?? ""}
+        <Typography color={color}> {props.simulation?.status ?? ""}</Typography>
       </StyledTableCell>
-      <StyledTableCell align="left">
-        {props.simulation?.request_date ?? ""}
-      </StyledTableCell>
-      <StyledTableCell align="left">
-        {props.simulation?.submission_date ?? ""}
-      </StyledTableCell>
+      <StyledTableCell align="left">{request_string}</StyledTableCell>
+      <StyledTableCell align="left">{complete_string}</StyledTableCell>
     </StyledTableRow>
   );
 }
@@ -98,8 +122,8 @@ export default function SimulationTable(props: {
   }
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column" }}>
-      <TableContainer component={Paper}>
+    <Box sx={{ display: "flex", flexDirection: "column", minHeight: 0 }}>
+      <TableContainer>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>

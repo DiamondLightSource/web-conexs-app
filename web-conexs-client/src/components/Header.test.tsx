@@ -4,7 +4,7 @@ import Header from "./Header";
 
 describe("App", () => {
   it("renders the App component", () => {
-    render(<Header />);
+    render(<Header colorMode="light" toggleColorMode={()=>{}} />);
 
     expect(screen.getByText("Web-CONEXS")).toBeDefined();
     // screen.debug(); // prints out the jsx in the App component unto the command line
