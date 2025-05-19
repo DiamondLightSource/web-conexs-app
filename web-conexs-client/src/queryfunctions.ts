@@ -18,8 +18,11 @@ const fdmnesUrl = "/api/fdmnes";
 const moleculeUrl = "/api/molecules";
 const crystalUrl = "/api/crystals";
 
-export const getSimulationPage = async (cursor: string | null) => {
-  let url = simulationUrl + "?size=10";
+export const getSimulationPage = async (
+  cursor: string | null,
+  size: number
+) => {
+  let url = simulationUrl + "?size=" + size;
 
   if (cursor != null) {
     url = url + "&cursor=" + cursor;

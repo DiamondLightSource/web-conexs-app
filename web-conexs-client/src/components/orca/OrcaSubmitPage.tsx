@@ -1,6 +1,7 @@
-import { Box, Container, Paper, Typography } from "@mui/material";
+import { Box, Container, Paper } from "@mui/material";
+import OrcaForm from "./OrcaForm";
 
-export default function WelcomePage() {
+export default function OrcaSubmitPage() {
   return (
     <Box
       display="flex"
@@ -22,11 +23,7 @@ export default function WelcomePage() {
         }}
         elevation={12}
       >
-        <Container maxWidth="md" sx={{ alignSelf: "center", p: "24px" }}>
-          <Typography variant="h4" padding="24px">
-            User-Friendly XAS Simulation!
-          </Typography>
-        </Container>
+        <OrcaForm></OrcaForm>
       </Paper>
     </Box>
   );

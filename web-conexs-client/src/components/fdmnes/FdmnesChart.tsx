@@ -1,7 +1,7 @@
-import XASChart from "./XASChart";
+import XASChart from "../XASChart";
 import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { getFdmnesXas } from "../queryfunctions";
+import { getFdmnesXas } from "../../queryfunctions";
 
 export default function FdmnesChart(props: { id: number }) {
   const query = useQuery({

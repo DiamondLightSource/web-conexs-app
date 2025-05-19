@@ -1,6 +1,6 @@
 import { Stack, TextField } from "@mui/material";
 
-import { MoleculeInput } from "../models";
+import { MoleculeInput } from "../../models";
 
 export default function XYZFileViewer(props: {
   molecule: MoleculeInput | null;

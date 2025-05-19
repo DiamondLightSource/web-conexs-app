@@ -2,11 +2,8 @@ import { Box } from "@mui/material";
 import axios, { AxiosResponse } from "axios";
 import { Simulation } from "../models";
 import { useQuery } from "@tanstack/react-query";
-import OrcaModelCard from "./OrcaModelCard";
-import FdmnesModelCard from "./FdmnesModelCard";
-import FdmnesResults from "./FdmnesResults";
-import OrcaResults from "./OrcaResults";
-
+import FdmnesResults from "./fdmnes/FdmnesResults";
+import OrcaResults from "./orca/OrcaResults";
 const simulationUrl = "/api/simulations";
 
 export function SimulationInformation(props: { simId: number }) {
@@ -27,7 +24,7 @@ export function SimulationInformation(props: { simId: number }) {
     console.log(query.data.id);
   }
   return (
-    <Box width={"100%"} height={"100%"}>
+    <Box width={"100%"} overflow="hidden" flex={1} display="flex">
       {query.data && query.data.simulation_type.id == 1 && (
         <OrcaResults orcaSimulationId={query.data.id}></OrcaResults>
       )}

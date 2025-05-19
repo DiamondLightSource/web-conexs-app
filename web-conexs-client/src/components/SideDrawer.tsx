@@ -83,8 +83,8 @@ export default function SideDrawer() {
 
   return (
     <>
-      <IconButton aria-label="add an alarm" onClick={toggleDrawer(true)}>
-        <MenuIcon />
+      <IconButton size="large" onClick={toggleDrawer(true)}>
+        <MenuIcon fontSize="large" />
       </IconButton>
       <Drawer open={open} onClose={toggleDrawer(false)}>
         {DrawerList}

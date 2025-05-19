@@ -8,25 +8,25 @@ import {
 } from "@mui/material";
 import Header from "./components/Header";
 import WelcomePage from "./components/WelcomePage";
-import MoleculePage from "./components/MoleculePage";
+import MoleculePage from "./components/molecules/MoleculePage";
 import { Route, Routes } from "react-router-dom";
-import SimulationReviewPage from "./components/SimulationReviewPage";
-import OrcaSubmitPage from "./components/OrcaSubmitPage";
-import CrystalPage from "./components/CrystalPage";
-import CreateMoleculePage from "./components/CreateMoleculePage";
-import FdmnesSubmitPage from "./components/FdmnesSubmitPage";
-import CreateCystalPage from "./components/CreateCrystalPage";
+import OrcaSubmitPage from "./components/orca/OrcaSubmitPage";
+import CrystalPage from "./components/crystals/CrystalPage";
+import CreateMoleculePage from "./components/molecules/CreateMoleculePage";
+import FdmnesSubmitPage from "./components/fdmnes/FdmnesSubmitPage";
+import CreateCystalPage from "./components/crystals/CreateCrystalPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import SimulationReviewPage from "./components/SimulationReviewPage";
 
 const queryClient = new QueryClient();
 
 function App() {
   const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
   const [mode, setMode] = useState<"light" | "dark">(
-    prefersDarkMode ? "light" : "dark"
+    prefersDarkMode ? "dark" : "light"
   );
 
-  useMemo(
+  const colorMode = useMemo(
     () => ({
       toggleColorMode: () => {
         setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
@@ -50,7 +50,10 @@ function App() {
       <CssBaseline />
       <QueryClientProvider client={queryClient}>
         <Stack height="100vh" width="100vw" spacing={1}>
-          <Header />
+          <Header
+            colorMode={mode}
+            toggleColorMode={colorMode.toggleColorMode}
+          />
           <Routes>
             <Route path="/" element={<WelcomePage />} />
             <Route path="/molecule" element={<MoleculePage />} />

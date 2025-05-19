@@ -123,7 +123,7 @@ export default function React3dMol(props: Molecule3DProps) {
   return (
     <div
       ref={moleculeViewer}
-      style={{ height: "200px", width: "300px", position: "relative" }}
+      style={{ height: "100%", width: "100%", position: "relative" }}
     />
   );
 }

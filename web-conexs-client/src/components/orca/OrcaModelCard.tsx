@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, Typography } from "@mui/material";
 
 import { useQuery } from "@tanstack/react-query";
-import { getOrcaSimulation } from "../queryfunctions";
+import { getOrcaSimulation } from "../../queryfunctions";
 
 export default function OrcaModelCard(props: { orcaSimulationId: number }) {
   const query = useQuery({
@@ -16,7 +16,7 @@ export default function OrcaModelCard(props: { orcaSimulationId: number }) {
   }
 
   return (
-    <Card variant="outlined">
+    <Card variant="outlined" sx={{ overflow: "auto" }}>
       <CardContent>
         <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           Orca Simulation

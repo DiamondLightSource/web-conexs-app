@@ -1,5 +1,5 @@
 import { Stack, TextField } from "@mui/material";
-import { LatticeParameter } from "../models";
+import { LatticeParameter } from "../../models";
 
 function NumberNoSpinner(props: {
   value: number;
