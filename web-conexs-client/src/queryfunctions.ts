@@ -8,6 +8,7 @@ import {
   MoleculeInput,
   OrcaSimulation,
   OrcaSimulationInput,
+  Simulation,
   SimulationPage,
   XASData,
 } from "./models";
@@ -32,6 +33,13 @@ export const getSimulationPage = async (
     SimulationPage,
     AxiosResponse<SimulationPage>
   >(url);
+  return data;
+};
+
+export const getSimulation = async (id: number) => {
+  const { data } = await axios.get<Simulation, AxiosResponse<Simulation>>(
+    simulationUrl + "/" + id
+  );
   return data;
 };
 

@@ -6,6 +6,7 @@ import React3dMol from "../React3dMol";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postMolecule } from "../../queryfunctions";
+import XYZEditor from "../XYZEditor";
 
 const templateMolecule: MoleculeInput = {
   label: "Benzene",
@@ -21,7 +22,7 @@ export default function CreateMoleculePage() {
 
   const callback = () => {
     window.alert("Thank you for your submission");
-    navigate("/molecule");
+    navigate("/molecules");
   };
 
   const mutation = useMutation({
@@ -55,9 +56,13 @@ export default function CreateMoleculePage() {
         elevation={12}
       >
         <Typography variant="h4" padding="24px">
-          Create Crystals
+          Create Molecule
         </Typography>
         <Stack direction={"row"} spacing="2px">
+          {/* <XYZEditor
+            template={molecule.structure}
+            setStructure={() => {}}
+          ></XYZEditor> */}
           <XYZFileEditor
             structureInput={molecule}
             setStructureInput={setMolecule}

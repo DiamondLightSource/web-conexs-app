@@ -566,3 +566,5 @@ export const periodic_table: Element[] = [
     symbol: "Cn",
   },
 ];
+
+export const elementSet = new Set(periodic_table.map((e) => e.symbol));

@@ -103,7 +103,7 @@ const uischema = {
     },
     {
       type: "Group",
-      label: "Resources",
+      label: "",
       elements: [
         {
           type: "HorizontalLayout",
@@ -131,7 +131,6 @@ export default function useFDMNESSchema() {
     queryKey: ["crystals"],
     queryFn: getCrystals,
   });
-
 
   if (query.data != null && query.data.length != 0 && !hasData) {
     const tmpSchema = { ...schema };

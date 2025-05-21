@@ -1,7 +1,7 @@
 import { Alert, Button, Stack, TextField } from "@mui/material";
 import { useState } from "react";
-import { CrystalInput, MoleculeInput } from "../models";
-import LatticeEditor from "./crystals/LatticeEditor";
+import { CrystalInput, MoleculeInput } from "../../models";
+import LatticeEditor from "./LatticeEditor";
 
 interface LatticeParameter {
   a: number;
@@ -13,7 +13,7 @@ interface LatticeParameter {
   ibrav: string;
 }
 
-export default function XYZFileEditor(props: {
+export default function CrystalEditor(props: {
   structureInput: MoleculeInput | CrystalInput | null;
   setStructureInput: (
     structureInput: MoleculeInput | CrystalInput | null
@@ -109,6 +109,7 @@ export default function XYZFileEditor(props: {
       console.log(input);
       props.setStructureInput(input);
     } else {
+      setIsError(true);
       const temp = errors.split("\n");
       temp.length = temp.length - 1;
       setError(temp);
