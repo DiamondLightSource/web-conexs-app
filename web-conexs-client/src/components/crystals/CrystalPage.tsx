@@ -15,7 +15,6 @@ export default function CrystalPage() {
 
   const [selectedCrystalId, setSelectedCrystalId] = useState<number | null>();
 
-  // console.log(molecule);
   let finalCrystal = null;
 
   if (query.data && query.data.length != 0 && selectedCrystalId) {

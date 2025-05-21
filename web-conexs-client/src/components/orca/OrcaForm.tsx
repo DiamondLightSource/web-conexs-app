@@ -3,7 +3,7 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { Box, Button, Skeleton, Stack } from "@mui/material";
+import { Box, Button, Skeleton, Stack, Typography } from "@mui/material";
 import useOrcaSchema from "../../hooks/useOrcaSchema";
 // import React3dMol from "./React3dMol";
 import { postOrca } from "../../queryfunctions";

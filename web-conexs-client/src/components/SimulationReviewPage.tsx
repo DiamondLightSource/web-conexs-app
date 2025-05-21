@@ -23,6 +23,7 @@ export default function SimulationReviewPage() {
   const query = useQuery({
     queryKey: ["simulations", cursor],
     queryFn: () => getSimulationPage(cursor, 20),
+    refetchInterval: 10000,
   });
 
   if (query.data) {

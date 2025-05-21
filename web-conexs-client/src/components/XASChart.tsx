@@ -16,6 +16,8 @@ import {
 } from "@h5web/lib";
 import "@h5web/lib/dist/styles.css";
 
+import GridOnIcon from "@mui/icons-material/GridOn";
+
 import Paper from "@mui/material/Paper";
 
 import { useTheme } from "@mui/material";
@@ -46,8 +48,6 @@ function XASChart(props: { xas: XASData }) {
 
   const theme = useTheme();
 
-  console.log(props);
-
   let xdata: ndarray.NdArray<number[]> = ndarray(props.xas.energy, [
     props.xas.energy.length,
   ]);
@@ -61,53 +61,6 @@ function XASChart(props: { xas: XASData }) {
     xdata2 = ndarray(props.xas.stk_energy, [props.xas.stk_energy.length]);
     ydata2 = ndarray(props.xas.stk_xas, [props.xas.stk_xas.length]);
   }
-
-  //   let xdata = [0];
-  //   let ydata = [0];
-
-  //   const aux = [];
-
-  let ydataLabel = "";
-
-  //   const hideAll = !props.showTrans && !props.showFluor && !props.showRef;
-
-  //   if (props.xasdata != null && !hideAll) {
-  //     xdata = ndarray(props.xasdata.energy, [props.xasdata.energy.length]);
-
-  //     let primaryFound = false;
-
-  //     if (props.showTrans) {
-  //       primaryFound = true;
-  //       ydata = ndarray(props.xasdata.mutrans, [props.xasdata.mutrans.length]);
-  //       ydataLabel = "Transmission";
-  //     }
-
-  //     if (props.showFluor) {
-  //       const fdata = ndarray(props.xasdata.mufluor, [
-  //         props.xasdata.mutrans.length,
-  //       ]);
-  //       if (!primaryFound) {
-  //         primaryFound = true;
-  //         ydata = fdata;
-  //         ydataLabel = "Fluorescence";
-  //       } else {
-  //         aux.push({ label: "Fluorescence", array: fdata });
-  //       }
-  //     }
-
-  //     if (props.showRef) {
-  //       const rdata = ndarray(props.xasdata.murefer, [
-  //         props.xasdata.murefer.length,
-  //       ]);
-  //       if (!primaryFound) {
-  //         primaryFound = true;
-  //         ydata = rdata;
-  //         ydataLabel = "Reference";
-  //       } else {
-  //         aux.push({ label: "Reference", array: rdata });
-  //       }
-  //     }
-  //   }
 
   const toolbarstyle = {
     "--h5w-toolbar--bgColor": theme.palette.action.hover,
@@ -145,7 +98,6 @@ function XASChart(props: { xas: XASData }) {
 
   return (
     <Paper
-      // flexdirection="column"
       sx={{
         height: "100%",
         display: "flex",
@@ -156,49 +108,23 @@ function XASChart(props: { xas: XASData }) {
     >
       <Box style={toolbarstyle}>
         <Toolbar>
-          {/* <Separator /> */}
-          {/* <ToggleBtn
-            label="Transmission"
-            value={props.showTrans}
-            onToggle={() => {
-              props.setShowTrans(!props.showTrans);
-            }}
-            disabled={!props.contains[0]}
-          />
           <ToggleBtn
-            label="Fluorescence"
-            value={props.showFluor}
-            onToggle={() => props.setShowFluor(!props.showFluor)}
-            disabled={!props.contains[1]}
-          />
-          <ToggleBtn
-            label="Reference"
-            value={props.showRef}
-            onToggle={() => props.setShowRef(!props.showRef)}
-            disabled={!props.contains[2]}
-          />
-          <Separator />
-          <Selector<CurveType>
-            label="Line Style"
-            onChange={(o) => {
-              setCurveOption(o);
-            }}
-            options={curveOptions}
-            value={curveOption}
-            optionComponent={CurveOption}
-          />
-          <Separator />
-          <GridToggler onToggle={() => setUseGrid(!useGrid)} value={useGrid} /> */}
+            label="Grid"
+            value={useGrid}
+            icon={GridOnIcon}
+            onToggle={() => setUseGrid(!useGrid)}
+          ></ToggleBtn>
         </Toolbar>
       </Box>
       <Box style={plotstyle} flex={1} display="flex">
         <VisCanvas
           abscissaConfig={{
-            showGrid: true,
+            showGrid: useGrid,
             visDomain: domainx,
+            label: "Energy / eV",
           }}
           ordinateConfig={{
-            showGrid: true,
+            showGrid: useGrid,
             visDomain: domain,
           }}
         >
@@ -222,19 +148,6 @@ function XASChart(props: { xas: XASData }) {
             />
           )}
         </VisCanvas>
-        {/* <LineVis
-          abscissaParams={{
-            value: xdata.data,
-            scaleType: ScaleType.Linear,
-            label: "Energy",
-          }}
-          dataArray={ydata}
-          ordinateLabel={ydataLabel}
-          domain={domain}
-          showGrid={useGrid}
-          curveType={curveOption}
-          scaleType={ScaleType.Linear}
-        /> */}
       </Box>
     </Paper>
   );

@@ -1,4 +1,5 @@
 import { CrystalInput, MoleculeInput } from "./models";
+import { elementSet } from "./periodictable";
 
 export function moleculeInputToXYZ(input: MoleculeInput) {
   const lines = (input.structure.match(/\n/g) || "").length + 1;
@@ -7,9 +8,6 @@ export function moleculeInputToXYZ(input: MoleculeInput) {
 
 export function crystalInputToCIF(input: CrystalInput) {
   let cif = "data_1\n\n";
-  //   const cifString =
-  //     "data_1 \n\n_cell_angle_alpha                90\ncell_angle_beta                 90\n_cell_angle_gamma                120\n\n_cell_length_a                   3.22\n_cell_length_b                   3.22\n_cell_length_c                   5.2\n\n\nloop_\n_atom_site_label\n_atom_site_fract_x\n_atom_site_fract_y\n_atom_site_fract_z\nZn 0.3333 0.6667 0.\nO 0.3333 0.6667 0.375";
-
   cif = cif + "_cell_angle_alpha" + " " + input.alpha + "\n";
   cif = cif + "_cell_angle_beta" + " " + input.beta + "\n";
   cif = cif + "_cell_angle_gamma" + " " + input.gamma + "\n";
@@ -40,4 +38,31 @@ export function crystalInputToCIF(input: CrystalInput) {
   });
 
   return cif;
+}
+
+export function validateMoleculeData(data: string): string {
+  const a = data.split("\n");
+  let errorList = "";
+
+  for (let index = 0; index < a.length; index++) {
+    const currentLine = a[index].split(/\b\s+/).filter((i) => i);
+    if (currentLine.length == 0) {
+      continue;
+    }
+    if (currentLine.length != 4) {
+      errorList =
+        errorList + "Wrong number of items on line " + (index + 1) + "\n";
+    }
+    if (!elementSet.has(currentLine[0])) {
+      errorList = errorList + "Invalid chemical on line " + (index + 1) + "\n";
+    }
+    // if (
+    //   !/^[+-]?[0-9]{1,}(?:\.[0-9]{1,})?$/.test(currentLine[1]) ||
+    //   !/^[+-]?[0-9]{1,}(?:\.[0-9]{1,})?$/.test(currentLine[2]) ||
+    //   !/^[+-]?[0-9]{1,}(?:\.[0-9]{1,})?$/.test(currentLine[3])
+    // ) {
+    //   errorList = errorList + "Invalid number on line " + (index + 1) + "\n";
+    // }
+  }
+  return errorList;
 }

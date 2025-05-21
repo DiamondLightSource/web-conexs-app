@@ -1,11 +1,11 @@
 import { Box, Button, Paper, Stack, Typography } from "@mui/material";
 import { CrystalInput } from "../../models";
 import { useState } from "react";
-import XYZFileEditor from "../XYZFileEditor";
 import React3dMol from "../React3dMol";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postCrystal } from "../../queryfunctions";
+import CrystalEditor from "./CrystalEditor";
 
 const templateCrystal: CrystalInput = {
   a: 4.1043564,
@@ -25,7 +25,7 @@ export default function CreateCystalPage() {
 
   const callback = () => {
     window.alert("Thank you for your submission");
-    navigate("/crystal");
+    navigate("/crystals");
   };
 
   const mutation = useMutation({
@@ -61,10 +61,10 @@ export default function CreateCystalPage() {
         elevation={12}
       >
         <Typography variant="h4" padding="24px">
-          Create Crystals
+          Create Crystal
         </Typography>
         <Stack direction={"row"} spacing="5px" margin="5px">
-          <XYZFileEditor
+          <CrystalEditor
             structureInput={crystal}
             setStructureInput={setCrytal}
             isMolecule={false}

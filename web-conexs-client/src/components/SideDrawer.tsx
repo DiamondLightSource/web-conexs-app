@@ -1,5 +1,6 @@
 import {
   Box,
+  Divider,
   Drawer,
   IconButton,
   List,
@@ -28,10 +29,19 @@ export default function SideDrawer() {
             </ListItemButton>
           </Link>
         </ListItem>
-        <ListItem key="Molecules" disablePadding>
-          <Link to={"/molecule"}>
+        <Divider />
+        <ListItem key="Simulations" disablePadding>
+          <Link to={"/simulations"}>
             <ListItemButton>
-              <ListItemText primary="Molecule" />
+              <ListItemText primary="Simulations" />
+            </ListItemButton>
+          </Link>
+        </ListItem>
+        <Divider />
+        <ListItem key="Molecules" disablePadding>
+          <Link to={"/molecules"}>
+            <ListItemButton>
+              <ListItemText primary="Molecules" />
             </ListItemButton>
           </Link>
         </ListItem>
@@ -42,10 +52,18 @@ export default function SideDrawer() {
             </ListItemButton>
           </Link>
         </ListItem>
-        <ListItem key="Crystals" disablePadding>
-          <Link to={"/crystal"}>
+        <ListItem key="Submit Orca" disablePadding>
+          <Link to={"/orca"}>
             <ListItemButton>
-              <ListItemText primary="Crystal" />
+              <ListItemText primary="Submit Orca" />
+            </ListItemButton>
+          </Link>
+        </ListItem>
+        <Divider />
+        <ListItem key="Crystals" disablePadding>
+          <Link to={"/crystals"}>
+            <ListItemButton>
+              <ListItemText primary="Crystals" />
             </ListItemButton>
           </Link>
         </ListItem>
@@ -53,20 +71,6 @@ export default function SideDrawer() {
           <Link to={"/createcrystal"}>
             <ListItemButton>
               <ListItemText primary="Create Crystal" />
-            </ListItemButton>
-          </Link>
-        </ListItem>
-        <ListItem key="Simulations" disablePadding>
-          <Link to={"/simulation"}>
-            <ListItemButton>
-              <ListItemText primary="Simulations" />
-            </ListItemButton>
-          </Link>
-        </ListItem>
-        <ListItem key="Submit Orca" disablePadding>
-          <Link to={"/orca"}>
-            <ListItemButton>
-              <ListItemText primary="Submit Orca" />
             </ListItemButton>
           </Link>
         </ListItem>

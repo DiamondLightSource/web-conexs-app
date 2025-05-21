@@ -1,4 +1,4 @@
-import { Box, Container, Paper } from "@mui/material";
+import { Box, Container, Paper, Typography } from "@mui/material";
 import OrcaForm from "./OrcaForm";
 
 export default function OrcaSubmitPage() {
@@ -23,6 +23,9 @@ export default function OrcaSubmitPage() {
         }}
         elevation={12}
       >
+        <Typography variant="h4" padding="10px">
+          Submit Orca Simulation
+        </Typography>
         <OrcaForm></OrcaForm>
       </Paper>
     </Box>

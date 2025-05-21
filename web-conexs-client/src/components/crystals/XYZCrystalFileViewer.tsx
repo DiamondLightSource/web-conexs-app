@@ -44,6 +44,11 @@ export default function XYZCrystalFileViewer(props: {
         label="Label"
         value={props.crystal == null ? " " : props.crystal.label}
       />
+      <TextField
+        id="BravaisLatticeIndex"
+        label="Bravais Lattice Index"
+        value={props.crystal == null ? " " : props.crystal.ibrav}
+      />
       <LatticeEditor lattice={lp} setLattice={() => {}}></LatticeEditor>
 
       <TextField

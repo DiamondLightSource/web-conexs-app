@@ -3,7 +3,6 @@ import { orcaDefaultValues } from "../models";
 import { useQuery } from "@tanstack/react-query";
 import { getMolecules } from "../queryfunctions";
 
-
 const orb_rule = {
   effect: "DISABLE",
   condition: {
@@ -192,7 +191,7 @@ const uischema = {
     },
     {
       type: "Group",
-      label: "Resources",
+      label: "",
       elements: [
         {
           type: "HorizontalLayout",
@@ -219,7 +218,6 @@ export default function useOrcaSchema() {
     queryKey: ["molecules"],
     queryFn: getMolecules,
   });
-
 
   if (query.data && query.data.length != 0 && !hasData) {
     const tmpSchema = { ...schema };

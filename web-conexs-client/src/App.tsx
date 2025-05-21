@@ -56,11 +56,11 @@ function App() {
           />
           <Routes>
             <Route path="/" element={<WelcomePage />} />
-            <Route path="/molecule" element={<MoleculePage />} />
+            <Route path="/molecules" element={<MoleculePage />} />
             <Route path="/createmolecule" element={<CreateMoleculePage />} />
-            <Route path="/crystal" element={<CrystalPage />} />
+            <Route path="/crystals" element={<CrystalPage />} />
             <Route path="/createcrystal" element={<CreateCystalPage />} />
-            <Route path="/simulation" element={<SimulationReviewPage />} />
+            <Route path="/simulations" element={<SimulationReviewPage />} />
             <Route path="/orca" element={<OrcaSubmitPage />} />
             <Route path="/fdmnes" element={<FdmnesSubmitPage />} />
           </Routes>

@@ -17,7 +17,7 @@ def get_orca_jobfile(session, id):
     return get_orca_jobfile[0]
 
 
-def get_molecular_structure(session, id, user_id):
+def get_molecular_structure(session, id):
     structure = session.get(MolecularStructure, id)
 
     if structure:
@@ -26,7 +26,7 @@ def get_molecular_structure(session, id, user_id):
         raise RuntimeError("Molecular structure not found")
 
 
-def get_orca_simulation(session, id, user_id) -> OrcaSimulation:
+def get_orca_simulation(session, id) -> OrcaSimulation:
     simulation = session.get(OrcaSimulation, id)
 
     if simulation:
@@ -86,7 +86,7 @@ def get_submitted_simulations(session) -> List[Simulation]:
     return session.exec(statement).all()
 
 
-def update_simulation(session, simulation: Simulation, user_id):
+def update_simulation(session, simulation: Simulation):
     session.add(simulation)
     session.commit()
     session.refresh(simulation)
