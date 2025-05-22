@@ -22,7 +22,7 @@ export default function OrcaForm() {
 
   const callback = () => {
     window.alert("Thank you for your submission");
-    navigate("/simulation");
+    navigate("/simulations");
   };
 
   const errorCallback = () => {

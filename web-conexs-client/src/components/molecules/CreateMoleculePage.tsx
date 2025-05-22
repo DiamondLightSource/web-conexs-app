@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postMolecule } from "../../queryfunctions";
 import XYZEditor from "../XYZEditor";
+import MoleculeEditor from "./MoleculeEditor";
 
 const templateMolecule: MoleculeInput = {
   label: "Benzene",
@@ -16,7 +17,9 @@ const templateMolecule: MoleculeInput = {
 };
 
 export default function CreateMoleculePage() {
-  const [molecule, setMolecule] = useState<MoleculeInput>(templateMolecule);
+  const [molecule, setMolecule] = useState<MoleculeInput | null>(
+    templateMolecule
+  );
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -59,15 +62,10 @@ export default function CreateMoleculePage() {
           Create Molecule
         </Typography>
         <Stack direction={"row"} spacing="2px">
-          {/* <XYZEditor
-            template={molecule.structure}
-            setStructure={() => {}}
-          ></XYZEditor> */}
-          <XYZFileEditor
-            structureInput={molecule}
-            setStructureInput={setMolecule}
-            isMolecule={true}
-          />
+          <MoleculeEditor
+            molecule={molecule}
+            setMolecule={setMolecule}
+          ></MoleculeEditor>
           <React3dMol
             moleculedata={molecule}
             color="#3465A4"
@@ -76,8 +74,12 @@ export default function CreateMoleculePage() {
           ></React3dMol>
         </Stack>
         <Button
+          disabled={molecule == null}
           onClick={() => {
-            mutation.mutate(molecule);
+            if (molecule != null) {
+              console.log(molecule);
+              mutation.mutate(molecule);
+            }
           }}
         >
           Create Molecule

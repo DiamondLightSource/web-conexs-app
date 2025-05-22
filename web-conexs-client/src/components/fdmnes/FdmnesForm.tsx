@@ -32,7 +32,7 @@ export default function FdmnesForm() {
   const queryClient = useQueryClient();
   const callback = () => {
     window.alert("Thank you for your submission");
-    navigate("/simulation");
+    navigate("/simulations");
   };
 
   const errorCallback = () => {

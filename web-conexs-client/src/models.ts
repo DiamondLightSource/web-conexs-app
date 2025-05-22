@@ -13,6 +13,16 @@ export interface CrystalInput extends MoleculeInput {
   ibrav: string;
 }
 
+export interface LatticeParameter {
+  a: number | null;
+  b: number | null;
+  c: number | null;
+  alpha: number | null;
+  beta: number | null;
+  gamma: number | null;
+  ibrav: string | null;
+}
+
 export interface Molecule extends MoleculeInput {
   id: number;
 }

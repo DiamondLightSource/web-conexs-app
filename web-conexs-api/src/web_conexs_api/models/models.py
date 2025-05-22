@@ -42,7 +42,7 @@ class CrystalStructureInput(MolecularStructureInput):
     alpha: float
     beta: float
     gamma: float
-    ibrav: int
+    ibrav: str
 
 
 class CrystalStructure(CrystalStructureInput, table=True):

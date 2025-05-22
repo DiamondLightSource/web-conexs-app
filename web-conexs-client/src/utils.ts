@@ -41,13 +41,17 @@ export function crystalInputToCIF(input: CrystalInput) {
 }
 
 export function validateMoleculeData(data: string): string {
+  if (data.trim() === "") {
+    return "Structure cannot be empty";
+  }
+
   const a = data.split("\n");
   let errorList = "";
 
   for (let index = 0; index < a.length; index++) {
     const currentLine = a[index].split(/\b\s+/).filter((i) => i);
     if (currentLine.length == 0) {
-      continue;
+      errorList = errorList + "Empty line:  " + (index + 1) + "\n";
     }
     if (currentLine.length != 4) {
       errorList =
@@ -56,13 +60,6 @@ export function validateMoleculeData(data: string): string {
     if (!elementSet.has(currentLine[0])) {
       errorList = errorList + "Invalid chemical on line " + (index + 1) + "\n";
     }
-    // if (
-    //   !/^[+-]?[0-9]{1,}(?:\.[0-9]{1,})?$/.test(currentLine[1]) ||
-    //   !/^[+-]?[0-9]{1,}(?:\.[0-9]{1,})?$/.test(currentLine[2]) ||
-    //   !/^[+-]?[0-9]{1,}(?:\.[0-9]{1,})?$/.test(currentLine[3])
-    // ) {
-    //   errorList = errorList + "Invalid number on line " + (index + 1) + "\n";
-    // }
   }
   return errorList;
 }
