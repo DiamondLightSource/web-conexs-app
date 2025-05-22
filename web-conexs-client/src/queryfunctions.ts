@@ -92,6 +92,7 @@ export const getCrystal = async (id: number) => {
 };
 
 export const postCrystal = async (input: CrystalInput) => {
+  console.log(input);
   axios.post(crystalUrl, input);
 };
 

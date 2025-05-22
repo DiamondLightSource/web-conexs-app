@@ -37,7 +37,7 @@ export default function CreateCystalPage() {
     },
   });
 
-  const [crystal, setCrytal] = useState<CrystalInput>(templateCrystal);
+  const [crystal, setCrytal] = useState<CrystalInput | null>(templateCrystal);
 
   return (
     <Box
@@ -64,11 +64,7 @@ export default function CreateCystalPage() {
           Create Crystal
         </Typography>
         <Stack direction={"row"} spacing="5px" margin="5px">
-          <CrystalEditor
-            structureInput={crystal}
-            setStructureInput={setCrytal}
-            isMolecule={false}
-          />
+          <CrystalEditor crystal={crystal} setCrystal={setCrytal} />
           <React3dMol
             moleculedata={crystal}
             color="#3465A4"
@@ -78,7 +74,10 @@ export default function CreateCystalPage() {
         </Stack>
         <Button
           onClick={() => {
-            mutation.mutate(crystal);
+            if (crystal != null) {
+              console.log(crystal);
+              mutation.mutate(crystal);
+            }
           }}
         >
           Create

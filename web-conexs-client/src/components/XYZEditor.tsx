@@ -1,23 +1,48 @@
 import { TextField } from "@mui/material";
 import { useState } from "react";
+import { validateMoleculeData } from "../utils";
 
 export default function XYZEditor(props: {
-  template: string;
-  setStructure: () => void;
+  structure: string;
+  setStructure: (structure: string | null) => void;
+  isFractional: boolean;
 }) {
-  const [data, setData] = useState<string>(props.template);
+  const [data, setData] = useState<string>(props.structure);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const onChange = (structure: string) => {
+    setData(structure);
+    const errors = validateMoleculeData(structure);
+
+    console.log(errors);
+
+    const isError = errors.length != 0;
+
+    if (!isError) {
+      props.setStructure(structure);
+      setErrorMessage("");
+    } else {
+      props.setStructure(null);
+      setErrorMessage(errors);
+    }
+  };
 
   return (
     <TextField
-      error={true}
+      error={errorMessage.length != 0}
       sx={{ width: "100%" }}
       id="datafilebox"
-      label="Atomic Coordinates (Angstroms)"
+      label={
+        props.isFractional
+          ? "Atomic Coordinates (Fractional)"
+          : "Atomic Coordinates (Angstroms)"
+      }
+      rows={12}
       multiline
       value={data}
-      helperText={"oops"}
+      helperText={errorMessage}
       onChange={(e) => {
-        setData(e.target.value);
+        onChange(e.target.value);
       }}
     />
   );

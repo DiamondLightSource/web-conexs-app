@@ -1,201 +1,121 @@
-import { Alert, Button, Stack, TextField } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 import { useState } from "react";
-import { CrystalInput, MoleculeInput } from "../../models";
+import { CrystalInput, LatticeParameter } from "../../models";
 import LatticeEditor from "./LatticeEditor";
+import XYZEditor from "../XYZEditor";
 
-interface LatticeParameter {
-  a: number;
-  b: number;
-  c: number;
-  alpha: number;
-  beta: number;
-  gamma: number;
-  ibrav: string;
-}
+const templateCrystal: CrystalInput = {
+  a: 4.1043564,
+  b: 4.1043564,
+  c: 4.1043564,
+  alpha: 90,
+  beta: 90,
+  gamma: 90,
+  label: "Silver",
+  ibrav: "2",
+  structure: "Ag 0.0 0.0 0.0\nAg 0.5 0.5 0.0\nAg 0.5 0.0 0.5\nAg 0.0 0.5 0.5",
+};
 
 export default function CrystalEditor(props: {
-  structureInput: MoleculeInput | CrystalInput | null;
-  setStructureInput: (
-    structureInput: MoleculeInput | CrystalInput | null
-  ) => void;
-  isMolecule: boolean;
+  crystal: CrystalInput | null;
+  setCrystal: (structureInput: CrystalInput | null) => void;
 }) {
-  const lp: LatticeParameter =
-    !props.isMolecule &&
-    props.structureInput != null &&
-    "alpha" in props.structureInput
-      ? {
-          alpha: props.structureInput.alpha,
-          beta: props.structureInput.beta,
-          gamma: props.structureInput.gamma,
-          a: props.structureInput.a,
-          b: props.structureInput.b,
-          c: props.structureInput.c,
-          ibrav: props.structureInput.ibrav,
-        }
-      : {
-          a: 1,
-          b: 1,
-          c: 1,
-          alpha: 90,
-          beta: 90,
-          gamma: 90,
-          ibrav: "0",
-        };
-
-  const [lattice, setLattice] = useState<LatticeParameter>(lp);
-
-  const [data, setData] = useState<string>(
-    props.structureInput != null ? props.structureInput.structure : ""
+  const [label, setLabel] = useState(templateCrystal.label);
+  const [labelError, setLabelError] = useState("");
+  const [lattice, setLattice] = useState<LatticeParameter | null>({
+    ...templateCrystal,
+  });
+  const [structure, setStructure] = useState<string | null>(
+    templateCrystal.structure
   );
-  const [error, setError] = useState<string[]>([""]);
-  const [isError, setIsError] = useState<boolean>(false);
 
-  function validateMoleculeData(data: string): string {
-    const a = data.split("\n");
-    let errorList = "";
-
-    for (let index = 0; index < a.length; index++) {
-      const currentLine = a[index].split(/\b\s+/).filter((i) => i);
-      if (currentLine.length == 0) {
-        continue;
-      }
-      if (currentLine.length != 4) {
-        errorList =
-          errorList + "Wrong number of items on line " + (index + 1) + "\n";
-        setIsError(true);
-      }
-      if (!/^[a-zA-Z]+$/.test(currentLine[0])) {
-        errorList =
-          errorList + "Invalid chemical on line " + (index + 1) + "\n";
-        setIsError(true);
-      }
-      if (
-        !/^[+-]?[0-9]{1,}(?:\.[0-9]{1,})?$/.test(currentLine[1]) ||
-        !/^[+-]?[0-9]{1,}(?:\.[0-9]{1,})?$/.test(currentLine[2]) ||
-        !/^[+-]?[0-9]{1,}(?:\.[0-9]{1,})?$/.test(currentLine[3])
-      ) {
-        errorList = errorList + "Invalid number on line " + (index + 1) + "\n";
-        setIsError(true);
-      }
-    }
-    return errorList;
-  }
-
-  function renderMolecule() {
-    const errors = validateMoleculeData(data);
-
-    if (errors == "") {
-      setIsError(false);
-      const input = {
-        label: props.structureInput.label,
-        structure: data
-          .split("\n")
-          .filter((i) => i)
-          .join("\n"),
-      };
-
-      if ("alpha" in props.structureInput) {
-        console.log(lattice.ibrav);
-        input.alpha = lattice.alpha;
-        input.beta = lattice.beta;
-        input.gamma = lattice.gamma;
-        input.a = lattice.a;
-        input.b = lattice.b;
-        input.c = lattice.c;
-        input.ibrav = lattice.ibrav;
-      }
-
-      console.log(input);
-      props.setStructureInput(input);
+  const updateStructure = (structure: string | null) => {
+    setStructure(structure);
+    if (structure == null || lattice === null || label == null) {
+      props.setCrystal(null);
     } else {
-      setIsError(true);
-      const temp = errors.split("\n");
-      temp.length = temp.length - 1;
-      setError(temp);
+      props.setCrystal({
+        label: label,
+        structure: structure,
+        a: lattice.a,
+        b: lattice.b,
+        c: lattice.c,
+        alpha: lattice.alpha,
+        beta: lattice.beta,
+        gamma: lattice.gamma,
+        ibrav: lattice.ibrav,
+      });
     }
-  }
+  };
 
-  console.log(props.structureInput);
+  const updateLattice = (latticeParams: LatticeParameter) => {
+    console.log(latticeParams);
+    setLattice(latticeParams);
+    if (
+      structure == null ||
+      lattice === null ||
+      label == null ||
+      Object.values(latticeParams).includes(null)
+    ) {
+      props.setCrystal(null);
+    } else {
+      props.setCrystal({
+        label: label,
+        structure: structure,
+        a: latticeParams.a,
+        b: latticeParams.b,
+        c: latticeParams.c,
+        alpha: latticeParams.alpha,
+        beta: latticeParams.beta,
+        gamma: latticeParams.gamma,
+        ibrav: latticeParams.ibrav,
+      });
+    }
+  };
+
+  const updateLabel = (label: string) => {
+    if (label.length == 0) {
+      setLabelError("Label cannot be empty");
+    } else {
+      setLabelError("");
+      if (props.crystal != null) {
+        props.setCrystal({
+          label: label,
+          structure: props.crystal.structure,
+          a: lattice.a,
+          b: lattice.b,
+          c: lattice.c,
+          alpha: lattice.alpha,
+          beta: lattice.beta,
+          gamma: lattice.gamma,
+          ibrav: lattice.ibrav,
+        });
+      } else {
+        console.log("CRYSTAL IS NULL");
+      }
+    }
+    setLabel(label);
+  };
 
   return (
-    <Stack spacing={3} minWidth={"450px"}>
+    <Stack spacing={2} minWidth={"450px"}>
       <TextField
+        error={labelError.length != 0}
+        helperText={labelError}
         id="Label"
         label="Label"
-        value={props.structureInput == null ? " " : props.structureInput.label}
-        onChange={(e) => {
-          const newMolecule = {
-            ...props.structureInput,
-            label: e.target.value,
-          };
-          props.setStructureInput(newMolecule);
-        }}
+        value={label}
+        onChange={(e) => updateLabel(e.target.value)}
       />
-
-      {!props.isMolecule && (
-        <>
-          <TextField
-            id="ibrav"
-            label="Bravis Index"
-            value={
-              props.structureInput == null ? " " : props.structureInput.ibrav
-            }
-            onChange={(e) => {
-              console.log(e.target.value);
-              const newLattice = {
-                ...lattice,
-              };
-              newLattice.ibrav = e.target.value;
-
-              console.log(newLattice);
-
-              setLattice(newLattice);
-            }}
-          />
-          <LatticeEditor
-            lattice={lattice}
-            setLattice={setLattice}
-          ></LatticeEditor>
-        </>
-      )}
-
-      <TextField
-        sx={{ width: "100%" }}
-        id="datafilebox"
-        label="Atomic Coordinates (Angstroms)"
-        multiline
-        rows={12}
-        value={
-          data.length == 0 && props.structureInput != null
-            ? props.structureInput.structure
-            : data
-        }
-        onChange={(e) => {
-          // setAtoms(e.target.value.split("\n").filter((i) => i).length);
-          setData(e.target.value);
-        }}
-      />
-
-      <Button variant="contained" onClick={renderMolecule}>
-        Update Viewer
-      </Button>
-
-      {isError ? (
-        <Alert variant="filled" sx={{ m: 2, width: "100%" }} severity="error">
-          <ul style={{ padding: 0 }}>
-            {error.map((data, index) => {
-              return (
-                <li key={index} style={{ listStyle: "none" }}>
-                  {data}
-                </li>
-              );
-            })}
-          </ul>
-        </Alert>
-      ) : (
-        <></>
-      )}
+      <LatticeEditor
+        lattice={lattice}
+        setLattice={updateLattice}
+      ></LatticeEditor>
+      <XYZEditor
+        structure={templateCrystal.structure}
+        setStructure={updateStructure}
+        isFractional={true}
+      ></XYZEditor>
     </Stack>
   );
 }
