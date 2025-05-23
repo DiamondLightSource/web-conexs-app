@@ -12,6 +12,15 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import CrystalViewer from "../crystals/CrystalViewer";
 
+import CompactGroupRenderer, {
+  CompactGroupTester,
+} from "../renderers/CompactGroup";
+
+const renderers = [
+  ...materialRenderers,
+  { tester: CompactGroupTester, renderer: CompactGroupRenderer },
+];
+
 export default function FdmnesForm() {
   const [selectedCrystalID, setSelectedCrystalId] = useState<null | number>(
     null
@@ -50,13 +59,15 @@ export default function FdmnesForm() {
       className="jsonFormsContainer"
       direction="row"
       justifyContent="space-between"
+      margin="5px"
+      spacing="5px"
     >
-      <Box>
+      <Stack>
         {hasData ? (
           <JsonForms
             schema={schema}
             data={data}
-            renderers={materialRenderers}
+            renderers={renderers}
             uischema={uischema}
             cells={materialCells}
             onChange={({ data }) => {
@@ -67,13 +78,6 @@ export default function FdmnesForm() {
         ) : (
           <Skeleton animation="wave" width={210} height={118} />
         )}
-      </Box>
-      <Stack flex={1}>
-        <Box flex={1}>
-          {selectedCrystalID != null && (
-            <CrystalViewer id={selectedCrystalID} />
-          )}
-        </Box>
         <Button
           variant="contained"
           onClick={() => {
@@ -83,6 +87,13 @@ export default function FdmnesForm() {
         >
           Submit Simulation
         </Button>
+      </Stack>
+      <Stack flex={1}>
+        <Box flex={1}>
+          {selectedCrystalID != null && (
+            <CrystalViewer id={selectedCrystalID} />
+          )}
+        </Box>
       </Stack>
     </Stack>
     // <Grid2 container>
