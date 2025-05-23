@@ -12,6 +12,15 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import MoleculeViewer from "../molecules/MoleculeViewer";
 
+import CompactGroupRenderer, {
+  CompactGroupTester,
+} from "../renderers/CompactGroup";
+
+const renderers = [
+  ...materialRenderers,
+  { tester: CompactGroupTester, renderer: CompactGroupRenderer },
+];
+
 export default function OrcaForm() {
   const [selectedMoleculeID, setSelectedMoleculeId] = useState<null | number>(
     null
@@ -50,13 +59,15 @@ export default function OrcaForm() {
       className="jsonFormsContainer"
       direction="row"
       justifyContent="space-between"
+      margin="5px"
+      spacing="5px"
     >
-      <Box>
+      <Stack>
         {hasData ? (
           <JsonForms
             schema={schema}
             data={data}
-            renderers={materialRenderers}
+            renderers={renderers}
             uischema={uischema}
             cells={materialCells}
             onChange={({ data }) => {
@@ -67,13 +78,6 @@ export default function OrcaForm() {
         ) : (
           <Skeleton animation="wave" width={210} height={118} />
         )}
-      </Box>
-      <Stack flex={1}>
-        <Box flex={1}>
-          {selectedMoleculeID != null && (
-            <MoleculeViewer id={selectedMoleculeID} />
-          )}
-        </Box>
         <Button
           variant="contained"
           onClick={() => {
@@ -87,6 +91,13 @@ export default function OrcaForm() {
         >
           Submit Simulation
         </Button>
+      </Stack>
+      <Stack flex={1}>
+        <Box flex={1}>
+          {selectedMoleculeID != null && (
+            <MoleculeViewer id={selectedMoleculeID} />
+          )}
+        </Box>
       </Stack>
     </Stack>
   );

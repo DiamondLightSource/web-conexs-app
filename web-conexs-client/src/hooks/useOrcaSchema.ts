@@ -191,7 +191,7 @@ const uischema = {
     },
     {
       type: "Group",
-      label: "",
+      label: "Resources",
       elements: [
         {
           type: "HorizontalLayout",
