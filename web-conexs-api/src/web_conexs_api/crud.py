@@ -328,3 +328,10 @@ def get_orca_xas(session, id, user_id):
     }
 
     return output
+
+
+def get_user(session, user_id):
+    statement = select(Person).where(Person.identifier == user_id)
+    person = session.exec(statement).first()
+
+    return person
