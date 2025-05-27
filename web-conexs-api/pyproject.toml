@@ -18,6 +18,7 @@ dependencies = [
     "sqlakeyset",
     "psycopg2",
     "numpy",
+    "requests",
 ] # Add project dependencies here, e.g. ["click", "numpy"]
 dynamic = ["version"]
 license.file = "LICENSE"
