@@ -24,6 +24,8 @@ FROM python:${PYTHON_VERSION}-slim AS runtime
 COPY --from=build /venv/ /venv/
 ENV PATH=/venv/bin:$PATH
 
+RUN apt-get update && apt-get install libpq5 -y
+
 # change this entrypoint if it is not the same as the repo
 ENTRYPOINT ["python"]
 CMD ["--version"]
