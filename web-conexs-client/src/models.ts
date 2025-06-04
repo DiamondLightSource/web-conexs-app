@@ -3,6 +3,10 @@ export interface MoleculeInput {
   structure: string;
 }
 
+export interface Person {
+  identifier: string;
+}
+
 export interface CrystalInput extends MoleculeInput {
   a: number;
   b: number;

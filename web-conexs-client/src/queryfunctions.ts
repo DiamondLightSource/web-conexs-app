@@ -8,6 +8,7 @@ import {
   MoleculeInput,
   OrcaSimulation,
   OrcaSimulationInput,
+  Person,
   Simulation,
   SimulationPage,
   XASData,
@@ -18,6 +19,7 @@ const orcaUrl = "/api/orca";
 const fdmnesUrl = "/api/fdmnes";
 const moleculeUrl = "/api/molecules";
 const crystalUrl = "/api/crystals";
+const userUrl = "/api/user";
 
 export const getSimulationPage = async (
   cursor: string | null,
@@ -145,4 +147,9 @@ export const postFdmnes = async (input: FDMNESSimulationInput) => {
   if (response.status != 200) {
     throw new Error("Failed to submit job");
   }
+};
+
+export const getUser = async () => {
+  const { data } = await axios.get<Person, AxiosResponse<Person>>(userUrl);
+  return data;
 };

@@ -5,6 +5,7 @@ import {
   MoleculeInput,
   OrcaSimulation,
   OrcaSimulationInput,
+  Person,
   Simulation,
   SimulationPage,
 } from "../models";
@@ -98,13 +99,14 @@ export const handlers = [
   }),
 
   http.get("/api/simulations", () => {
-
-    const page : SimulationPage = {items: [mockSimulation],
+    const page: SimulationPage = {
+      items: [mockSimulation],
       next_page: "test",
       total: null,
       current_page: "test",
       current_page_backwards: "test",
-      previous_page: null}
+      previous_page: null,
+    };
 
     return HttpResponse.json(page);
   }),
@@ -148,9 +150,18 @@ export const handlers = [
   }),
 
   http.get("/api/crystals", async () => {
-    await delay();
-
     return HttpResponse.json(mockCrystalArray);
+  }),
+
+  http.get("/api/user", async (request) => {
+    const auth = request.request.headers.get("authorization");
+
+    if (auth && auth.startsWith("Bearer ")) {
+      const user: Person = { identifier: auth.slice(7) };
+      return HttpResponse.json(user);
+    }
+
+    return new HttpResponse(null, { status: 401 });
   }),
 
   //   # mapspc

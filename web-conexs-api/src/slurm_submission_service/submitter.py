@@ -249,18 +249,12 @@ def run_update():
         r = requests.get(url_jobs, headers=headers)
 
         if r.status_code != 200:
-            print(r.status_code)
-            raise Exception("Response not successful")
+            raise Exception(f"Response not successful: Status code {r.status_code}")
 
         response = r.json()
         jobs = response["jobs"]
 
         job_map = {}
-
-        # print(SLURM_USER)
-
-        # for j in jobs:
-        #     print(j["account"])
 
         for j in jobs:
             if j["account"] == SLURM_USER:
@@ -294,18 +288,9 @@ def run_update():
                 a.status = SimulationStatus.failed
                 update_simulation(session, a)
 
-    # try:
-    #     next(sessions)
-    # except StopIteration:
-    #     pass
-
-    # print(sims)
-
 
 def test_read():
     with contextmanager(get_session)() as session:
-        # sessions = get_session()
-        # session = next(sessions)
         sims = get_submitted_simulations(session)
         for sim in sims:
             if sim.simulation_type_id == 1:
@@ -314,9 +299,13 @@ def test_read():
 
 
 def main():
-    # test_read()
     print("Running main loop")
     while True:
-        run_update()
+        try:
+            run_update()
+        except KeyboardInterrupt:
+            logger.info("Stopped with keyboard")
+        except Exception:
+            logger.exception("Error in update loop")
         time.sleep(10)
         print("Loop iteration complete")
