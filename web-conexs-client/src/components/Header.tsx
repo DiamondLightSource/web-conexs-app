@@ -1,36 +1,35 @@
-import { AppBar, Checkbox, Stack, Toolbar, Typography } from "@mui/material";
+import { Typography, useTheme } from "@mui/material";
 import SideDrawer from "./SideDrawer";
 
-// import { LightMode, DarkMode } from "@mui/icons-material";
+import { useContext } from "react";
+import { UserContext } from "../UserContext";
+import {
+  ColourSchemeButton,
+  Navbar,
+  User,
+} from "@diamondlightsource/sci-react-ui";
 
-import LightMode from "@mui/icons-material/LightMode";
-import DarkMode from "@mui/icons-material/DarkMode";
+export default function Header() {
+  const user = useContext(UserContext);
+  const theme = useTheme();
 
-export default function Header(props: {
-  colorMode: string;
-  toggleColorMode: () => void;
-}) {
+  const handleLogin = () => window.location.assign("/login");
+
+  const handleLogout = () => window.location.assign("/oauth2/sign_out");
+
   return (
-    <AppBar style={{ position: "static" }}>
-      <Toolbar sx={{ justifyContent: "space-between", alignItems: "center" }}>
-        <SideDrawer />
-        <Typography
-          variant="h2"
-          component="div"
-          sx={{ flexGrow: 1 }}
-          margin="5px"
-        >
-          Web-CONEXS
-        </Typography>
-        <Stack direction="row" alignItems={"center"}>
-          <Checkbox
-            icon={<LightMode />}
-            checkedIcon={<DarkMode />}
-            checked={props.colorMode === "dark"}
-            onChange={props.toggleColorMode}
-          ></Checkbox>
-        </Stack>
-      </Toolbar>
-    </AppBar>
+    <Navbar logo="theme">
+      <SideDrawer />
+      <Typography variant="h4" color={theme.palette.primary.contrastText}>
+        Web-CONEXS
+      </Typography>
+      <User
+        color="white"
+        onLogin={handleLogin}
+        onLogout={handleLogout}
+        user={user == null ? null : { fedid: user.identifier }}
+      />
+      <ColourSchemeButton />
+    </Navbar>
   );
 }

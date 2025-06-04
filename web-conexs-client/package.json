@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "3dmol": "^2.4.2",
+    "@diamondlightsource/sci-react-ui": "^0.1.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@h5web/lib": "^13.0.0",
@@ -33,6 +34,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^22.15.29",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react": "^4.3.4",
