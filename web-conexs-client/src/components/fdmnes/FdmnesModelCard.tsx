@@ -2,6 +2,7 @@ import { Box, Card, CardContent, Typography } from "@mui/material";
 
 import { useQuery } from "@tanstack/react-query";
 import { getFdmnesSimulation } from "../../queryfunctions";
+import { periodic_table } from "../../periodictable";
 
 export default function FdmnesModelCard(props: { fdmnesSimulationId: number }) {
   const query = useQuery({
@@ -22,11 +23,20 @@ export default function FdmnesModelCard(props: { fdmnesSimulationId: number }) {
           FDMNES Simulation
         </Typography>
         <Typography variant="h5" component="div">
-          {fdmnesSimulation.element}
+          {"Absorbing element: " +
+            periodic_table[fdmnesSimulation.element - 1].name}
         </Typography>
         <Typography variant="h6" component="div">
-          {fdmnesSimulation.element}
+          {fdmnesSimulation.edge.toLocaleUpperCase() + "-edge"}
         </Typography>
+        <Typography variant="h6" component="div">
+          {fdmnesSimulation.structure_type + " structure"}
+        </Typography>
+        {fdmnesSimulation.greens_approach && (
+          <Typography variant="h6" component="div">
+            {"Using Green's approach"}
+          </Typography>
+        )}
       </CardContent>
     </Card>
   );

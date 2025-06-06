@@ -1,7 +1,16 @@
-import { Box, Container, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  Paper,
+  Stack,
+  Toolbar,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import FdmnesForm from "./FdmnesForm";
 
 export default function FdmnesSubmitPage() {
+  const theme = useTheme();
   return (
     <Box
       display="flex"
@@ -23,10 +32,21 @@ export default function FdmnesSubmitPage() {
         }}
         elevation={12}
       >
-        <Typography variant="h4" padding="10px">
-          Submit FDMNES Simulation
-        </Typography>
-        <FdmnesForm></FdmnesForm>
+        <Stack flex={1}>
+          <Toolbar
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: theme.palette.action.disabled,
+              borderRadius: "4px 4px 0px 0px",
+            }}
+          >
+            <Typography variant="h5" component="div">
+              Submit FDMNES Simulation
+            </Typography>
+          </Toolbar>
+          <FdmnesForm></FdmnesForm>
+        </Stack>
       </Paper>
     </Box>
   );

@@ -1,4 +1,11 @@
-import { Box, Typography, Stack, Paper } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Stack,
+  Paper,
+  Toolbar,
+  useTheme,
+} from "@mui/material";
 import React3dMol from "../React3dMol";
 import MoleculeTable from "./MoleculeTable";
 import { useState } from "react";
@@ -13,6 +20,7 @@ export default function MoleculePage() {
   });
 
   const [selectedMoleculeId, setSelectedMoleculeId] = useState<number | null>();
+  const theme = useTheme();
 
   let finalMolecule = null;
 
@@ -43,10 +51,19 @@ export default function MoleculePage() {
         }}
         elevation={12}
       >
-        <Stack>
-          <Typography variant="h4" padding="24px">
-            Molecules
-          </Typography>
+        <Stack spacing={"10px"}>
+          <Toolbar
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: theme.palette.action.disabled,
+              borderRadius: "4px 4px 0px 0px",
+            }}
+          >
+            <Typography variant="h5" component="div">
+              Molecules
+            </Typography>
+          </Toolbar>
           <Stack direction={"row"} spacing={3}>
             <MoleculeTable
               molecules={query.data ? query.data : []}

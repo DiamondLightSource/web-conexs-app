@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { orcaDefaultValues } from "../models";
+import { orcaDefaultValues, OrcaSimulationWithResource } from "../models";
 import { useQuery } from "@tanstack/react-query";
 import { getMolecules } from "../queryfunctions";
 
@@ -211,7 +211,7 @@ const uischema = {
   ],
 };
 export default function useOrcaSchema() {
-  const [data, setData] = useState({ ...orcaDefaultValues });
+  const [data, setData] = useState<OrcaSimulationWithResource | null>(null);
   const [schema, setSchema] = useState({ ...schemaTemplate });
   const [hasData, setHasData] = useState(false);
   const query = useQuery({
@@ -219,7 +219,7 @@ export default function useOrcaSchema() {
     queryFn: getMolecules,
   });
 
-  if (query.data && query.data.length != 0 && !hasData) {
+  if (query.data && !hasData) {
     const tmpSchema = { ...schema };
 
     const output = query.data.map((m) => ({
@@ -228,8 +228,13 @@ export default function useOrcaSchema() {
     }));
 
     tmpSchema.properties.molecular_structure_id.oneOf = output;
-    const tmpData = { ...data };
-    tmpData.molecular_structure_id = output[0].const;
+    let tmpData: OrcaSimulationWithResource | null = { ...orcaDefaultValues };
+    if (output.length != 0) {
+      tmpData.molecular_structure_id = output[0].const;
+    } else {
+      tmpData = null;
+    }
+
     setData(tmpData);
     setSchema(tmpSchema);
     setHasData(true);
