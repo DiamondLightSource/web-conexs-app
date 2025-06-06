@@ -1,12 +1,18 @@
-import { Box, Button, Paper, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Paper,
+  Stack,
+  Toolbar,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { MoleculeInput } from "../../models";
 import { useState } from "react";
-import XYZFileEditor from "../XYZFileEditor";
 import React3dMol from "../React3dMol";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postMolecule } from "../../queryfunctions";
-import XYZEditor from "../XYZEditor";
 import MoleculeEditor from "./MoleculeEditor";
 
 const templateMolecule: MoleculeInput = {
@@ -22,6 +28,7 @@ export default function CreateMoleculePage() {
   );
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const callback = () => {
     window.alert("Thank you for your submission");
@@ -54,36 +61,48 @@ export default function CreateMoleculePage() {
           alignItems: "stretch",
           display: "flex",
           flexDirection: "column",
-          spacing: "2px",
+          spacing: "5px",
         }}
         elevation={12}
       >
-        <Typography variant="h4" padding="24px">
-          Create Molecule
-        </Typography>
-        <Stack direction={"row"} spacing="2px">
-          <MoleculeEditor
-            molecule={molecule}
-            setMolecule={setMolecule}
-          ></MoleculeEditor>
-          <React3dMol
-            moleculedata={molecule}
-            color="#3465A4"
-            style="Stick"
-            orbital={null}
-          ></React3dMol>
+        <Stack spacing={"10px"}>
+          <Toolbar
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: theme.palette.action.disabled,
+              borderRadius: "4px 4px 0px 0px",
+            }}
+          >
+            <Typography variant="h5" component="div">
+              Create Molecule
+            </Typography>
+          </Toolbar>
+          <Stack direction={"row"} spacing="10px">
+            <MoleculeEditor
+              molecule={molecule}
+              setMolecule={setMolecule}
+            ></MoleculeEditor>
+            <React3dMol
+              moleculedata={molecule}
+              color="#3465A4"
+              style="Stick"
+              orbital={null}
+            ></React3dMol>
+          </Stack>
+          <Button
+            variant="contained"
+            disabled={molecule == null}
+            onClick={() => {
+              if (molecule != null) {
+                console.log(molecule);
+                mutation.mutate(molecule);
+              }
+            }}
+          >
+            Create Molecule
+          </Button>
         </Stack>
-        <Button
-          disabled={molecule == null}
-          onClick={() => {
-            if (molecule != null) {
-              console.log(molecule);
-              mutation.mutate(molecule);
-            }
-          }}
-        >
-          Create Molecule
-        </Button>
       </Paper>
     </Box>
   );

@@ -43,7 +43,7 @@ export default function MoleculeEditor(props: {
   console.log(props.molecule);
 
   return (
-    <Stack spacing={2} minWidth={"450px"}>
+    <Stack spacing={"10px"} minWidth={"450px"}>
       <TextField
         error={labelError.length != 0}
         helperText={labelError}

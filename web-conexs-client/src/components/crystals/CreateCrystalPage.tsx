@@ -1,4 +1,12 @@
-import { Box, Button, Paper, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Paper,
+  Stack,
+  Toolbar,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import { CrystalInput } from "../../models";
 import { useState } from "react";
 import React3dMol from "../React3dMol";
@@ -22,6 +30,7 @@ const templateCrystal: CrystalInput = {
 export default function CreateCystalPage() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const callback = () => {
     window.alert("Thank you for your submission");
@@ -60,28 +69,40 @@ export default function CreateCystalPage() {
         }}
         elevation={12}
       >
-        <Typography variant="h4" padding="24px">
-          Create Crystal
-        </Typography>
-        <Stack direction={"row"} spacing="5px" margin="5px">
-          <CrystalEditor crystal={crystal} setCrystal={setCrytal} />
-          <React3dMol
-            moleculedata={crystal}
-            color="#3465A4"
-            style="Stick"
-            orbital={null}
-          ></React3dMol>
+        <Stack spacing={"10px"}>
+          <Toolbar
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: theme.palette.action.disabled,
+              borderRadius: "4px 4px 0px 0px",
+            }}
+          >
+            <Typography variant="h5" component="div">
+              Create Crystal
+            </Typography>
+          </Toolbar>
+          <Stack direction={"row"} spacing="5px" margin="5px">
+            <CrystalEditor crystal={crystal} setCrystal={setCrytal} />
+            <React3dMol
+              moleculedata={crystal}
+              color="#3465A4"
+              style="Stick"
+              orbital={null}
+            ></React3dMol>
+          </Stack>
+          <Button
+            variant="contained"
+            onClick={() => {
+              if (crystal != null) {
+                console.log(crystal);
+                mutation.mutate(crystal);
+              }
+            }}
+          >
+            Create
+          </Button>
         </Stack>
-        <Button
-          onClick={() => {
-            if (crystal != null) {
-              console.log(crystal);
-              mutation.mutate(crystal);
-            }
-          }}
-        >
-          Create
-        </Button>
       </Paper>
     </Box>
   );

@@ -64,7 +64,7 @@ export default function SimulationReviewPage() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 backgroundColor: theme.palette.action.disabled,
-                borderRadius: "4px",
+                borderRadius: "4px 4px 0px 0px",
               }}
             >
               <Typography variant="h5" component="div">
@@ -102,7 +102,7 @@ export default function SimulationReviewPage() {
                 justifyContent: "space-between",
                 alignItems: "center",
                 backgroundColor: theme.palette.action.disabled,
-                borderRadius: "4px",
+                borderRadius: "4px 4px 0px 0px",
               }}
             >
               <Button variant="contained" onClick={() => setSimId(undefined)}>

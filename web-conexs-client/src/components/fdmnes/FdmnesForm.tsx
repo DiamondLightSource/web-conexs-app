@@ -54,6 +54,14 @@ export default function FdmnesForm() {
     setSelectedCrystalId(data.crystal_structure_id);
   }
 
+  function getPlacemarker(noCrystals: boolean) {
+    if (!noCrystals) {
+      return <Skeleton width={"100%"} height={"100%"} />;
+    } else {
+      return <Box>First create a crystal</Box>;
+    }
+  }
+
   return (
     <Stack
       className="jsonFormsContainer"
@@ -62,73 +70,39 @@ export default function FdmnesForm() {
       margin="5px"
       spacing="5px"
     >
-      <Stack>
-        {hasData ? (
-          <JsonForms
-            schema={schema}
-            data={data}
-            renderers={renderers}
-            uischema={uischema}
-            cells={materialCells}
-            onChange={({ data }) => {
-              setData(data);
-              setSelectedCrystalId(data.crystal_structure_id);
-            }}
-          />
-        ) : (
-          <Skeleton animation="wave" width={210} height={118} />
-        )}
-        <Button
-          variant="contained"
-          onClick={() => {
-            const localData = { ...data };
-            mutation.mutate(localData);
-          }}
-        >
-          Submit Simulation
-        </Button>
-      </Stack>
-      <Stack flex={1}>
-        <Box flex={1}>
-          {selectedCrystalID != null && (
-            <CrystalViewer id={selectedCrystalID} />
-          )}
-        </Box>
-      </Stack>
+      {hasData && data != null ? (
+        <Stack direction="row" flex={1} spacing={"5px"}>
+          <Stack flex={1}>
+            <JsonForms
+              schema={schema}
+              data={data}
+              renderers={renderers}
+              uischema={uischema}
+              cells={materialCells}
+              onChange={({ data }) => {
+                setData(data);
+                setSelectedCrystalId(data.crystal_structure_id);
+              }}
+            />
+            <Button
+              variant="contained"
+              onClick={() => {
+                const localData = { ...data };
+                mutation.mutate(localData);
+              }}
+            >
+              Submit Simulation
+            </Button>
+          </Stack>
+          <Stack flex={1}>
+            {selectedCrystalID != null && (
+              <CrystalViewer id={selectedCrystalID} />
+            )}
+          </Stack>
+        </Stack>
+      ) : (
+        getPlacemarker(hasData && data == null)
+      )}
     </Stack>
-    // <Grid2 container>
-    //   <Grid2 size={6} className="jsonFormsContainer">
-    //     {hasData ? (
-    //       <JsonForms
-    //         schema={schema}
-    //         data={data}
-    //         renderers={materialRenderers}
-    //         uischema={uischema}
-    //         cells={materialCells}
-    //         onChange={({ data }) => {
-    //           setData(data);
-    //           setSelectedCrystalId(data.crystal_structure_id);
-    //         }}
-    //       />
-    //     ) : (
-    //       <Skeleton animation="wave" width={210} height={118} />
-    //     )}
-    //   </Grid2>
-    //   <Grid2 size={6}>
-    //     <Box height="100%vh">
-    //       {selectedCrystalID && <CrystalViewer id={selectedCrystalID} />}
-    //     </Box>
-    //   </Grid2>
-    //   <Grid2 size={12}>
-    //     <Button
-    //       onClick={() => {
-    //         const localData = { ...data };
-    //         mutation.mutate(localData);
-    //       }}
-    //     >
-    //       Submit Simulation
-    //     </Button>
-    //   </Grid2>
-    // </Grid2>
   );
 }

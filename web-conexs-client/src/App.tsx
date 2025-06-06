@@ -12,7 +12,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SimulationReviewPage from "./components/SimulationReviewPage";
 import { UserProvider } from "./UserContext";
 
-import { ThemeProvider, DiamondTheme } from "@diamondlightsource/sci-react-ui";
+import {
+  ThemeProvider,
+  DiamondTheme,
+  Footer,
+} from "@diamondlightsource/sci-react-ui";
 
 const queryClient = new QueryClient();
 
@@ -34,6 +38,7 @@ function App() {
               <Route path="/orca" element={<OrcaSubmitPage />} />
               <Route path="/fdmnes" element={<FdmnesSubmitPage />} />
             </Routes>
+            <Footer copyright="Diamond Light Source" logo={null} />
           </Stack>
         </UserProvider>
       </QueryClientProvider>

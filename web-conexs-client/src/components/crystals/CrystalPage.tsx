@@ -1,4 +1,11 @@
-import { Box, Typography, Stack, Paper } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Stack,
+  Paper,
+  Toolbar,
+  useTheme,
+} from "@mui/material";
 
 import React3dMol from "../React3dMol";
 import MoleculeTable from "../molecules/MoleculeTable";
@@ -14,6 +21,7 @@ export default function CrystalPage() {
   });
 
   const [selectedCrystalId, setSelectedCrystalId] = useState<number | null>();
+  const theme = useTheme();
 
   let finalCrystal = null;
 
@@ -43,29 +51,40 @@ export default function CrystalPage() {
         }}
         elevation={12}
       >
-        <Typography variant="h4" padding="24px">
-          Crystals
-        </Typography>
-        <Stack direction={"row"} spacing={3}>
-          <MoleculeTable
-            molecules={query.data ? query.data : []}
-            selectedMolecule={undefined}
-            setSelectedMolecule={(data) => {
-              if (data) {
-                setSelectedCrystalId(data.id);
-              }
+        <Stack spacing={"10px"}>
+          <Toolbar
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: theme.palette.action.disabled,
+              borderRadius: "4px 4px 0px 0px",
             }}
-            setCurrent={() => {}}
-            prevNext={null}
-          ></MoleculeTable>
+          >
+            <Typography variant="h5" component="div">
+              Crystals
+            </Typography>
+          </Toolbar>
+          <Stack direction={"row"} spacing={3}>
+            <MoleculeTable
+              molecules={query.data ? query.data : []}
+              selectedMolecule={undefined}
+              setSelectedMolecule={(data) => {
+                if (data) {
+                  setSelectedCrystalId(data.id);
+                }
+              }}
+              setCurrent={() => {}}
+              prevNext={null}
+            ></MoleculeTable>
 
-          <XYZCrystalFileViewer crystal={finalCrystal} />
-          <React3dMol
-            moleculedata={finalCrystal}
-            color="#3465A4"
-            style="Stick"
-            orbital={null}
-          ></React3dMol>
+            <XYZCrystalFileViewer crystal={finalCrystal} />
+            <React3dMol
+              moleculedata={finalCrystal}
+              color="#3465A4"
+              style="Stick"
+              orbital={null}
+            ></React3dMol>
+          </Stack>
         </Stack>
       </Paper>
     </Box>

@@ -70,8 +70,7 @@ const mockSimulations = [mockSimulation];
 
 export const handlers = [
   http.get("/api/molecules", async () => {
-    await delay();
-
+    await delay(10000);
     return HttpResponse.json(mockArray);
   }),
 
