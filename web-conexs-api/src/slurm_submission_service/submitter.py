@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import os
+import sys
 import time
 import uuid
 from contextlib import contextmanager
@@ -88,19 +89,18 @@ def build_job_and_run(
     r = requests.post(url_submit, data=json.dumps(job_request), headers=headers)
 
     if r.status_code != 200:
-        print(r.status_code)
-        raise Exception("Job submission response not successful")
+        raise Exception(f"Job submission response not successful {r.status_code}")
 
     response = r.json()
 
     if "job_id" not in response:
-        print(f"Error submitting {job_name}")
-        print(pformat(job_request))
-        print(pformat(response))
+        logger.error(f"Error submitting {job_name}")
+        logger.error(pformat(job_request))
+        logger.error(pformat(response))
         raise Exception("Submission failed - no job id in response")
 
     job_id = response["job_id"]
-    print(f"Simulation job {job_name} has ID {job_id}")
+    logger.info(f"Simulation job {job_name} has ID {job_id}")
 
     return job_id
 
@@ -110,8 +110,6 @@ def submit_orca(session, sim: Simulation):
     application_name = "orca"
     user = sim.person.identifier
     uid = uuid.uuid4()
-
-    print(f"{ROOT_DIR} {user}")
 
     job_name = application_name + "-" + str(uid)
     working_dir = ROOT_DIR + user + "/" + job_name
@@ -163,6 +161,7 @@ def submit_orca(session, sim: Simulation):
         sim.status = SimulationStatus.submitted
         update_simulation(session, sim)
     except Exception:
+        logger.exception("Error submitting orca job")
         sim.status = SimulationStatus.failed
         update_simulation(session, sim)
 
@@ -260,12 +259,13 @@ def run_update():
             if j["account"] == SLURM_USER:
                 job_map[j["job_id"]] = {"state": j["job_state"][0]}
 
-        print(f"Number of active jobs {len(active)}")
+        if len(active) != 0:
+            logger.info(f"Number of active jobs {len(active)}")
 
         for a in active:
             if a.job_id in job_map:
                 state = job_map[a.job_id]["state"]
-                print(state)
+                logger.debug(f"Job {a.job_id} has state {state}")
 
                 if state == JOB_RUNNING and a.status != SimulationStatus.running:
                     a.status = SimulationStatus.running
@@ -285,6 +285,7 @@ def run_update():
 
             else:
                 # TODO better state for whatever slurm might return
+                logger.error(f"Active job with id {a.job_id} not in job_map")
                 a.status = SimulationStatus.failed
                 update_simulation(session, a)
 
@@ -295,11 +296,23 @@ def test_read():
         for sim in sims:
             if sim.simulation_type_id == 1:
                 jf, calc = get_orca_jobfile_with_technique(session, sim.id)
-                print(jf)
 
 
 def main():
-    print("Running main loop")
+    rootlogger = logging.getLogger()
+    formatter = logging.Formatter(
+        "%(asctime)s - %(levelname)s - %(name)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+    )
+
+    sh = logging.StreamHandler(sys.stdout)
+    sh.setFormatter(formatter)
+    rootlogger.addHandler(sh)
+    rootlogger.setLevel(logging.DEBUG)
+    rootlogger.debug("Logging Configured")
+
+    logger.info("Running main loop")
+
     while True:
         try:
             run_update()
@@ -308,4 +321,4 @@ def main():
         except Exception:
             logger.exception("Error in update loop")
         time.sleep(10)
-        print("Loop iteration complete")
+        logger.info("Loop iteration complete")
