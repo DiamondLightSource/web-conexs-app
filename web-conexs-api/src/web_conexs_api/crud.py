@@ -334,4 +334,8 @@ def get_user(session, user_id):
     statement = select(Person).where(Person.identifier == user_id)
     person = session.exec(statement).first()
 
+    if person is None:
+        # auth successful but not in db yet
+        person = Person(id=None, identifier=user_id, admin=False)
+
     return person
