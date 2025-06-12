@@ -14,8 +14,6 @@ export default function XYZEditor(props: {
     setData(structure);
     const errors = validateMoleculeData(structure);
 
-    console.log(errors);
-
     const isError = errors.length != 0;
 
     if (!isError) {

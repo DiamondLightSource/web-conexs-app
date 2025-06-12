@@ -2,12 +2,17 @@ from typing import List
 
 from sqlmodel import or_, select
 
-from web_conexs_api.jobfilebuilders import build_fdmnes_inputfile, build_orca_input_file
+from web_conexs_api.jobfilebuilders import (
+    build_fdmnes_inputfile,
+    build_orca_input_file,
+    build_qe_inputfile,
+)
 from web_conexs_api.models.models import (
     CrystalStructure,
     FdmnesSimulation,
     MolecularStructure,
     OrcaSimulation,
+    QESimulation,
     Simulation,
     SimulationStatus,
 )
@@ -91,3 +96,19 @@ def update_simulation(session, simulation: Simulation):
     session.commit()
     session.refresh(simulation)
     return simulation
+
+
+def get_qe_simulation(session, id) -> QESimulation:
+    simulation = session.get(QESimulation, id)
+
+    if simulation:
+        return simulation
+    else:
+        raise RuntimeError("FDMNES simulation not found")
+
+
+def get_qe_jobfile(session, id):
+    qe_simulation = get_qe_simulation(session, id)
+    structure = get_crystal_structure(session, qe_simulation.crystal_structure_id)
+
+    return build_qe_inputfile(qe_simulation, structure)

@@ -86,6 +86,13 @@ export default function SideDrawer() {
                 </ListItemButton>
               </Link>
             </ListItem>
+            <ListItem key="Submit QE" disablePadding>
+              <Link to={"/qe"}>
+                <ListItemButton>
+                  <ListItemText primary="Submit QE" />
+                </ListItemButton>
+              </Link>
+            </ListItem>
           </>
         )}
         {user == null && (

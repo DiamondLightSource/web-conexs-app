@@ -40,8 +40,6 @@ export default function MoleculeEditor(props: {
     setLabel(label);
   };
 
-  console.log(props.molecule);
-
   return (
     <Stack spacing={"10px"} minWidth={"450px"}>
       <TextField

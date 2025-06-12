@@ -95,7 +95,6 @@ export default function CreateMoleculePage() {
             disabled={molecule == null}
             onClick={() => {
               if (molecule != null) {
-                console.log(molecule);
                 mutation.mutate(molecule);
               }
             }}

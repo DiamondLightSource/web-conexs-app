@@ -112,3 +112,425 @@ periodic_table = {
     "Rg": 111,
     "Cn": 114,
 }
+
+elements = {
+    "H": {"number": 1, "mass": 1.0078, "pseudopotential": "H.pbe-rrkjus_gipaw.UPF"},
+    "He": {"number": 2, "mass": 4.0026, "pseudopotential": "He.pbe-rrkjus_gipaw.UPF"},
+    "Li": {"number": 3, "mass": 6.94, "pseudopotential": "Li.pbe-s-rrkjus_gipaw.UPF"},
+    "Be": {"number": 4, "mass": 9.0122, "pseudopotential": "Be.pbe-n-rrkjus_gipaw.UPF"},
+    "B": {"number": 5, "mass": 10.81, "pseudopotential": "B.pbe-n-rrkjus_gipaw.UPF"},
+    "C": {"number": 6, "mass": 12.011, "pseudopotential": "C.pbe-n-rrkjus_gipaw.UPF"},
+    "N": {"number": 7, "mass": 14.007, "pseudopotential": "N.pbe-n-rrkjus_gipaw.UPF"},
+    "O": {"number": 8, "mass": 15.999, "pseudopotential": "O.pbe-n-rrkjus_gipaw.UPF"},
+    "F": {"number": 9, "mass": 18.9984, "pseudopotential": "F.pbe-n-rrkjus_gipaw.UPF"},
+    "Ne": {
+        "number": 10,
+        "mass": 20.1797,
+        "pseudopotential": "Ne.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Na": {
+        "number": 11,
+        "mass": 22.9898,
+        "pseudopotential": "Na.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Mg": {
+        "number": 12,
+        "mass": 24.305,
+        "pseudopotential": "Mg.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Al": {
+        "number": 13,
+        "mass": 26.9815,
+        "pseudopotential": "Al.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Si": {
+        "number": 14,
+        "mass": 28.085,
+        "pseudopotential": "Si.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "P": {"number": 15, "mass": 30.9738, "pseudopotential": "P.pbe-n-rrkjus_gipaw.UPF"},
+    "S": {"number": 16, "mass": 32.06, "pseudopotential": "S.pbe-n-rrkjus_gipaw.UPF"},
+    "Cl": {
+        "number": 17,
+        "mass": 35.453,
+        "pseudopotential": "Cl.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Ar": {
+        "number": 18,
+        "mass": 39.948,
+        "pseudopotential": "Ar.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "K": {
+        "number": 19,
+        "mass": 39.0983,
+        "pseudopotential": "K.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Ca": {
+        "number": 20,
+        "mass": 40.078,
+        "pseudopotential": "Ca.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Sc": {
+        "number": 21,
+        "mass": 44.9559,
+        "pseudopotential": "Sc.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Ti": {
+        "number": 22,
+        "mass": 47.867,
+        "pseudopotential": "Ti.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "V": {
+        "number": 23,
+        "mass": 50.9415,
+        "pseudopotential": "V.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Cr": {
+        "number": 24,
+        "mass": 51.996,
+        "pseudopotential": "Cr.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Mn": {
+        "number": 25,
+        "mass": 54.938,
+        "pseudopotential": "Mn.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Fe": {
+        "number": 26,
+        "mass": 55.845,
+        "pseudopotential": "Fe.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Co": {
+        "number": 27,
+        "mass": 58.9332,
+        "pseudopotential": "Co.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Ni": {
+        "number": 28,
+        "mass": 58.6934,
+        "pseudopotential": "Ni.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Cu": {
+        "number": 29,
+        "mass": 63.546,
+        "pseudopotential": "Cu.pbe-dn-rrkjus_gipaw.UPF",
+    },
+    "Zn": {
+        "number": 30,
+        "mass": 65.38,
+        "pseudopotential": "Zn.pbe-dn-rrkjus_gipaw.UPF",
+    },
+    "Ga": {
+        "number": 31,
+        "mass": 69.72,
+        "pseudopotential": "Ga.pbe-dn-rrkjus_gipaw.UPF",
+    },
+    "Ge": {"number": 32, "mass": 72.63, "pseudopotential": "Ge.pbe-n-rrkjus_gipaw.UPF"},
+    "As": {
+        "number": 33,
+        "mass": 74.9216,
+        "pseudopotential": "As.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Se": {
+        "number": 34,
+        "mass": 78.971,
+        "pseudopotential": "Se.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Br": {
+        "number": 35,
+        "mass": 79.904,
+        "pseudopotential": "Br.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Kr": {
+        "number": 36,
+        "mass": 83.798,
+        "pseudopotential": "Kr.pbe-dn-rrkjus_gipaw.UPF",
+    },
+    "Rb": {
+        "number": 37,
+        "mass": 85.4678,
+        "pseudopotential": "Rb.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Sr": {
+        "number": 38,
+        "mass": 87.62,
+        "pseudopotential": "Sr.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Y": {
+        "number": 39,
+        "mass": 88.9058,
+        "pseudopotential": "Y.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Zr": {
+        "number": 40,
+        "mass": 91.224,
+        "pseudopotential": "Zr.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Nb": {
+        "number": 41,
+        "mass": 92.9064,
+        "pseudopotential": "Nb.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Mo": {
+        "number": 42,
+        "mass": 95.95,
+        "pseudopotential": "Mo.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Tc": {
+        "number": 43,
+        "mass": 97.907,
+        "pseudopotential": "Tc.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Ru": {
+        "number": 44,
+        "mass": 101.07,
+        "pseudopotential": "Ru.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Rh": {
+        "number": 45,
+        "mass": 102.906,
+        "pseudopotential": "Rh.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Pd": {
+        "number": 46,
+        "mass": 106.42,
+        "pseudopotential": "Pd.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Ag": {
+        "number": 47,
+        "mass": 107.868,
+        "pseudopotential": "Ag.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Cd": {
+        "number": 48,
+        "mass": 112.414,
+        "pseudopotential": "Cd.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "In": {
+        "number": 49,
+        "mass": 114.818,
+        "pseudopotential": "In.pbe-dn-rrkjus_gipaw.UPF",
+    },
+    "Sn": {
+        "number": 50,
+        "mass": 118.71,
+        "pseudopotential": "Sn.pbe-dn-rrkjus_gipaw.UPF",
+    },
+    "Sb": {
+        "number": 51,
+        "mass": 121.76,
+        "pseudopotential": "Sb.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Te": {"number": 52, "mass": 127.6, "pseudopotential": "Te.pbe-n-rrkjus_gipaw.UPF"},
+    "I": {"number": 53, "mass": 126.905, "pseudopotential": "I.pbe-n-rrkjus_gipaw.UPF"},
+    "Xe": {
+        "number": 54,
+        "mass": 131.293,
+        "pseudopotential": "Xe.pbe-dn-rrkjus_gipaw.UPF",
+    },
+    "Cs": {
+        "number": 55,
+        "mass": 132.905,
+        "pseudopotential": "Cs.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Ba": {
+        "number": 56,
+        "mass": 137.327,
+        "pseudopotential": "Ba.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "La": {
+        "number": 57,
+        "mass": 138.905,
+        "pseudopotential": "La.pbe-spfn-rrkjus_gipaw.UPF",
+    },
+    "Ce": {
+        "number": 58,
+        "mass": 140.116,
+        "pseudopotential": "Ce.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Pr": {
+        "number": 59,
+        "mass": 140.908,
+        "pseudopotential": "Pr.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Nd": {
+        "number": 60,
+        "mass": 144.242,
+        "pseudopotential": "Nd.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Pm": {
+        "number": 61,
+        "mass": 145.0,
+        "pseudopotential": "Pm.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Sm": {
+        "number": 62,
+        "mass": 150.36,
+        "pseudopotential": "Sm.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Eu": {
+        "number": 63,
+        "mass": 151.96,
+        "pseudopotential": "Eu.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Gd": {
+        "number": 64,
+        "mass": 157.25,
+        "pseudopotential": "Gd.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Tb": {
+        "number": 65,
+        "mass": 158.925,
+        "pseudopotential": "Tb.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Dy": {
+        "number": 66,
+        "mass": 162.5,
+        "pseudopotential": "Dy.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Ho": {
+        "number": 67,
+        "mass": 164.93,
+        "pseudopotential": "Ho.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Er": {
+        "number": 68,
+        "mass": 167.259,
+        "pseudopotential": "Er.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Tm": {
+        "number": 69,
+        "mass": 168.934,
+        "pseudopotential": "Tm.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Yb": {
+        "number": 70,
+        "mass": 173.045,
+        "pseudopotential": "Yb.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Lu": {
+        "number": 71,
+        "mass": 174.967,
+        "pseudopotential": "Lu.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Hf": {
+        "number": 72,
+        "mass": 178.49,
+        "pseudopotential": "Hf.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Ta": {
+        "number": 73,
+        "mass": 180.948,
+        "pseudopotential": "Ta.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "W": {
+        "number": 74,
+        "mass": 183.84,
+        "pseudopotential": "W.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Re": {
+        "number": 75,
+        "mass": 186.207,
+        "pseudopotential": "Re.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Os": {
+        "number": 76,
+        "mass": 190.23,
+        "pseudopotential": "Os.pbe-spn-rrkjus_gipaw.UPF",
+    },
+    "Ir": {
+        "number": 77,
+        "mass": 192.217,
+        "pseudopotential": "Ir.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Pt": {
+        "number": 78,
+        "mass": 195.084,
+        "pseudopotential": "Pt.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Au": {
+        "number": 79,
+        "mass": 196.967,
+        "pseudopotential": "Au.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Hg": {
+        "number": 80,
+        "mass": 200.592,
+        "pseudopotential": "Hg.pbe-n-rrkjus_gipaw.UPF",
+    },
+    "Tl": {
+        "number": 81,
+        "mass": 204.383,
+        "pseudopotential": "Tl.pbe-dn-rrkjus_gipaw.UPF",
+    },
+    "Pb": {
+        "number": 82,
+        "mass": 207.2,
+        "pseudopotential": "Pb.pbe-dn-rrkjus_gipaw.UPF",
+    },
+    "Bi": {
+        "number": 83,
+        "mass": 208.98,
+        "pseudopotential": "Bi.pbe-dn-rrkjus_gipaw.UPF",
+    },
+    "Po": {
+        "number": 84,
+        "mass": 209.0,
+        "pseudopotential": "Po.pbe-dn-rrkjus_gipaw.UPF",
+    },
+    "At": {
+        "number": 85,
+        "mass": 210.0,
+        "pseudopotential": "At.pbe-dn-rrkjus_gipaw.UPF",
+    },
+    "Rn": {
+        "number": 86,
+        "mass": 222.0,
+        "pseudopotential": "Rn.pbe-dn-rrkjus_gipaw.UPF",
+    },
+    "Fr": {
+        "number": 87,
+        "mass": 223.0,
+        "pseudopotential": "Fr.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Ra": {
+        "number": 88,
+        "mass": 226.0,
+        "pseudopotential": "Ra.pbe-spdn-rrkjus_gipaw.UPF",
+    },
+    "Ac": {
+        "number": 89,
+        "mass": 227.0,
+        "pseudopotential": "Ac.pbe-spfn-rrkjus_gipaw.UPF",
+    },
+    "Th": {
+        "number": 90,
+        "mass": 232.038,
+        "pseudopotential": "Th.pbe-spfn-rrkjus_gipaw.UPF",
+    },
+    "Pa": {
+        "number": 91,
+        "mass": 231.036,
+        "pseudopotential": "Pa.pbe-spfn-rrkjus_gipaw.UPF",
+    },
+    "U": {
+        "number": 92,
+        "mass": 238.029,
+        "pseudopotential": "U.pbe-spfn-rrkjus_gipaw.UPF",
+    },
+    "Np": {
+        "number": 93,
+        "mass": 237.048,
+        "pseudopotential": "Np.pbe-spfn-rrkjus_gipaw.UPF",
+    },
+    "Pu": {
+        "number": 94,
+        "mass": 239.052,
+        "pseudopotential": "Pu.pbe-spfn-rrkjus_gipaw.UPF",
+    },
+    "Am": {
+        "number": 95,
+        "mass": 243.0,
+        "pseudopotential": "Am.pbe-spfn-rrkjus_gipaw.UPF",
+    },
+}

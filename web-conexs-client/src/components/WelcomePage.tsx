@@ -19,6 +19,7 @@ export default function WelcomePage() {
           display: "flex",
           flexDirection: "column",
           spacing: "2px",
+          textAlign: "center",
         }}
         elevation={12}
       >

@@ -225,3 +225,43 @@ class FdmnesSimulation(FdmnesSimulationInput, table=True):
 
 class FdmnesSimulationResponse(FdmnesSimulationInput):
     simulation: Simulation
+
+
+class ConductivityType(enum.Enum):
+    metallic = "metallic"
+    semiconductor = "semiconductor"
+    insulator = "insulator"
+
+
+class QEEdge(enum.Enum):
+    k = "k"
+    l1 = "l1"
+    l2 = "l2"
+    l23 = "l23"
+
+
+class QESimulationInput(SQLModel):
+    crystal_structure_id: int
+    absorbing_atom: int
+    edge: Edge
+    conductivity: ConductivityType
+
+
+class QESimulation(QESimulationInput, table=True):
+    __tablename__: str = "qe_simulation"
+    simulation_id: int = Field(
+        foreign_key="simulation.id",
+        default=None,
+        primary_key=True,
+    )
+
+    simulation: Simulation = Relationship(
+        sa_relationship_kwargs={
+            "lazy": "selectin",
+            "foreign_keys": "[QESimulation.simulation_id]",
+        }
+    )
+
+
+class QESimulationResponse(QESimulationInput):
+    simulation: Simulation

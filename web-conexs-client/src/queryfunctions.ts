@@ -9,6 +9,8 @@ import {
   OrcaSimulation,
   OrcaSimulationInput,
   Person,
+  QESimulation,
+  QESimulationInput,
   Simulation,
   SimulationPage,
   XASData,
@@ -17,6 +19,7 @@ import {
 const simulationUrl = "/api/simulations";
 const orcaUrl = "/api/orca";
 const fdmnesUrl = "/api/fdmnes";
+const qeUrl = "/api/qe";
 const moleculeUrl = "/api/molecules";
 const crystalUrl = "/api/crystals";
 const userUrl = "/api/user";
@@ -61,6 +64,13 @@ export const getFdmnesSimulation = async (id: number) => {
   return data;
 };
 
+export const getQESimulation = async (id: number) => {
+  const { data } = await axios.get<QESimulation, AxiosResponse<QESimulation>>(
+    qeUrl + "/" + id
+  );
+  return data;
+};
+
 export const getMolecules = async () => {
   const { data } = await axios.get<Molecule[], AxiosResponse<Molecule[]>>(
     moleculeUrl
@@ -94,7 +104,6 @@ export const getCrystal = async (id: number) => {
 };
 
 export const postCrystal = async (input: CrystalInput) => {
-  console.log(input);
   axios.post(crystalUrl, input);
 };
 
@@ -141,6 +150,20 @@ export const getOrcaXas = async (id: number) => {
   return data;
 };
 
+export const getQEXas = async (id: number) => {
+  const { data } = await axios.get<XASData, AxiosResponse<XASData>>(
+    qeUrl + "/" + id + "/xas"
+  );
+  return data;
+};
+
+export const getQELog = async (id: number) => {
+  const { data } = await axios.get<string, AxiosResponse<string>>(
+    qeUrl + "/" + id + "/output"
+  );
+  return data;
+};
+
 export const postFdmnes = async (input: FDMNESSimulationInput) => {
   const response = await axios.post(fdmnesUrl, input);
 
@@ -152,4 +175,12 @@ export const postFdmnes = async (input: FDMNESSimulationInput) => {
 export const getUser = async () => {
   const { data } = await axios.get<Person, AxiosResponse<Person>>(userUrl);
   return data;
+};
+
+export const postQe = async (input: QESimulationInput) => {
+  const response = await axios.post(qeUrl, input);
+
+  if (response.status != 200) {
+    throw new Error("Failed to submit job");
+  }
 };

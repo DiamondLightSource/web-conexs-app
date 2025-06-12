@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import os
+import shutil
 import sys
 import time
 import uuid
@@ -12,12 +13,14 @@ from pprint import pformat
 import requests
 
 from web_conexs_api.database import get_session
+from web_conexs_api.jobfilebuilders import build_qe_xspectra_input
 from web_conexs_api.models.models import OrcaCalculation, Simulation, SimulationStatus
 
 from .crud import (
     get_active_simulations,
     get_fdmnes_jobfile,
     get_orca_jobfile_with_technique,
+    get_qe_jobfile,
     get_submitted_simulations,
     update_simulation,
 )
@@ -32,10 +35,14 @@ SLURM_TOKEN_FILE = os.environ.get("SLURM_TOKEN_FILE")
 SLURM_USER = os.environ.get("SLURM_USER")
 SLURM_API = os.environ.get("SLURM_API")
 SLURM_PARTITION = os.environ.get("SLURM_PARTITION")
+SLURM_RESPONSE_KEY = os.environ.get("SLURM_RESPONSE_KEY", "account")
 
 ORCA_IMAGE = os.environ.get("ORCA_IMAGE")
 FDMNES_IMAGE = os.environ.get("FDMNES_IMAGE")
+QE_IMAGE = os.environ.get("QE_IMAGE")
 CONTAINER_IMAGE_DIR = os.environ.get("CONTAINER_IMAGE_DIR")
+PP_DIR = os.environ.get("PP_DIR")
+WFC_DIR = os.environ.get("WFC_DIR")
 
 JOB_RUNNING = "RUNNING"
 JOB_COMPLETED = "COMPLETED"
@@ -225,6 +232,8 @@ def run_update():
                 submit_orca(session, sim)
             if sim.simulation_type_id == 2:
                 submit_fdmnes(session, sim)
+            if sim.simulation_type_id == 3:
+                submit_qe(session, sim)
 
                 # orca = get_orca_jobfile(session, sim.id)
                 # determine workspace
@@ -256,7 +265,8 @@ def run_update():
         job_map = {}
 
         for j in jobs:
-            if j["account"] == SLURM_USER:
+            # NEED TO CHANGE TO USER
+            if j[SLURM_RESPONSE_KEY] == SLURM_USER:
                 job_map[j["job_id"]] = {"state": j["job_state"][0]}
 
         if len(active) != 0:
@@ -288,6 +298,60 @@ def run_update():
                 logger.error(f"Active job with id {a.job_id} not in job_map")
                 a.status = SimulationStatus.failed
                 update_simulation(session, a)
+
+
+def submit_qe(session, sim: Simulation):
+    jobfile, absorbing_atom, abs_edge, pp, pp_abs = get_qe_jobfile(session, sim.id)
+    application_name = "qe"
+    user = sim.person.identifier
+    uid = uuid.uuid4()
+
+    job_name = application_name + "-" + str(uid)
+    working_dir = ROOT_DIR + user + "/" + job_name
+    cluster_dir = CLUSTER_ROOT_DIR + user + "/" + job_name
+
+    Path(working_dir).mkdir(parents=True)
+
+    with open(working_dir / Path("job.inp"), "w+") as f:
+        f.write(jobfile)
+
+    for pp_filename in pp:
+        shutil.copy(os.path.join(PP_DIR, pp_filename), working_dir)
+
+    xspectra_input_file = working_dir / Path("xspectra_input.inp")
+
+    core_file = Path(pp_abs).with_suffix(".wfc")
+
+    wffile = WFC_DIR / core_file
+    shutil.copy(wffile, working_dir)
+
+    xspectra_jobfile = build_qe_xspectra_input(absorbing_atom, abs_edge, str(core_file))
+
+    with open(xspectra_input_file, "w+") as ff:
+        ff.write(xspectra_jobfile)
+
+    qe_sif = os.path.join(CONTAINER_IMAGE_DIR, QE_IMAGE)
+
+    script = (
+        "#!/bin/bash\n"
+        + f"singularity exec {qe_sif} mpirun"
+        + f" -np {sim.n_cores} pw.x -in job.inp > result.pwo \n"
+        + f"singularity exec {qe_sif} mpirun"
+        + f" -np {sim.n_cores} xspectra.x -in xspectra_input.inp"
+    )
+
+    try:
+        job_id = build_job_and_run(
+            script, user, working_dir, job_name, sim.n_cores, sim.memory, cluster_dir
+        )
+        sim.job_id = job_id
+        sim.working_directory = working_dir
+        sim.submission_date = datetime.datetime.now()
+        sim.status = SimulationStatus.submitted
+        update_simulation(session, sim)
+    except Exception:
+        sim.status = SimulationStatus.failed
+        update_simulation(session, sim)
 
 
 def test_read():

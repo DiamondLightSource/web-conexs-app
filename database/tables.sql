@@ -146,9 +146,17 @@ CREATE TABLE fdmnes_simulation (
 
 COMMENT ON TABLE fdmnes_simulation IS 'Specific information for a FDMNES simulation';
 
+CREATE TYPE qe_edge_enum AS ENUM('k', 'l1', 'l2', 'l23');
+
+CREATE TYPE conductivity_enum AS ENUM('metallic', 'semiconductor', 'insulator');
+
 CREATE TABLE qe_simulation (
     simulation_id INTEGER PRIMARY KEY,
     simulation_type_id INTEGER GENERATED ALWAYS AS (3) STORED,
+    crystal_structure_id INTEGER NOT NULL,
+    absorbing_atom INTEGER NOT NULL,
+    edge qe_edge_enum NOT NULL,
+    conductivity conductivity_enum NOT NULL,
     FOREIGN KEY(simulation_id, simulation_type_id) REFERENCES simulation (id,simulation_type_id)
 );
 
