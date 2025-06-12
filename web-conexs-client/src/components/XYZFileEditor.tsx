@@ -96,7 +96,6 @@ export default function XYZFileEditor(props: {
       };
 
       if ("alpha" in props.structureInput) {
-        console.log(lattice.ibrav);
         input.alpha = lattice.alpha;
         input.beta = lattice.beta;
         input.gamma = lattice.gamma;
@@ -106,7 +105,6 @@ export default function XYZFileEditor(props: {
         input.ibrav = lattice.ibrav;
       }
 
-      console.log(input);
       props.setStructureInput(input);
     } else {
       const temp = errors.split("\n");
@@ -114,8 +112,6 @@ export default function XYZFileEditor(props: {
       setError(temp);
     }
   }
-
-  console.log(props.structureInput);
 
   return (
     <Stack spacing={3} minWidth={"450px"}>
@@ -141,13 +137,10 @@ export default function XYZFileEditor(props: {
               props.structureInput == null ? " " : props.structureInput.ibrav
             }
             onChange={(e) => {
-              console.log(e.target.value);
               const newLattice = {
                 ...lattice,
               };
               newLattice.ibrav = e.target.value;
-
-              console.log(newLattice);
 
               setLattice(newLattice);
             }}

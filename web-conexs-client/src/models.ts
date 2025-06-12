@@ -130,3 +130,25 @@ export const fdmnesDefaultValues: FDMNESSimulationInput = {
   structure_type: "crystal",
   n_cores: 4,
 };
+
+export interface QESimulationInput {
+  crystal_structure_id: number;
+  absorbing_atom: number;
+  edge: string;
+  conductivity: string;
+  n_cores: number;
+  memory: number;
+}
+
+export interface QESimulation extends QESimulationInput {
+  simulation: Simulation;
+}
+
+export const qeDefaultValues: QESimulationInput = {
+  crystal_structure_id: -1,
+  memory: 1024,
+  absorbing_atom: 1,
+  edge: "k",
+  conductivity: "metallic",
+  n_cores: 4,
+};

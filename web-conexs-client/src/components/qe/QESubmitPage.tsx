@@ -6,9 +6,9 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import FdmnesForm from "./FdmnesForm";
+import QEForm from "./QEForm";
 
-export default function FdmnesSubmitPage() {
+export default function QeSubmitPage() {
   const theme = useTheme();
   return (
     <Box
@@ -41,10 +41,10 @@ export default function FdmnesSubmitPage() {
             }}
           >
             <Typography variant="h5" component="div">
-              Submit FDMNES Simulation
+              Submit QE Simulation
             </Typography>
           </Toolbar>
-          <FdmnesForm></FdmnesForm>
+          <QEForm></QEForm>
         </Stack>
       </Paper>
     </Box>

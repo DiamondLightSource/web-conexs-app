@@ -69,10 +69,6 @@ export default function LatticeEditor(props: {
 
   const theme = useTheme();
 
-  console.log("RENDER");
-  console.log(props.lattice);
-  console.log(props.lattice.ibrav);
-
   return (
     <Stack spacing={"10px"}>
       <Stack direction={"row"} spacing={"10px"}>
@@ -106,7 +102,6 @@ export default function LatticeEditor(props: {
               }
 
               const numberVal = Number(value);
-              console.log(numberVal);
 
               if (!Number.isFinite(numberVal)) {
                 tmpLattice[k] = null;

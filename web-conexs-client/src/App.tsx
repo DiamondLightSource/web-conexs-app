@@ -17,6 +17,7 @@ import {
   DiamondTheme,
   Footer,
 } from "@diamondlightsource/sci-react-ui";
+import QeSubmitPage from "./components/qe/QESubmitPage";
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ function App() {
               <Route path="/simulations" element={<SimulationReviewPage />} />
               <Route path="/orca" element={<OrcaSubmitPage />} />
               <Route path="/fdmnes" element={<FdmnesSubmitPage />} />
+              <Route path="/qe" element={<QeSubmitPage />} />
             </Routes>
             <Footer copyright="Diamond Light Source" logo={null} />
           </Stack>

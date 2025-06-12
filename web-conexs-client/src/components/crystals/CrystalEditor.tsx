@@ -49,7 +49,6 @@ export default function CrystalEditor(props: {
   };
 
   const updateLattice = (latticeParams: LatticeParameter) => {
-    console.log(latticeParams);
     setLattice(latticeParams);
     if (
       structure == null ||
@@ -90,8 +89,6 @@ export default function CrystalEditor(props: {
           gamma: lattice.gamma,
           ibrav: lattice.ibrav,
         });
-      } else {
-        console.log("CRYSTAL IS NULL");
       }
     }
     setLabel(label);

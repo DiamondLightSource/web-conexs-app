@@ -95,7 +95,6 @@ export default function CreateCystalPage() {
             variant="contained"
             onClick={() => {
               if (crystal != null) {
-                console.log(crystal);
                 mutation.mutate(crystal);
               }
             }}

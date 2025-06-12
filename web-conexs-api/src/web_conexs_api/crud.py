@@ -8,7 +8,11 @@ from fastapi_pagination.cursor import CursorPage
 from fastapi_pagination.ext.sqlalchemy import paginate
 from sqlmodel import Session, and_, select
 
-from .jobfilebuilders import build_fdmnes_inputfile, build_orca_input_file
+from .jobfilebuilders import (
+    build_fdmnes_inputfile,
+    build_orca_input_file,
+    build_qe_inputfile,
+)
 from .models.models import (
     CrystalStructure,
     CrystalStructureInput,
@@ -20,6 +24,8 @@ from .models.models import (
     OrcaSimulationInput,
     Person,
     PersonInput,
+    QESimulation,
+    QESimulationInput,
     Simulation,
 )
 
@@ -339,3 +345,82 @@ def get_user(session, user_id):
         person = Person(id=None, identifier=user_id, admin=False)
 
     return person
+
+
+def submit_qe_simulation(
+    qe_input: QESimulationInput, session: Session, user_id: str
+) -> QESimulation:
+    person = get_or_create_person(session, user_id)
+
+    smodel = {
+        "person_id": person.id,
+        "simulation_type_id": 3,
+        "request_date": datetime.datetime.now(),
+    }
+
+    simulation = Simulation.model_validate(smodel)
+    qe = QESimulation.model_validate(qe_input)
+    qe.simulation = simulation
+
+    session.add(qe)
+    session.commit()
+    session.refresh(qe)
+
+    return qe
+
+    # get_qe_xas,
+
+
+def get_qe_simulation(session, id, user_id) -> QESimulation:
+    statement = (
+        select(QESimulation)
+        .join(Simulation)
+        .join(Person)
+        .where(and_(Person.identifier == user_id, QESimulation.simulation_id == id))
+    )
+
+    simulation = session.exec(statement).first()
+
+    if simulation:
+        return simulation
+    else:
+        raise HTTPException(status_code=404, detail=f"No simulation with id={id}")
+
+
+def get_qe_jobfile(session, id, user_id):
+    qe_simulation = get_qe_simulation(session, id, user_id)
+    structure = get_crystal_structure(
+        session, qe_simulation.crystal_structure_id, user_id
+    )
+
+    return build_qe_inputfile(qe_simulation, structure)
+
+
+def get_qe_output(session, id, user_id):
+    qe_simulation = get_qe_simulation(session, id, user_id)
+
+    wd = qe_simulation.simulation.working_directory
+
+    result_file = wd + "/result.pwo"
+
+    with open(result_file) as fh:
+        file = fh.read()
+
+        return file
+
+
+def get_qe_xas(session, id, user_id):
+    qe_simulation = get_qe_simulation(session, id, user_id)
+
+    wd = qe_simulation.simulation.working_directory
+
+    result_file = wd + "/xanes.dat"
+
+    if not os.path.isfile(result_file):
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    out = np.loadtxt(result_file)
+
+    output = {"energy": out[:, 0].tolist(), "xas": out[:, 1].tolist()}
+
+    return output
