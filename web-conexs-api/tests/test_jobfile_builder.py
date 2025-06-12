@@ -83,8 +83,4 @@ def test_qe_filebuilder():
         test_model, test_structure
     )
 
-    print(jobfile)
-
-    assert False
-
     assert "ibrav" in jobfile
