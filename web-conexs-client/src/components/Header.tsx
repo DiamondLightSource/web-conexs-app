@@ -18,18 +18,25 @@ export default function Header() {
   const handleLogout = () => window.location.assign("/oauth2/sign_out");
 
   return (
-    <Navbar logo="theme">
-      <SideDrawer />
+    <Navbar
+      logo="theme"
+      leftSlot={<SideDrawer />}
+      rightSlot={
+        <>
+          <User
+            color="white"
+            onLogin={handleLogin}
+            onLogout={handleLogout}
+            user={user == null ? null : { fedid: user.identifier }}
+          />
+          <ColourSchemeButton />
+        </>
+      }
+      containerWidth={false}
+    >
       <Typography variant="h4" color={theme.palette.primary.contrastText}>
         Web-CONEXS
       </Typography>
-      <User
-        color="white"
-        onLogin={handleLogin}
-        onLogout={handleLogout}
-        user={user == null ? null : { fedid: user.identifier }}
-      />
-      <ColourSchemeButton />
     </Navbar>
   );
 }
