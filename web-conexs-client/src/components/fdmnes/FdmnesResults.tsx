@@ -3,7 +3,7 @@ import { Box, Stack } from "@mui/material";
 import FdmnesModelCard from "./FdmnesModelCard";
 
 import FdmnesResultsTabs from "./FdmnesResultsTabs";
-import FdmnesCrystalViewer from "./FdmnesCrystalViewer";
+import FdmnesStructureViewer from "./FdmnesStructureViewer";
 
 export default function FdmnesResults(props: { fdmnesSimulationId: number }) {
   return (
@@ -17,7 +17,9 @@ export default function FdmnesResults(props: { fdmnesSimulationId: number }) {
           fdmnesSimulationId={props.fdmnesSimulationId}
         ></FdmnesModelCard>
         <Box flex={1}>
-          <FdmnesCrystalViewer fdmnesSimulationid={props.fdmnesSimulationId} />
+          <FdmnesStructureViewer
+            fdmnesSimulationid={props.fdmnesSimulationId}
+          />
         </Box>
       </Stack>
       <FdmnesResultsTabs fdmnesSimulationId={props.fdmnesSimulationId} />

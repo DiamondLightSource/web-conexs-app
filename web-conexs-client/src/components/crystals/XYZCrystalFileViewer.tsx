@@ -15,7 +15,6 @@ export default function XYZCrystalFileViewer(props: {
           a: props.crystal.a,
           b: props.crystal.b,
           c: props.crystal.c,
-          ibrav: props.crystal.ibrav,
         }
       : {
           a: 1,
@@ -24,7 +23,6 @@ export default function XYZCrystalFileViewer(props: {
           alpha: 90,
           beta: 90,
           gamma: 90,
-          ibrav: "0",
         };
 
   return (

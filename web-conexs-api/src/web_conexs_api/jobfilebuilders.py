@@ -1,6 +1,9 @@
 import math
 import re
 
+import numpy as np
+from pymatgen.core import Molecule
+
 from .models.models import (
     ConductivityType,
     CrystalStructure,
@@ -9,13 +12,14 @@ from .models.models import (
     OrcaCalculation,
     OrcaSimulation,
     QESimulation,
-    StructureType,
 )
 from .periodictable import elements, periodic_table
 
 
 def build_fdmnes_inputfile(
-    fdmnes_simulation: FdmnesSimulation, structure: CrystalStructure
+    fdmnes_simulation: FdmnesSimulation,
+    structure: CrystalStructure,
+    crystalIsMolecule: bool,
 ) -> str:
     jobfile = "Filout\nresult\n\nRange\n"
     jobfile += "-10. 0.25 50 !E_min, step, E_intermediate, step ...\n\n"
@@ -44,13 +48,10 @@ def build_fdmnes_inputfile(
     jobfile += " ! Radius of the cluster where final state calculation is performed\n"
     jobfile += "6" + "\n\n"
 
-    if fdmnes_simulation.structure_type == StructureType.crystal:
-        jobfile += "Crystal        ! Periodic material description (unit cell)\n"
-    else:
-        jobfile += "Molecule       ! Periodic or cylindrical or spherical coordinates\n"
+    jobfile += "Crystal\n" if not crystalIsMolecule else "Molecule\n"
 
     jobfile += f"{structure.a} {structure.b} {structure.c}"
-    jobfile += f"{structure.alpha} {structure.beta} {structure.gamma}\n"
+    jobfile += f" {structure.alpha} {structure.beta} {structure.gamma}\n"
 
     keys = (re.escape(k) for k in periodic_table.keys())
     pattern = re.compile(r"\b(" + "|".join(keys) + r")\b")
@@ -171,7 +172,6 @@ def build_qe_inputfile(qe_simulation: QESimulation, structure: CrystalStructure)
     jobfile += "/ \n\n"
 
     jobfile += "&SYSTEM \n"
-    jobfile += " ibrav = " + structure.ibrav + "\n"
     jobfile += " A = " + str(structure.a) + "\n"
     jobfile += " B = " + str(structure.b) + "\n"
     jobfile += " C = " + str(structure.c) + "\n"
@@ -289,3 +289,49 @@ def build_qe_xspectra_input(atom_number, edge, filecore):
     jobfile += "&cut_occ\n" + "cut_desmooth=0.1,\n" + "cut_stepl=0.01,\n" + "/\n"
     jobfile += "4 4 4 1 1 1"  # need to ask what it means - probably k-points mesh?
     return jobfile
+
+
+def fdmnes_molecule_to_crystal(
+    moleculeStructure: MolecularStructure,
+) -> CrystalStructure:
+    nlines = moleculeStructure.structure.count("\n") + 1
+    xyz = f"{nlines}\n\n" + moleculeStructure.structure
+
+    molecule = Molecule.from_str(xyz, fmt="xyz")
+
+    coords = molecule.cart_coords
+
+    abs_max = np.abs(coords).max(axis=0)
+    # if only zero coord set cell dim to 1
+    abs_max[abs_max == 0] = 1
+
+    norm_coords = coords / abs_max
+
+    structure_string = ""
+
+    sites = molecule.sites
+
+    for i in range(len(sites)):
+        structure_string += (
+            sites[i].species_string
+            + " "
+            + str(norm_coords[i, 0])
+            + " "
+            + str(norm_coords[i, 1])
+            + " "
+            + str(norm_coords[i, 2])
+            + "\n"
+        )
+
+    crystal: CrystalStructure = CrystalStructure(
+        label=moleculeStructure.label,
+        a=abs_max[0],
+        b=abs_max[1],
+        c=abs_max[2],
+        alpha=90,
+        beta=90,
+        gamma=90,
+        structure=structure_string,
+    )
+
+    return crystal

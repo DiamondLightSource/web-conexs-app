@@ -37,7 +37,16 @@ function App() {
               <Route path="/createcrystal" element={<CreateCystalPage />} />
               <Route path="/simulations" element={<SimulationReviewPage />} />
               <Route path="/orca" element={<OrcaSubmitPage />} />
-              <Route path="/fdmnes" element={<FdmnesSubmitPage />} />
+              <Route
+                path="/fdmnescrystal"
+                element={<FdmnesSubmitPage key={"crystal"} isCrystal={true} />}
+              />
+              <Route
+                path="/fdmnesmolecule"
+                element={
+                  <FdmnesSubmitPage key={"molecule"} isCrystal={false} />
+                }
+              />
               <Route path="/qe" element={<QeSubmitPage />} />
             </Routes>
             <Footer copyright="Diamond Light Source" logo={null} />

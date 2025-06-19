@@ -184,3 +184,10 @@ export const postQe = async (input: QESimulationInput) => {
     throw new Error("Failed to submit job");
   }
 };
+
+export const cancelSimulation = async (id: number) => {
+  const { data } = await axios.patch<Simulation, AxiosResponse<Simulation>>(
+    simulationUrl + "/" + id + "/status"
+  );
+  return data;
+};

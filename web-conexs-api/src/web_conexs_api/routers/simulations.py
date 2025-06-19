@@ -3,7 +3,7 @@ from fastapi_pagination.cursor import CursorPage
 from sqlmodel import Session
 
 from ..auth import get_current_user
-from ..crud import get_simulation, get_simulations_page
+from ..crud import get_simulation, get_simulations_page, request_cancel_simulation
 from ..database import get_session
 from ..models.models import SimulationResponse
 
@@ -15,7 +15,6 @@ def get_simulations_pagination_endpoint(
     session: Session = Depends(get_session),
     user_id: str = Depends(get_current_user),
 ) -> CursorPage[SimulationResponse]:
-    print(user_id)
     return get_simulations_page(session, user_id)
 
 
@@ -25,5 +24,13 @@ def get_simulation_endpoint(
     session: Session = Depends(get_session),
     user_id: str = Depends(get_current_user),
 ) -> SimulationResponse:
-    print(user_id)
     return get_simulation(session, id, user_id)
+
+
+@router.patch("/api/simulations/{id}/status")
+def cancel_simulation_endpoint(
+    id: int,
+    session: Session = Depends(get_session),
+    user_id: str = Depends(get_current_user),
+) -> SimulationResponse:
+    return request_cancel_simulation(session, id, user_id)

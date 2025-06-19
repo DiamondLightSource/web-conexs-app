@@ -12,7 +12,6 @@ test("adds 1 + 2 to equal 3", () => {
     a: 1,
     b: 1,
     c: 1,
-    ibrav: "0",
     label: "test",
     structure: "Zn 0.0 0.0 0.0",
   };

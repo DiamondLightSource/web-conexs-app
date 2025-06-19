@@ -29,9 +29,6 @@ export default function FdmnesModelCard(props: { fdmnesSimulationId: number }) {
         <Typography variant="h6" component="div">
           {fdmnesSimulation.edge.toLocaleUpperCase() + "-edge"}
         </Typography>
-        <Typography variant="h6" component="div">
-          {fdmnesSimulation.structure_type + " structure"}
-        </Typography>
         {fdmnesSimulation.greens_approach && (
           <Typography variant="h6" component="div">
             {"Using Green's approach"}

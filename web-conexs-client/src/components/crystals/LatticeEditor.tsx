@@ -1,5 +1,4 @@
 import {
-  FormControl,
   InputLabel,
   MenuItem,
   Select,
@@ -9,30 +8,6 @@ import {
   useTheme,
 } from "@mui/material";
 import { LatticeParameter } from "../../models";
-
-const ibravOptions = {
-  "0": "free",
-  "1": "cubic P (sc)",
-  "2": "cubic F (fcc)",
-  "3": "cubic I (bcc)",
-  "-3": "cubic I (bcc), more symmetric axis",
-  "4": "Hexagonal and Trigonal P",
-  "5": "Trigonal R, 3fold axis c",
-  "-5": "Trigonal R, 3fold axis <111>",
-  "6": "Tetragonal P (st)",
-  "7": "Tetragonal I (bct)",
-  "8": "Orthorhombic P",
-  "9": "Orthorhombic base-centered(bco) celldm(2)=b/a",
-  "-9": "as 9, alternate description",
-  "91": "Orthorhombic one-face base-centered A-type",
-  "10": "Orthorhombic face-centered",
-  "11": "Orthorhombic body-centered",
-  "12": "Monoclinic P, unique axis c",
-  "-12": "Monoclinic P, unique axis b",
-  "13": "Monoclinic base-centered",
-  "-13": "Monoclinic base-centered",
-  "14": "Triclinic",
-};
 
 function NumberNoSpinner(props: {
   value: number;
@@ -114,29 +89,6 @@ export default function LatticeEditor(props: {
           ></NumberNoSpinner>
         ))}
       </Stack>
-      {/* <FormControl> */}
-      <InputLabel id="demo-simple-select-label">
-        Bravais Lattice Index
-      </InputLabel>
-      <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        value={props.lattice.ibrav + ""}
-        defaultValue=""
-        label="Bravais Lattice Index"
-        onChange={(e) => {
-          const tmpLattice = { ...props.lattice };
-          tmpLattice.ibrav = e.target.value;
-          props.setLattice(tmpLattice);
-        }}
-      >
-        {Object.entries(ibravOptions).map((e) => (
-          <MenuItem key={e[0]} value={e[0] + ""}>
-            {e[0] + " - " + e[1]}
-          </MenuItem>
-        ))}
-      </Select>
-      {/* </FormControl> */}
       <Typography
         variant="caption"
         color={theme.palette.error.main}

@@ -1,9 +1,13 @@
 import { Box } from "@mui/material";
 import React3dMol from "../React3dMol";
-import { getFdmnesSimulation, getCrystal } from "../../queryfunctions";
+import {
+  getFdmnesSimulation,
+  getCrystal,
+  getMolecule,
+} from "../../queryfunctions";
 import { useQuery } from "@tanstack/react-query";
 
-export default function FdmnesCrystalViewer(props: {
+export default function FdmnesStructureViewer(props: {
   fdmnesSimulationid: number;
 }) {
   const { data: fdmnesSim } = useQuery({
@@ -11,9 +15,19 @@ export default function FdmnesCrystalViewer(props: {
     queryFn: () => getFdmnesSimulation(props.fdmnesSimulationid),
   });
 
+  const isCrystal = fdmnesSim?.crystal_structure_id != null;
+
   const query = useQuery({
-    queryKey: ["crystal", fdmnesSim?.crystal_structure_id],
-    queryFn: () => getCrystal(fdmnesSim?.crystal_structure_id),
+    queryKey: [
+      isCrystal ? "crystal" : "molecule",
+      isCrystal
+        ? fdmnesSim?.crystal_structure_id
+        : fdmnesSim?.molecular_structure_id,
+    ],
+    queryFn: () =>
+      isCrystal
+        ? getCrystal(fdmnesSim?.crystal_structure_id)
+        : getMolecule(fdmnesSim?.molecular_structure_id),
     enabled: !!fdmnesSim,
   });
 

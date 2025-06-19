@@ -23,7 +23,7 @@ INSERT INTO "simulation_type" VALUES(2,'FDMNES');
 INSERT INTO "simulation_type" VALUES(3,'Quantum ESPRESSO');
 
 
-CREATE TYPE simulation_status_enum AS ENUM('requested', 'submitted', 'running', 'completed', 'failed', 'error');
+CREATE TYPE simulation_status_enum AS ENUM('requested', 'submitted', 'running', 'completed', 'failed', 'error', 'request_cancel', 'cancelled');
 
 CREATE TABLE simulation (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -68,7 +68,7 @@ CREATE TABLE molecular_structure (
 COMMENT ON TABLE molecular_structure IS 'Table to hold molecular structures';
 
 
-CREATE TYPE ibrav_enum AS ENUM('1', '2', '3','-3', '4', '5','-5', '6', '7', '8', '9','-9','91', '10', '11', '12','-12', '13','-13', '14');
+-- CREATE TYPE ibrav_enum AS ENUM('1', '2', '3','-3', '4', '5','-5', '6', '7', '8', '9','-9','91', '10', '11', '12','-12', '13','-13', '14');
 
 
 CREATE TABLE crystal_structure (
@@ -81,7 +81,6 @@ CREATE TABLE crystal_structure (
     alpha NUMERIC NOT NULL,
     beta NUMERIC NOT NULL,
     gamma NUMERIC NOT NULL,
-    ibrav ibrav_enum NOT NULL,
     person_id INTEGER NOT NULL
 );
 
@@ -129,17 +128,21 @@ CREATE TABLE orca_simulation_spectrum(
 
 CREATE TYPE edge_enum AS ENUM('k', 'l1', 'l2', 'l3', 'm1', 'm2', 'm3', 'm4', 'm5');
 
-CREATE TYPE structure_enum AS ENUM('crystal', 'molecule');
+-- MAKE JUST ONE FDMNES ENTRY
+
 
 CREATE TABLE fdmnes_simulation (
     simulation_id INTEGER PRIMARY KEY,
     simulation_type_id INTEGER GENERATED ALWAYS AS (2) STORED,
-    crystal_structure_id INTEGER NOT NULL,
+    crystal_structure_id INTEGER,
+    molecular_structure_id INTEGER,
     element INTEGER NOT NULL,
     edge edge_enum NOT NULL,
     greens_approach BOOLEAN NOT NULL,
-    structure_type structure_enum NOT NULL,
 
+    CONSTRAINT chk_only_one_is_not_null CHECK (num_nonnulls(crystal_structure_id, molecular_structure_id) = 1),
+
+    FOREIGN KEY(molecular_structure_id) REFERENCES molecular_structure (id),
     FOREIGN KEY(crystal_structure_id) REFERENCES crystal_structure (id),
     FOREIGN KEY(simulation_id, simulation_type_id) REFERENCES simulation (id,simulation_type_id)
 );
@@ -169,11 +172,11 @@ O    0.0000000    0.0000000   -0.1653507
 H   -0.7493682    0.0000000    0.4424329');
 
 
-INSERT INTO crystal_structure(label, person_id,a,b,c,alpha,beta,gamma,ibrav,structure) VALUES('Silver',1,4.1043564,4.1043564,4.1043564,90,90,90,'2','Ag 0.0 0.0 0.0
+INSERT INTO crystal_structure(label, person_id,a,b,c,alpha,beta,gamma,structure) VALUES('Silver',1,4.1043564,4.1043564,4.1043564,90,90,90,'Ag 0.0 0.0 0.0
 Ag 0.5 0.5 0.0
 Ag 0.5 0.0 0.5
 Ag 0.0 0.5 0.5');
 
 
-INSERT INTO crystal_structure(label, person_id,a,b,c,alpha,beta,gamma,ibrav,structure) VALUES('KCl',1,6.28,6.28,6.28,90,90,90,'2','K 0.0 0.0 0.0
-Cl 0.5 0.0 0.0');
+INSERT INTO crystal_structure(label, person_id,a,b,c,alpha,beta,gamma,structure) VALUES('KCl',1,4.44,4.44,4.44,60,60,60,'K 0.0 0.0 0.0
+Cl 0.5 0.5 0.5');

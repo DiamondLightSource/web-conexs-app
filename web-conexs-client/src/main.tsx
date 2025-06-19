@@ -7,8 +7,8 @@ import App from "./App.tsx";
 import axios from "axios";
 
 async function enableMocking() {
-  // axios.defaults.headers.common["Authorization"] = "Bearer test_user";
-  // return;
+  axios.defaults.headers.common["Authorization"] = "Bearer test_user";
+  return;
   if (process.env.NODE_ENV !== "development") {
     return;
   }

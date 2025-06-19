@@ -64,6 +64,13 @@ export default function SideDrawer() {
                 </ListItemButton>
               </Link>
             </ListItem>
+            <ListItem key="Submit FDMNES Molecule" disablePadding>
+              <Link to={"/fdmnesmolecule"}>
+                <ListItemButton>
+                  <ListItemText primary="Submit FDMNES molecule" />
+                </ListItemButton>
+              </Link>
+            </ListItem>
             <Divider />
             <ListItem key="Crystals" disablePadding>
               <Link to={"/crystals"}>
@@ -79,10 +86,10 @@ export default function SideDrawer() {
                 </ListItemButton>
               </Link>
             </ListItem>
-            <ListItem key="Submit FDMNES" disablePadding>
-              <Link to={"/fdmnes"}>
+            <ListItem key="Submit FDMNES Crystal" disablePadding>
+              <Link to={"/fdmnescrystal"}>
                 <ListItemButton>
-                  <ListItemText primary="Submit FDMNES" />
+                  <ListItemText primary="Submit FDMNES Crystal" />
                 </ListItemButton>
               </Link>
             </ListItem>

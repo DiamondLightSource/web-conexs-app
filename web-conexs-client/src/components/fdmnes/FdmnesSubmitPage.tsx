@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 import FdmnesForm from "./FdmnesForm";
 
-export default function FdmnesSubmitPage() {
+export default function FdmnesSubmitPage(props: { isCrystal: boolean }) {
   const theme = useTheme();
   return (
     <Box
@@ -41,10 +41,11 @@ export default function FdmnesSubmitPage() {
             }}
           >
             <Typography variant="h5" component="div">
-              Submit FDMNES Simulation
+              Submit FDMNES {props.isCrystal ? "Crystal" : "Molecule"}{" "}
+              Simulation
             </Typography>
           </Toolbar>
-          <FdmnesForm></FdmnesForm>
+          <FdmnesForm isCrystal={props.isCrystal}></FdmnesForm>
         </Stack>
       </Paper>
     </Box>
