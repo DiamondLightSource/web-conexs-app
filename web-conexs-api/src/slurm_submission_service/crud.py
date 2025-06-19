@@ -6,6 +6,7 @@ from web_conexs_api.jobfilebuilders import (
     build_fdmnes_inputfile,
     build_orca_input_file,
     build_qe_inputfile,
+    fdmnes_molecule_to_crystal,
 )
 from web_conexs_api.models.models import (
     CrystalStructure,
@@ -79,14 +80,34 @@ def get_crystal_structure(session, id):
 
 def get_fdmnes_jobfile(session, id):
     fdmnes_simulation = get_fdmnes_simulation(session, id)
-    structure = get_crystal_structure(session, fdmnes_simulation.crystal_structure_id)
 
-    return build_fdmnes_inputfile(fdmnes_simulation, structure)
+    if fdmnes_simulation.crystal_structure_id is not None:
+        structure = get_crystal_structure(
+            session, fdmnes_simulation.crystal_structure_id
+        )
+        crystalIsMolecule = False
+    else:
+        molecule = get_molecular_structure(
+            session, fdmnes_simulation.molecular_structure_id
+        )
+        structure = fdmnes_molecule_to_crystal(molecule)
+        crystalIsMolecule = True
+
+    print(structure.structure)
+
+    return build_fdmnes_inputfile(fdmnes_simulation, structure, crystalIsMolecule)
 
 
 def get_submitted_simulations(session) -> List[Simulation]:
     statement = select(Simulation).where(
         Simulation.status == SimulationStatus.requested
+    )
+    return session.exec(statement).all()
+
+
+def get_request_cancelled_simulations(session) -> List[Simulation]:
+    statement = select(Simulation).where(
+        Simulation.status == SimulationStatus.request_cancel
     )
     return session.exec(statement).all()
 

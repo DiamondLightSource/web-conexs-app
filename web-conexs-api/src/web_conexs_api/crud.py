@@ -27,6 +27,7 @@ from .models.models import (
     QESimulation,
     QESimulationInput,
     Simulation,
+    SimulationStatus,
 )
 
 
@@ -139,8 +140,12 @@ def get_simulations_page(session, user_id) -> CursorPage[Simulation]:
     return paginate(session, statement.order_by(Simulation.id.desc()))
 
 
-def get_simulation(session, id, user_id):
-    statement = select(Simulation).join(Person).where(Simulation.id == id)
+def get_simulation(session, id, user_id) -> Simulation:
+    statement = (
+        select(Simulation)
+        .join(Person)
+        .where(and_(Person.identifier == user_id, Simulation.id == id))
+    )
 
     simulation = session.exec(statement).first()
 
@@ -424,3 +429,19 @@ def get_qe_xas(session, id, user_id):
     output = {"energy": out[:, 0].tolist(), "xas": out[:, 1].tolist()}
 
     return output
+
+
+def request_cancel_simulation(session, id, user_id):
+    sim = get_simulation(session, id, user_id)
+
+    if (
+        sim.status == SimulationStatus.running
+        or sim.status == SimulationStatus.requested
+        or sim.status == SimulationStatus.submitted
+    ):
+        sim.status = SimulationStatus.request_cancel
+        session.add(sim)
+        session.commit()
+        session.refresh(sim)
+
+    return sim

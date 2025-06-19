@@ -21,6 +21,7 @@ from .crud import (
     get_fdmnes_jobfile,
     get_orca_jobfile_with_technique,
     get_qe_jobfile,
+    get_request_cancelled_simulations,
     get_submitted_simulations,
     update_simulation,
 )
@@ -62,15 +63,13 @@ def get_token():
         return fh.read()
 
 
-def build_job_and_run(
-    script, user_id, working_dir, job_name, cpus, memory, cluster_dir
-):
+def build_job_and_run(script, job_name, cpus, memory, cluster_dir, as_tasks):
     job_request = {
         "job": {
             "partition": SLURM_PARTITION,
             "name": job_name,
             "nodes": 1,
-            "tasks": cpus,
+            "tasks": 1 if as_tasks else cpus,
             "memory_per_node": int(memory * 1000),
             "time_limit": 30,
             "current_working_directory": str(cluster_dir),
@@ -82,6 +81,13 @@ def build_job_and_run(
         },
         "script": script,
     }
+
+    if as_tasks:
+        job_request["job"]["ntasks_per_node"] = 1
+        job_request["job"]["cpus_per_task"] = cpus
+        job_request["job"]["environment"]["OMP_NUM_THREADS"] = cpus
+
+    logger.debug(job_request)
 
     url_submit = SLURM_API + "/job/submit"
 
@@ -160,7 +166,7 @@ def submit_orca(session, sim: Simulation):
 
     try:
         job_id = build_job_and_run(
-            script, user, working_dir, job_name, sim.n_cores, sim.memory, cluster_dir
+            script, job_name, sim.n_cores, sim.memory, cluster_dir, False
         )
         sim.job_id = job_id
         sim.working_directory = working_dir
@@ -171,6 +177,7 @@ def submit_orca(session, sim: Simulation):
         logger.exception("Error submitting orca job")
         sim.status = SimulationStatus.failed
         update_simulation(session, sim)
+        logger.exception("Error submitting ORCA job")
 
 
 def submit_fdmnes(session, sim: Simulation):
@@ -200,12 +207,12 @@ def submit_fdmnes(session, sim: Simulation):
 
     script = (
         "#!/bin/bash\n"
-        + f"singularity exec {fdmnes_sif} mpirun -np 4 fdmnes_mpi > fdmnes_result.txt"
+        + f"singularity exec {fdmnes_sif} mpirun -np 1 fdmnes_mpi > fdmnes_result.txt"
     )
 
     try:
         job_id = build_job_and_run(
-            script, user, working_dir, job_name, sim.n_cores, sim.memory, cluster_dir
+            script, job_name, sim.n_cores, sim.memory, cluster_dir, True
         )
         sim.job_id = job_id
         sim.working_directory = working_dir
@@ -215,10 +222,41 @@ def submit_fdmnes(session, sim: Simulation):
     except Exception:
         sim.status = SimulationStatus.failed
         update_simulation(session, sim)
+        logger.exception("Error submitting FDMNES job")
+
+
+def clean_request_cancelled(session):
+    request_cancel = get_request_cancelled_simulations(session)
+
+    for sim in request_cancel:
+        if sim.job_id is None:
+            # No job id, hasn't been submitted, so just flag as cancelled
+            sim.status = SimulationStatus.cancelled
+            update_simulation(session, sim)
+        else:
+            url = SLURM_API + "/job/" + str(sim.job_id)
+            slurm_token = get_token()
+
+            headers = {
+                "X-SLURM-USER-NAME": SLURM_USER,
+                "X-SLURM-USER-TOKEN": slurm_token,
+                "Content-Type": "application/json",
+            }
+
+            r = requests.delete(url, headers=headers)
+
+            if r.status_code != 200:
+                logger.error(f"Job delete response not successful {r.status_code}")
+                continue
+
+            sim.status = SimulationStatus.cancelled
+            update_simulation(session, sim)
 
 
 def run_update():
     with contextmanager(get_session)() as session:
+        clean_request_cancelled(session)
+
         # sessions = get_session()
         # session = next(sessions)
         sims = get_submitted_simulations(session)
@@ -342,7 +380,7 @@ def submit_qe(session, sim: Simulation):
 
     try:
         job_id = build_job_and_run(
-            script, user, working_dir, job_name, sim.n_cores, sim.memory, cluster_dir
+            script, job_name, sim.n_cores, sim.memory, cluster_dir, False
         )
         sim.job_id = job_id
         sim.working_directory = working_dir
@@ -352,14 +390,18 @@ def submit_qe(session, sim: Simulation):
     except Exception:
         sim.status = SimulationStatus.failed
         update_simulation(session, sim)
+        logger.exception("Error submitting QE job")
 
 
-def test_read():
-    with contextmanager(get_session)() as session:
-        sims = get_submitted_simulations(session)
-        for sim in sims:
-            if sim.simulation_type_id == 1:
-                jf, calc = get_orca_jobfile_with_technique(session, sim.id)
+# def test_read():
+#     with contextmanager(get_session)() as session:
+#         sims = get_submitted_simulations(session)
+#         for sim in sims:
+#             if sim.simulation_type_id == 1:
+#                 jf, calc = get_orca_jobfile_with_technique(session, sim.id)
+#             elif sim.simulation_type_id == 2:
+#                 jobfile = get_fdmnes_jobfile(session, sim.id)
+#                 logger.error(jobfile)
 
 
 def main():
@@ -376,6 +418,8 @@ def main():
     rootlogger.debug("Logging Configured")
 
     logger.info("Running main loop")
+
+    # test_read()
 
     while True:
         try:

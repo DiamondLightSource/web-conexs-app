@@ -29,7 +29,6 @@ const mockCrystal: Crystal = {
   alpha: 90,
   beta: 90,
   gamma: 90,
-  ibrav: "0",
   label: "test",
   structure: "Ag 0. 0. 0.\nAg 0.5 0.5 0.\nAg 0.5 0. 0.5\nAg 0. 0.5 0.5",
 };

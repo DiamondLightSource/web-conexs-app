@@ -14,7 +14,6 @@ export interface CrystalInput extends MoleculeInput {
   alpha: number;
   beta: number;
   gamma: number;
-  ibrav: string;
 }
 
 export interface LatticeParameter {
@@ -24,7 +23,6 @@ export interface LatticeParameter {
   alpha: number | null;
   beta: number | null;
   gamma: number | null;
-  ibrav: string | null;
 }
 
 export interface Molecule extends MoleculeInput {
@@ -108,11 +106,11 @@ export const orcaDefaultValues: OrcaSimulationWithResource = {
 };
 
 export interface FDMNESSimulationInput {
-  crystal_structure_id: number;
+  crystal_structure_id: number | null;
+  molecular_structure_id: number | null;
   element: number;
   edge: string;
   greens_approach: boolean;
-  structure_type: string;
   n_cores: number;
   memory: number;
 }
@@ -122,12 +120,12 @@ export interface FDMNESSimulation extends FDMNESSimulationInput {
 }
 
 export const fdmnesDefaultValues: FDMNESSimulationInput = {
-  crystal_structure_id: -1,
+  crystal_structure_id: null,
+  molecular_structure_id: null,
   memory: 1024,
   element: 1,
   edge: "k",
   greens_approach: false,
-  structure_type: "crystal",
   n_cores: 4,
 };
 

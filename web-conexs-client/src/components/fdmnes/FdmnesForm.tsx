@@ -3,26 +3,26 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { Box, Button, Grid2, Skeleton, Stack } from "@mui/material";
-import useFDMNESSchema from "../../hooks/useFdmnesSchema";
+import { Box, Button, Skeleton, Stack } from "@mui/material";
+import { useFDMNESSchema } from "../../hooks/useFdmnesSchema";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postFdmnes } from "../../queryfunctions";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import CrystalViewer from "../crystals/CrystalViewer";
 
 import CompactGroupRenderer, {
   CompactGroupTester,
 } from "../renderers/CompactGroup";
+import StructureViewer from "../StructureViewer";
 
 const renderers = [
   ...materialRenderers,
   { tester: CompactGroupTester, renderer: CompactGroupRenderer },
 ];
 
-export default function FdmnesForm() {
-  const [selectedCrystalID, setSelectedCrystalId] = useState<null | number>(
+export default function FdmnesForm(props: { isCrystal: boolean }) {
+  const [selectedStructureID, setSelectedStructureId] = useState<null | number>(
     null
   );
   const navigate = useNavigate();
@@ -48,11 +48,9 @@ export default function FdmnesForm() {
     window.alert("Error Submitting Job!");
   };
 
-  const { data, setData, schema, uischema, hasData } = useFDMNESSchema();
-
-  if (data != null && data.crystal_structure_id != selectedCrystalID) {
-    setSelectedCrystalId(data.crystal_structure_id);
-  }
+  const { data, setData, schema, uischema, hasData } = useFDMNESSchema(
+    props.isCrystal
+  );
 
   function getPlacemarker(noCrystals: boolean) {
     if (!noCrystals) {
@@ -81,7 +79,11 @@ export default function FdmnesForm() {
               cells={materialCells}
               onChange={({ data }) => {
                 setData(data);
-                setSelectedCrystalId(data.crystal_structure_id);
+                setSelectedStructureId(
+                  props.isCrystal
+                    ? data.crystal_structure_id
+                    : data.molecular_structure_id
+                );
               }}
             />
             <Button
@@ -95,8 +97,11 @@ export default function FdmnesForm() {
             </Button>
           </Stack>
           <Stack flex={1}>
-            {selectedCrystalID != null && (
-              <CrystalViewer id={selectedCrystalID} />
+            {selectedStructureID != null && (
+              <StructureViewer
+                id={selectedStructureID}
+                isCrystal={props.isCrystal}
+              />
             )}
           </Stack>
         </Stack>

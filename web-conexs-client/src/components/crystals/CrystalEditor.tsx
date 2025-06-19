@@ -12,7 +12,6 @@ const templateCrystal: CrystalInput = {
   beta: 90,
   gamma: 90,
   label: "Silver",
-  ibrav: "2",
   structure: "Ag 0.0 0.0 0.0\nAg 0.5 0.5 0.0\nAg 0.5 0.0 0.5\nAg 0.0 0.5 0.5",
 };
 
@@ -43,7 +42,6 @@ export default function CrystalEditor(props: {
         alpha: lattice.alpha,
         beta: lattice.beta,
         gamma: lattice.gamma,
-        ibrav: lattice.ibrav,
       });
     }
   };
@@ -67,7 +65,6 @@ export default function CrystalEditor(props: {
         alpha: latticeParams.alpha,
         beta: latticeParams.beta,
         gamma: latticeParams.gamma,
-        ibrav: latticeParams.ibrav,
       });
     }
   };
@@ -87,7 +84,6 @@ export default function CrystalEditor(props: {
           alpha: lattice.alpha,
           beta: lattice.beta,
           gamma: lattice.gamma,
-          ibrav: lattice.ibrav,
         });
       }
     }

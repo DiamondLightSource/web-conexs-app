@@ -28,6 +28,8 @@ class SimulationStatus(enum.Enum):
     completed = "completed"
     failed = "failed"
     error = "error"
+    request_cancel = "request_cancel"
+    cancelled = "cancelled"
 
 
 class MolecularStructureInput(SQLModel):
@@ -42,7 +44,6 @@ class CrystalStructureInput(MolecularStructureInput):
     alpha: float
     beta: float
     gamma: float
-    ibrav: str
 
 
 class CrystalStructure(CrystalStructureInput, table=True):
@@ -182,11 +183,6 @@ class SimulationResponse(SimulationBase):
     person: Person
 
 
-class StructureType(enum.Enum):
-    crystal = "crystal"
-    molecule = "molecule"
-
-
 class Edge(enum.Enum):
     k = "k"
     l1 = "l1"
@@ -200,9 +196,9 @@ class Edge(enum.Enum):
 
 
 class FdmnesSimulationInput(SQLModel):
-    crystal_structure_id: int
+    crystal_structure_id: int | None
+    molecular_structure_id: int | None
     element: int
-    structure_type: StructureType
     edge: Edge
     greens_approach: bool
 

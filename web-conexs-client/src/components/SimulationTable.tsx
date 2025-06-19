@@ -9,12 +9,15 @@ import {
   TableBody,
   Box,
   Typography,
+  Button,
 } from "@mui/material";
 
 import { tableCellClasses } from "@mui/material/TableCell";
 
 import { styled, useTheme } from "@mui/material/styles";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { cancelSimulation } from "../queryfunctions";
 
 const nResults = 10;
 
@@ -46,6 +49,7 @@ function SimulationMetadata(props: {
   selectedRow: number;
   clickSimulation: (simulation: Simulation | null) => void;
   setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
+  cancellationMutation: (id: number) => void;
 }): JSX.Element {
   const className =
     props.simulation?.id === props.selected ? "activeclicked" : "";
@@ -78,30 +82,54 @@ function SimulationMetadata(props: {
     complete_string = d.toDateString() + " " + d.toLocaleTimeString();
   }
 
+  const clickCell = () => {
+    props.setSelectedRow(props.key);
+    props.clickSimulation(props.simulation);
+  };
+
+  const showCancel =
+    props.simulation?.status == "submitted" ||
+    props.simulation?.status == "running" ||
+    props.simulation?.status == "requested";
+
   return (
     <StyledTableRow
-      onClick={() => {
-        props.setSelectedRow(props.key);
-        props.clickSimulation(props.simulation);
-      }}
       key={props.key}
       className={className}
       hover={true}
       selected={props.selectedRow === props.key}
       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
     >
-      <StyledTableCell align="left">
+      <StyledTableCell align="left" onClick={clickCell}>
         {props.simulation?.id ?? "\xa0"}
       </StyledTableCell>
 
-      <StyledTableCell align="center">
+      <StyledTableCell align="center" onClick={clickCell}>
         {props.simulation?.simulation_type.type ?? ""}
       </StyledTableCell>
-      <StyledTableCell align="center">
+      <StyledTableCell align="center" onClick={clickCell}>
         <Typography color={color}> {props.simulation?.status ?? ""}</Typography>
       </StyledTableCell>
-      <StyledTableCell align="left">{request_string}</StyledTableCell>
-      <StyledTableCell align="left">{complete_string}</StyledTableCell>
+      <StyledTableCell align="left" onClick={clickCell}>
+        {request_string}
+      </StyledTableCell>
+      <StyledTableCell align="left" onClick={clickCell}>
+        {complete_string}
+      </StyledTableCell>
+      <StyledTableCell align="left">
+        {showCancel && (
+          <Button
+            onClick={() => {
+              if (props.simulation != null) {
+                props.cancellationMutation(props.simulation.id);
+              }
+            }}
+            variant="contained"
+          >
+            Cancel
+          </Button>
+        )}
+      </StyledTableCell>
     </StyledTableRow>
   );
 }
@@ -112,6 +140,15 @@ export default function SimulationTable(props: {
   setSelectedSimulation: (x: Simulation | null) => void;
 }) {
   const [selectedRow, setSelectedRow] = useState(-1);
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: cancelSimulation,
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["simulations"] });
+    },
+  });
 
   const simulationList: (Simulation | null)[] = [...props.simulations];
 
@@ -132,6 +169,7 @@ export default function SimulationTable(props: {
               <TableCell align="center">Status</TableCell>
               <TableCell align="left">Request Date</TableCell>
               <TableCell align="left">Submission Date</TableCell>
+              <TableCell align="left"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -143,6 +181,7 @@ export default function SimulationTable(props: {
                 selectedRow: selectedRow,
                 clickSimulation: props.setSelectedSimulation,
                 setSelectedRow: setSelectedRow,
+                cancellationMutation: mutation.mutate,
               })
             )}
           </TableBody>

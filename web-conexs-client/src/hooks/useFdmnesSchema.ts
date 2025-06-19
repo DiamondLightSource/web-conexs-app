@@ -2,20 +2,21 @@ import { useState } from "react";
 import { fdmnesDefaultValues } from "../models";
 import { periodic_table } from "../periodictable";
 import { useQuery } from "@tanstack/react-query";
-import { getCrystals } from "../queryfunctions";
+import { getCrystals, getMolecules } from "../queryfunctions";
+
+const structure_template = {
+  type: "number",
+  oneOf: [
+    {
+      const: -1,
+      title: "No Structures",
+    },
+  ],
+};
 
 const schemaTemplate = {
   type: "object",
   properties: {
-    crystal_structure_id: {
-      type: "number",
-      oneOf: [
-        {
-          const: -1,
-          title: "No Structures",
-        },
-      ],
-    },
     element: {
       title: "Element",
       type: "number",
@@ -31,15 +32,18 @@ const schemaTemplate = {
       default: "k",
     },
     greens_approach: {
-      title: "Use Green's Function Approach",
       type: "boolean",
-      default: false,
-    },
-    structure_type: {
-      title: "Structure type",
-      type: "string",
-      enum: ["crystal", "molecule"],
-      default: "crystal",
+      title: "Theory",
+      oneOf: [
+        {
+          const: false,
+          title: "Finite-Difference Method",
+        },
+        {
+          const: true,
+          title: "Multiple-Scattering Theory (Green's function)",
+        },
+      ],
     },
     n_cores: {
       title: "Number of Cores",
@@ -56,7 +60,25 @@ const schemaTemplate = {
   required: [],
 };
 
-const uischema = {
+const crystal_schema_properties = {
+  ...schemaTemplate.properties,
+  crystal_structure_id: structure_template,
+};
+const crystal_schema_template = {
+  ...schemaTemplate,
+  properties: crystal_schema_properties,
+};
+
+const molecule_schema_properties = {
+  ...schemaTemplate.properties,
+  molecular_structure_id: structure_template,
+};
+const molecule_schema_template = {
+  ...schemaTemplate,
+  properties: molecule_schema_properties,
+};
+
+const crystal_uischema = {
   type: "VerticalLayout",
   elements: [
     {
@@ -93,10 +115,6 @@ const uischema = {
               type: "Control",
               scope: "#/properties/greens_approach",
             },
-            {
-              type: "Control",
-              scope: "#/properties/structure_type",
-            },
           ],
         },
       ],
@@ -122,14 +140,22 @@ const uischema = {
     },
   ],
 };
-export default function useFDMNESSchema() {
+
+const molecule_uischema = structuredClone(crystal_uischema);
+
+molecule_uischema.elements[0].elements[0].scope =
+  "#/properties/molecular_structure_id";
+
+export function useFDMNESSchema(isCrystal: boolean) {
   const [data, setData] = useState({ ...fdmnesDefaultValues });
-  const [schema, setSchema] = useState({ ...schemaTemplate });
+  const [schema, setSchema] = useState(
+    isCrystal ? { ...crystal_schema_template } : { ...molecule_schema_template }
+  );
   const [hasData, setHasData] = useState(false);
 
   const query = useQuery({
-    queryKey: ["crystals"],
-    queryFn: getCrystals,
+    queryKey: [isCrystal ? "crystals" : "molecules"],
+    queryFn: isCrystal ? getCrystals : getMolecules,
   });
 
   if (query.data != null && query.data.length != 0 && !hasData) {
@@ -140,13 +166,67 @@ export default function useFDMNESSchema() {
       title: m.id + " " + m.label,
     }));
 
-    tmpSchema.properties.crystal_structure_id.oneOf = output;
+    if ("crystal_structure_id" in tmpSchema.properties) {
+      tmpSchema.properties.crystal_structure_id.oneOf = output;
+    }
+
+    if ("molecular_structure_id" in tmpSchema.properties) {
+      tmpSchema.properties.molecular_structure_id.oneOf = output;
+    }
+
     const tmpData = { ...data };
-    tmpData.crystal_structure_id = output[0].const;
+
+    if (isCrystal) {
+      tmpData.crystal_structure_id = output[0].const;
+    } else {
+      tmpData.molecular_structure_id = output[0].const;
+    }
+
     setData(tmpData);
     setSchema(tmpSchema);
     setHasData(true);
   }
+
+  const uischema = isCrystal ? crystal_uischema : molecule_uischema;
+
+  console.log(uischema);
+
+  return {
+    data,
+    setData,
+    schema,
+    uischema,
+    hasData,
+  };
+}
+
+export function useFDMNESMoleculeSchema() {
+  const [data, setData] = useState({ ...fdmnesDefaultValues });
+  const [schema, setSchema] = useState({ ...molecule_schema_template });
+  const [hasData, setHasData] = useState(false);
+
+  const query = useQuery({
+    queryKey: ["molecules"],
+    queryFn: getMolecules,
+  });
+
+  if (query.data != null && query.data.length != 0 && !hasData) {
+    const tmpSchema = { ...schema };
+
+    const output = query.data.map((m) => ({
+      const: m.id,
+      title: m.id + " " + m.label,
+    }));
+
+    molecule_schema_template.properties.molecular_structure_id.oneOf = output;
+    const tmpData = { ...data };
+    tmpData.molecular_structure_id = output[0].const;
+    setData(tmpData);
+    setSchema(tmpSchema);
+    setHasData(true);
+  }
+
+  const uischema = molecule_uischema;
 
   return {
     data,

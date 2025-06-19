@@ -23,7 +23,6 @@ const templateCrystal: CrystalInput = {
   beta: 90,
   gamma: 90,
   label: "test",
-  ibrav: "0",
   structure: "Ag 0.0 0.0 0.0\nAg 0.5 0.5 0.0\nAg 0.5 0.0 0.5\nAg 0.0 0.5 0.5",
 };
 
