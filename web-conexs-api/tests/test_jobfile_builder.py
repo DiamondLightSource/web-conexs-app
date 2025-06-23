@@ -12,6 +12,7 @@ from web_conexs_api.models.models import (
     MolecularStructure,
     OrcaCalculation,
     OrcaSimulation,
+    OrcaSolvent,
     QEEdge,
     QESimulation,
     Simulation,
@@ -37,9 +38,13 @@ def test_orca_xas_filebuilder():
 
     jobfile = build_orca_input_file(test_model, test_structure)
 
-    print(jobfile)
-
     assert "%tddft" in jobfile
+
+    test_model.solvent = OrcaSolvent.Water
+
+    jobfile = build_orca_input_file(test_model, test_structure)
+
+    assert "CPCM(Water)" in jobfile
 
 
 def test_orca_opt_filebuilder():
@@ -89,7 +94,7 @@ def test_qe_filebuilder():
         test_model, test_structure
     )
 
-    assert "cosAB" in jobfile
+    assert "CELL_PARAMETERS" in jobfile
 
 
 def test_fdmnes_crystal_filebuilder():

@@ -1,8 +1,8 @@
-import math
+import io
 import re
 
 import numpy as np
-from pymatgen.core import Molecule
+from pymatgen.core import Lattice, Molecule
 
 from .models.models import (
     ConductivityType,
@@ -86,7 +86,7 @@ def build_orca_input_file(
         jobfile += " OPT "
 
     if orca_simulation.solvent is not None:
-        jobfile += "CPCM(" + orca_simulation.solvent + ") "
+        jobfile += " CPCM(" + orca_simulation.solvent.value + ") "
 
     jobfile += "\n"
 
@@ -158,6 +158,17 @@ def build_qe_inputfile(qe_simulation: QESimulation, structure: CrystalStructure)
 
     n_type = len(element_set) + 1
 
+    lattice = Lattice.from_parameters(
+        a=structure.a,
+        b=structure.b,
+        c=structure.c,
+        alpha=structure.alpha,
+        beta=structure.beta,
+        gamma=structure.gamma,
+    )
+
+    matrix = lattice.matrix
+
     jobfile = "&CONTROL \n"
     jobfile += " calculation = 'scf'\n"
     jobfile += " etot_conv_thr = 1.0000000000d-05\n"
@@ -172,12 +183,7 @@ def build_qe_inputfile(qe_simulation: QESimulation, structure: CrystalStructure)
     jobfile += "/ \n\n"
 
     jobfile += "&SYSTEM \n"
-    jobfile += " A = " + str(structure.a) + "\n"
-    jobfile += " B = " + str(structure.b) + "\n"
-    jobfile += " C = " + str(structure.c) + "\n"
-    jobfile += " cosBC = " + str(math.cos(math.radians(structure.alpha))) + "\n"
-    jobfile += " cosAC = " + str(math.cos(math.radians(structure.beta))) + "\n"
-    jobfile += " cosAB = " + str(math.cos(math.radians(structure.gamma))) + "\n"
+    jobfile += " ibrav = 0\n"
 
     if qe_simulation.conductivity == ConductivityType.metallic:
         occupations = "smearing"
@@ -250,6 +256,17 @@ def build_qe_inputfile(qe_simulation: QESimulation, structure: CrystalStructure)
     jobfile += "K_POINTS automatic\n"
     jobfile += "1 1 1 0 0 0\n"
     jobfile += "\n\n"
+
+    jobfile += "CELL_PARAMETERS {angstrom}\n"
+
+    print(np.array2string(matrix))
+    s = io.BytesIO()
+
+    np.savetxt(s, matrix)
+
+    jobfile += s.getvalue().decode()
+
+    jobfile += "\n"
 
     return (
         jobfile,
