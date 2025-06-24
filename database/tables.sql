@@ -5,7 +5,7 @@ SET role webconexsadmin;
 CREATE TABLE person (
 	id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	identifier TEXT NOT NULL,
-    admin BOOLEAN NOT NULL DEFAULT FALSE,
+    accepted_orca_eula BOOLEAN NOT NULL DEFAULT FALSE,
 	UNIQUE (identifier)
 );
 

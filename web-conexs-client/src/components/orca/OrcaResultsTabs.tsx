@@ -4,6 +4,7 @@ import { useState } from "react";
 import OrcaChart from "./OrcaChart";
 import OrcaLogViewer from "./OrcaLogViewer";
 import OrcaXYZViewer from "./OrcaXYZViewer";
+import OrcaJobFileViewer from "./OrcaJobFileViewer";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -60,6 +61,7 @@ export default function OrcaResultsTabs(props: {
             <Tab label="XAS Plot" {...a11yProps(0)} />
           )}
           <Tab label="Results Log" {...a11yProps(1)} />
+          <Tab label="Input Job File" {...a11yProps(2)} />
         </Tabs>
       </Box>
 
@@ -75,6 +77,9 @@ export default function OrcaResultsTabs(props: {
 
       <CustomTabPanel value={value} index={1}>
         <OrcaLogViewer id={props.orcaSimulationId} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        <OrcaJobFileViewer id={props.orcaSimulationId} />
       </CustomTabPanel>
     </Box>
   );

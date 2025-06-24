@@ -8,6 +8,7 @@ import {
   Button,
   Card,
   CardContent,
+  Paper,
   Skeleton,
   Stack,
   Typography,
@@ -16,7 +17,7 @@ import useOrcaSchema from "../../hooks/useOrcaSchema";
 // import React3dMol from "./React3dMol";
 import { postOrca } from "../../queryfunctions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import MoleculeViewer from "../molecules/MoleculeViewer";
 
@@ -111,7 +112,60 @@ export default function OrcaForm() {
               <MoleculeViewer id={selectedMoleculeID} />
             )}
           </Stack>
-          <Box backgroundColor={"red"}></Box>
+          <Paper
+            flex={1}
+            sx={{
+              margin: "20px",
+              flex: 1,
+              minHeight: 0,
+              alignItems: "stretch",
+              display: "flex",
+              flexDirection: "column",
+              spacing: "2px",
+            }}
+            elevation={3}
+          >
+            <Stack flex={1} spacing={"2px"} margin={"3px"}>
+              <Typography>
+                ORCA is an ab initio, DFT, and semi-empirical SCF-MO package
+                developed by Frank Neese et al. at the Max Planck Institut für
+                Kohlenforschung.
+              </Typography>
+              <Typography variant="body2">
+                Additional information can be found here:
+              </Typography>
+              <Link
+                to="https://www.kofo.mpg.de/en/research/services/orca"
+                target="_blank"
+              >
+                ORCA manual
+              </Link>
+              <Link
+                to="https://www.kofo.mpg.de/412442/orca_manual-opt.pdf"
+                target="_blank"
+              >
+                ORCA webpage at Max-Planck-Institut
+              </Link>
+              <Link
+                to="https://sites.google.com/site/orcainputlibrary/home"
+                target="_blank"
+              >
+                ORCA input library website
+              </Link>
+              <Typography variant="body2">
+                If you publish calculation results performed with ORCA code
+                please cite the original papers:
+              </Typography>
+              <Typography sx={{ fontStyle: "italic" }} variant="body2">
+                F. Neese, Wiley Interdisciplinary Reviews: Computational
+                Molecular Science 2, 73 (2012).
+              </Typography>
+              <Typography sx={{ fontStyle: "italic" }} variant="body2">
+                F. Neese, Wiley Interdisciplinary Reviews: Computational
+                Molecular Science 8, e1327 (2018).
+              </Typography>
+            </Stack>
+          </Paper>
         </Stack>
       ) : (
         getPlacemarker(hasData && data == null)

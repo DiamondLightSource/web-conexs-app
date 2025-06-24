@@ -5,6 +5,7 @@ export interface MoleculeInput {
 
 export interface Person {
   identifier: string;
+  accepted_orca_eula: boolean;
 }
 
 export interface CrystalInput extends MoleculeInput {

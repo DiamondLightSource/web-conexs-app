@@ -3,6 +3,7 @@ import { Tab, Tabs, Box } from "@mui/material";
 import { useState } from "react";
 import FdmnesChart from "./FdmnesChart";
 import FdmnesLogViewer from "./FdmnesLogViewer";
+import FdmnesJobFileViewer from "./FdmnesJobFileViewer";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -54,6 +55,7 @@ export default function FdmnesResultsTabs(props: {
         >
           <Tab label="XAS Plot" {...a11yProps(0)} />
           <Tab label="Results Log" {...a11yProps(1)} />
+          <Tab label="Input Job File" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -61,6 +63,9 @@ export default function FdmnesResultsTabs(props: {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <FdmnesLogViewer id={props.fdmnesSimulationId} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        <FdmnesJobFileViewer id={props.fdmnesSimulationId} />
       </CustomTabPanel>
     </Box>
   );

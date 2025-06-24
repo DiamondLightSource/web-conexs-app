@@ -8,7 +8,8 @@ from fastapi import (
 )
 from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
 
-get_bearer_token = HTTPBearer(auto_error=True)
+# False so we dont get a 403 when it should be a 401
+get_bearer_token = HTTPBearer(auto_error=False)
 
 oidc_user_info_endpoint = os.environ.get("OIDC_USER_INFO_ENDPOINT")
 oidc_id_key = os.environ.get("OIDC_ID_KEY", "id")

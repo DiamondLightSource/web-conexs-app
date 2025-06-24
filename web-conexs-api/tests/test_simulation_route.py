@@ -31,9 +31,7 @@ def test_router():
 
         response = client.get("/api/simulations/")
 
-        print(response)
-
-        assert response.status_code == 403
+        assert response.status_code == 401
 
         headers = headers
         response = client.get("/api/simulations/", headers=headers)

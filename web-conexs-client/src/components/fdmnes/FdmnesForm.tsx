@@ -3,12 +3,12 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { Box, Button, Skeleton, Stack } from "@mui/material";
+import { Box, Button, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import { useFDMNESSchema } from "../../hooks/useFdmnesSchema";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postFdmnes } from "../../queryfunctions";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 import CompactGroupRenderer, {
@@ -104,6 +104,51 @@ export default function FdmnesForm(props: { isCrystal: boolean }) {
               />
             )}
           </Stack>
+          <Paper
+            flex={1}
+            sx={{
+              margin: "20px",
+              flex: 1,
+              minHeight: 0,
+              alignItems: "stretch",
+              display: "flex",
+              flexDirection: "column",
+              spacing: "2px",
+            }}
+            elevation={3}
+          >
+            <Stack flex={1} spacing={"2px"} margin={"3px"}>
+              <Typography>
+                The FDMNES project is developed in the SIN team, Institut Néel,
+                CNRS, Grenoble, France
+              </Typography>
+              <Typography variant="body2">
+                Additional information can be found here:
+              </Typography>
+              <Link
+                to="https://cloud.neel.cnrs.fr/index.php/s/nL2c6kH2PLwcB5r"
+                target="_blank"
+              >
+                FDMNES manual
+              </Link>
+              <Link to="https://fdmnes.neel.cnrs.fr/" target="_blank">
+                FDMNES webpage
+              </Link>
+              <Typography variant="body2">
+                If you publish calculation results performed with FDMNES code
+                please cite the original papers:
+              </Typography>
+              <Typography sx={{ fontStyle: "italic" }} variant="body2">
+                J. Phys.: Condens. Matter 21, 345501 (2009).
+              </Typography>
+              <Typography sx={{ fontStyle: "italic" }} variant="body2">
+                J. Chem. Theory Comput. 11, 4512-4521 (2015).
+              </Typography>
+              <Typography sx={{ fontStyle: "italic" }} variant="body2">
+                J. Synchrotron Rad. 23, 551-559 (2016).
+              </Typography>
+            </Stack>
+          </Paper>
         </Stack>
       ) : (
         getPlacemarker(hasData && data == null)

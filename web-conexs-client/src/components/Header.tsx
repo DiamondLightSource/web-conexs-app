@@ -27,7 +27,11 @@ export default function Header() {
             color="white"
             onLogin={handleLogin}
             onLogout={handleLogout}
-            user={user == null ? null : { fedid: user.identifier }}
+            user={
+              user == null || user == undefined
+                ? null
+                : { fedid: user.identifier }
+            }
           />
           <ColourSchemeButton />
         </>

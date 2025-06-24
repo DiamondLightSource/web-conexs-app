@@ -12,6 +12,7 @@ from .jobfilebuilders import (
     build_fdmnes_inputfile,
     build_orca_input_file,
     build_qe_inputfile,
+    fdmnes_molecule_to_crystal,
 )
 from .models.models import (
     CrystalStructure,
@@ -176,6 +177,11 @@ def submit_orca_simulation(
 ) -> OrcaSimulation:
     person = get_or_create_person(session, user_id)
 
+    if not person.accepted_orca_eula:
+        raise HTTPException(
+            status_code=403, detail="User has not accepted the Orca EULA"
+        )
+
     smodel = {
         "person_id": person.id,
         "simulation_type_id": 1,
@@ -234,7 +240,7 @@ def get_fdmnes_simulation(session, id, user_id) -> FdmnesSimulation:
 def get_orca_jobfile(session, id, user_id):
     orca_simulation = get_orca_simulation(session, id, user_id)
     structure = get_molecular_structure(
-        session, orca_simulation.crystal_structure_id, user_id
+        session, orca_simulation.molecular_structure_id, user_id
     )
 
     return build_orca_input_file(orca_simulation, structure)
@@ -242,11 +248,20 @@ def get_orca_jobfile(session, id, user_id):
 
 def get_fdmnes_jobfile(session, id, user_id):
     fdmnes_simulation = get_fdmnes_simulation(session, id, user_id)
-    structure = get_crystal_structure(
-        session, fdmnes_simulation.crystal_structure_id, user_id
-    )
 
-    return build_fdmnes_inputfile(fdmnes_simulation, structure)
+    if fdmnes_simulation.crystal_structure_id is not None:
+        structure = get_crystal_structure(
+            session, fdmnes_simulation.crystal_structure_id, user_id
+        )
+        crystalIsMolecule = False
+    else:
+        molecule = get_molecular_structure(
+            session, fdmnes_simulation.molecular_structure_id, user_id
+        )
+        structure = fdmnes_molecule_to_crystal(molecule)
+        crystalIsMolecule = True
+
+    return build_fdmnes_inputfile(fdmnes_simulation, structure, crystalIsMolecule)
 
 
 def get_fdmnes_output(session, id, user_id):
@@ -339,6 +354,18 @@ def get_orca_xas(session, id, user_id):
     }
 
     return output
+
+
+def accept_orca_eula(session, user_id):
+    person = get_user(session, user_id)
+
+    person.accepted_orca_eula = True
+
+    session.add(person)
+    session.commit()
+    session.refresh(person)
+
+    return person
 
 
 def get_user(session, user_id):
