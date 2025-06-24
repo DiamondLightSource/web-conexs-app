@@ -18,6 +18,8 @@ import {
   Footer,
 } from "@diamondlightsource/sci-react-ui";
 import QeSubmitPage from "./components/qe/QESubmitPage";
+import OrcaEulaPage from "./components/orca/OrcaEulaPage";
+import RequireAuth from "./components/RequireAuth";
 
 const queryClient = new QueryClient();
 
@@ -31,23 +33,86 @@ function App() {
             <Header />
             <Routes>
               <Route path="/" element={<WelcomePage />} />
-              <Route path="/molecules" element={<MoleculePage />} />
-              <Route path="/createmolecule" element={<CreateMoleculePage />} />
-              <Route path="/crystals" element={<CrystalPage />} />
-              <Route path="/createcrystal" element={<CreateCystalPage />} />
-              <Route path="/simulations" element={<SimulationReviewPage />} />
-              <Route path="/orca" element={<OrcaSubmitPage />} />
+              <Route
+                path="/molecules"
+                element={
+                  <RequireAuth requireOrcaEULA={false}>
+                    <MoleculePage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/createmolecule"
+                element={
+                  <RequireAuth requireOrcaEULA={false}>
+                    <CreateMoleculePage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/crystals"
+                element={
+                  <RequireAuth requireOrcaEULA={false}>
+                    <CrystalPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/createcrystal"
+                element={
+                  <RequireAuth requireOrcaEULA={false}>
+                    <CreateCystalPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/simulations"
+                element={
+                  <RequireAuth requireOrcaEULA={false}>
+                    <SimulationReviewPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/orca"
+                element={
+                  <RequireAuth requireOrcaEULA={true}>
+                    <OrcaSubmitPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/orcaeula"
+                element={
+                  <RequireAuth requireOrcaEULA={false}>
+                    <OrcaEulaPage />
+                  </RequireAuth>
+                }
+              ></Route>
               <Route
                 path="/fdmnescrystal"
-                element={<FdmnesSubmitPage key={"crystal"} isCrystal={true} />}
+                element={
+                  <RequireAuth requireOrcaEULA={false}>
+                    <FdmnesSubmitPage key={"crystal"} isCrystal={true} />
+                  </RequireAuth>
+                }
               />
               <Route
                 path="/fdmnesmolecule"
                 element={
-                  <FdmnesSubmitPage key={"molecule"} isCrystal={false} />
+                  <RequireAuth requireOrcaEULA={false}>
+                    <FdmnesSubmitPage key={"molecule"} isCrystal={false} />
+                  </RequireAuth>
                 }
               />
-              <Route path="/qe" element={<QeSubmitPage />} />
+              <Route
+                path="/qe"
+                element={
+                  <RequireAuth requireOrcaEULA={false}>
+                    <QeSubmitPage />
+                  </RequireAuth>
+                }
+              />
             </Routes>
             <Footer copyright="Diamond Light Source" logo={null} />
           </Stack>

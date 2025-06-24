@@ -31,7 +31,7 @@ export default function OrcaSubmitPage() {
         }}
         elevation={12}
       >
-        <Stack flex={1}>
+        <Stack flex={1} overflow="auto">
           <Toolbar
             sx={{
               justifyContent: "space-between",

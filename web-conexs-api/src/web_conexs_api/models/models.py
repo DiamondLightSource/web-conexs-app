@@ -7,12 +7,12 @@ from sqlmodel import Field, Relationship, SQLModel
 
 class PersonInput(SQLModel):
     identifier: str = Field(index=True, unique=True)
+    accepted_orca_eula: bool = False
 
 
 class Person(PersonInput, table=True):
     __tablename__: str = "person"
     id: int | None = Field(primary_key=True, default=None)
-    admin: bool = False
 
 
 class SimulationType(SQLModel, table=True):

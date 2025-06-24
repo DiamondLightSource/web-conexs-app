@@ -35,7 +35,7 @@ def get_qe_jobfile_endpoint(
     session: Session = Depends(get_session),
     user_id: str = Depends(get_current_user),
 ) -> str:
-    return PlainTextResponse(get_qe_jobfile(session, id, user_id))
+    return PlainTextResponse(get_qe_jobfile(session, id, user_id)[0])
 
 
 @router.get("/api/qe/{id}/output")

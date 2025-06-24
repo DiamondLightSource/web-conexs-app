@@ -136,6 +136,13 @@ export const getFdmnesLog = async (id: number) => {
   return data;
 };
 
+export const getFdmnesJobfile = async (id: number) => {
+  const { data } = await axios.get<string, AxiosResponse<string>>(
+    fdmnesUrl + "/" + id + "/jobfile"
+  );
+  return data;
+};
+
 export const getFdmnesXas = async (id: number) => {
   const { data } = await axios.get<XASData, AxiosResponse<XASData>>(
     fdmnesUrl + "/" + id + "/xas"
@@ -146,6 +153,13 @@ export const getFdmnesXas = async (id: number) => {
 export const getOrcaXas = async (id: number) => {
   const { data } = await axios.get<XASData, AxiosResponse<XASData>>(
     orcaUrl + "/" + id + "/xas"
+  );
+  return data;
+};
+
+export const getOrcaJobfile = async (id: number) => {
+  const { data } = await axios.get<XASData, AxiosResponse<XASData>>(
+    orcaUrl + "/" + id + "/jobfile"
   );
   return data;
 };
@@ -164,6 +178,13 @@ export const getQELog = async (id: number) => {
   return data;
 };
 
+export const getQEJobFile = async (id: number) => {
+  const { data } = await axios.get<string, AxiosResponse<string>>(
+    qeUrl + "/" + id + "/jobfile"
+  );
+  return data;
+};
+
 export const postFdmnes = async (input: FDMNESSimulationInput) => {
   const response = await axios.post(fdmnesUrl, input);
 
@@ -174,6 +195,11 @@ export const postFdmnes = async (input: FDMNESSimulationInput) => {
 
 export const getUser = async () => {
   const { data } = await axios.get<Person, AxiosResponse<Person>>(userUrl);
+  return data;
+};
+
+export const patchUser = async () => {
+  const { data } = await axios.patch<Person, AxiosResponse<Person>>(userUrl);
   return data;
 };
 

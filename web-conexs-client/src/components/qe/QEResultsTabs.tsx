@@ -3,6 +3,7 @@ import { Tab, Tabs, Box } from "@mui/material";
 import { useState } from "react";
 import QEChart from "./QEChart";
 import QELogViewer from "./QELogViewer";
+import QEJobFileViewer from "./QEJobFileViewer";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -52,6 +53,7 @@ export default function QEResultsTabs(props: { qeSimulationId: number }) {
         >
           <Tab label="XAS Plot" {...a11yProps(0)} />
           <Tab label="Results Log" {...a11yProps(1)} />
+          <Tab label="Input Job File" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -59,6 +61,9 @@ export default function QEResultsTabs(props: { qeSimulationId: number }) {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <QELogViewer id={props.qeSimulationId} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        <QEJobFileViewer id={props.qeSimulationId} />
       </CustomTabPanel>
     </Box>
   );
