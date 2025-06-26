@@ -119,6 +119,7 @@ function SimulationMetadata(props: {
       <StyledTableCell align="left">
         {showCancel && (
           <Button
+            size="small"
             onClick={() => {
               if (props.simulation != null) {
                 props.cancellationMutation(props.simulation.id);

@@ -13,6 +13,7 @@ import XYZCrystalFileViewer from "./XYZCrystalFileViewer";
 import { getCrystals } from "../../queryfunctions";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import MainPanel from "../MainPanel";
 
 export default function CrystalPage() {
   const query = useQuery({
@@ -32,61 +33,42 @@ export default function CrystalPage() {
     }
   }
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="stretch"
-      flex={1}
-      minHeight={0}
-    >
-      <Paper
-        flex={1}
-        sx={{
-          margin: "20px",
-          flex: 1,
-          minHeight: 0,
-          alignItems: "stretch",
-          display: "flex",
-          flexDirection: "column",
-        }}
-        elevation={12}
-      >
-        <Stack spacing={"10px"}>
-          <Toolbar
-            sx={{
-              justifyContent: "space-between",
-              alignItems: "center",
-              backgroundColor: theme.palette.action.disabled,
-              borderRadius: "4px 4px 0px 0px",
+    <MainPanel>
+      <Stack spacing={"10px"}>
+        <Toolbar
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
+            backgroundColor: theme.palette.action.disabled,
+            borderRadius: "4px 4px 0px 0px",
+          }}
+        >
+          <Typography variant="h5" component="div">
+            Crystals
+          </Typography>
+        </Toolbar>
+        <Stack direction={"row"} spacing={3}>
+          <MoleculeTable
+            molecules={query.data ? query.data : []}
+            selectedMolecule={undefined}
+            setSelectedMolecule={(data) => {
+              if (data) {
+                setSelectedCrystalId(data.id);
+              }
             }}
-          >
-            <Typography variant="h5" component="div">
-              Crystals
-            </Typography>
-          </Toolbar>
-          <Stack direction={"row"} spacing={3}>
-            <MoleculeTable
-              molecules={query.data ? query.data : []}
-              selectedMolecule={undefined}
-              setSelectedMolecule={(data) => {
-                if (data) {
-                  setSelectedCrystalId(data.id);
-                }
-              }}
-              setCurrent={() => {}}
-              prevNext={null}
-            ></MoleculeTable>
+            setCurrent={() => {}}
+            prevNext={null}
+          ></MoleculeTable>
 
-            <XYZCrystalFileViewer crystal={finalCrystal} />
-            <React3dMol
-              moleculedata={finalCrystal}
-              color="#3465A4"
-              style="Stick"
-              orbital={null}
-            ></React3dMol>
-          </Stack>
+          <XYZCrystalFileViewer crystal={finalCrystal} />
+          <React3dMol
+            moleculedata={finalCrystal}
+            color="#3465A4"
+            style="Stick"
+            orbital={null}
+          ></React3dMol>
         </Stack>
-      </Paper>
-    </Box>
+      </Stack>
+    </MainPanel>
   );
 }
