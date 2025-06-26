@@ -1,5 +1,4 @@
 import { Typography, useTheme } from "@mui/material";
-import SideDrawer from "./SideDrawer";
 
 import { useContext } from "react";
 import { UserContext } from "../UserContext";

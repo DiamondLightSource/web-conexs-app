@@ -10,6 +10,7 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Stack,
   styled,
   Theme,
   Toolbar,
@@ -62,27 +63,26 @@ function ListItemStyled(props: {
         color: theme.palette.primary.main,
       }}
     >
-      <Box>
-        <ListItemButton
-          sx={[
-            {
-              width: { drawerWidth },
-              minHeight: 48,
-              px: 2.5,
-            },
-            open
-              ? {
-                  justifyContent: "initial",
-                }
-              : {
-                  justifyContent: "center",
-                },
-          ]}
-        >
-          <ListItemIcon>{icon}</ListItemIcon>
-          <ListItemText primary={label} />
-        </ListItemButton>
-      </Box>
+      <Stack
+        direction="row"
+        sx={[
+          {
+            width: { drawerWidth },
+            minHeight: 48,
+            px: 2.5,
+          },
+          open
+            ? {
+                justifyContent: "initial",
+              }
+            : {
+                justifyContent: "center",
+              },
+        ]}
+      >
+        <ListItemIcon>{icon}</ListItemIcon>
+        <ListItemText primary={label} />
+      </Stack>
     </ListItem>
   );
 }
