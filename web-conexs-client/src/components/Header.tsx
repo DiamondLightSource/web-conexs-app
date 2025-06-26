@@ -19,8 +19,9 @@ export default function Header() {
 
   return (
     <Navbar
+      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       logo="theme"
-      leftSlot={<SideDrawer />}
+      // leftSlot={<SideDrawer />}
       rightSlot={
         <>
           <User

@@ -1,34 +1,20 @@
-import { Box, Container, Paper, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
+import MainPanel from "./MainPanel";
 
 export default function WelcomePage() {
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="stretch"
-      flex={1}
-      minHeight={0}
-    >
-      <Paper
+    <MainPanel>
+      <Stack
+        maxWidth={"md"}
+        overflow="auto"
         flex={1}
-        sx={{
-          margin: "20px",
-          flex: 1,
-          minHeight: 0,
-          alignItems: "stretch",
-          display: "flex",
-          flexDirection: "column",
-          spacing: "2px",
-          textAlign: "center",
-        }}
-        elevation={12}
+        display="flex"
+        sx={{ alignSelf: "center", p: "24px", minHeight: 0 }}
       >
-        <Container maxWidth="md" sx={{ alignSelf: "center", p: "24px" }}>
-          <Typography variant="h4" padding="24px">
-            User-Friendly XAS Simulation!
-          </Typography>
-        </Container>
-      </Paper>
-    </Box>
+        <Typography variant="h4" padding="24px">
+          User-Friendly XAS Simulation!
+        </Typography>
+      </Stack>
+    </MainPanel>
   );
 }

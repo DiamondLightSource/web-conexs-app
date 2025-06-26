@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
 import { Navigate } from "react-router-dom";
+import MainPanel from "./MainPanel";
+import { Typography } from "@mui/material";
 
 export default function RequireAuth(props: {
   children: React.ReactNode;
@@ -9,7 +11,11 @@ export default function RequireAuth(props: {
   const user = useContext(UserContext);
 
   if (user == undefined) {
-    return <div>Loading...</div>;
+    return (
+      <MainPanel>
+        <Typography>Loading...</Typography>
+      </MainPanel>
+    );
   }
 
   if (user == null) {

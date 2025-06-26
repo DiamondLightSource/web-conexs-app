@@ -12,6 +12,7 @@ import { useState } from "react";
 import XYZFileViewer from "./XYZFileViewer";
 import { useQuery } from "@tanstack/react-query";
 import { getMolecules } from "../../queryfunctions";
+import MainPanel from "../MainPanel";
 
 export default function MoleculePage() {
   const query = useQuery({
@@ -32,59 +33,40 @@ export default function MoleculePage() {
   }
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="stretch"
-      flex={1}
-      minHeight={0}
-    >
-      <Paper
-        flex={1}
-        sx={{
-          margin: "20px",
-          flex: 1,
-          minHeight: 0,
-          alignItems: "stretch",
-          display: "flex",
-          flexDirection: "column",
-        }}
-        elevation={12}
-      >
-        <Stack spacing={"10px"}>
-          <Toolbar
-            sx={{
-              justifyContent: "space-between",
-              alignItems: "center",
-              backgroundColor: theme.palette.action.disabled,
-              borderRadius: "4px 4px 0px 0px",
-            }}
-          >
-            <Typography variant="h5" component="div">
-              Molecules
-            </Typography>
-          </Toolbar>
-          <Stack direction={"row"} spacing={3}>
-            <MoleculeTable
-              molecules={query.data ? query.data : []}
-              selectedMolecule={undefined}
-              setSelectedMolecule={(data) => setSelectedMoleculeId(data?.id)}
-              setCurrent={() => {}}
-              prevNext={null}
-            ></MoleculeTable>
-            <Stack spacing={"2px"}>
-              <XYZFileViewer molecule={finalMolecule} />
-            </Stack>
-
-            <React3dMol
-              moleculedata={finalMolecule}
-              color="#3465A4"
-              style="Stick"
-              orbital={null}
-            ></React3dMol>
+    <MainPanel>
+      <Stack spacing={"10px"}>
+        <Toolbar
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
+            backgroundColor: theme.palette.action.disabled,
+            borderRadius: "4px 4px 0px 0px",
+          }}
+        >
+          <Typography variant="h5" component="div">
+            Molecules
+          </Typography>
+        </Toolbar>
+        <Stack direction={"row"} spacing={3}>
+          <MoleculeTable
+            molecules={query.data ? query.data : []}
+            selectedMolecule={undefined}
+            setSelectedMolecule={(data) => setSelectedMoleculeId(data?.id)}
+            setCurrent={() => {}}
+            prevNext={null}
+          ></MoleculeTable>
+          <Stack spacing={"2px"}>
+            <XYZFileViewer molecule={finalMolecule} />
           </Stack>
+
+          <React3dMol
+            moleculedata={finalMolecule}
+            color="#3465A4"
+            style="Stick"
+            orbital={null}
+          ></React3dMol>
         </Stack>
-      </Paper>
-    </Box>
+      </Stack>
+    </MainPanel>
   );
 }

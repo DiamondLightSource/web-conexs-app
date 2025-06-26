@@ -14,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postMolecule } from "../../queryfunctions";
 import MoleculeEditor from "./MoleculeEditor";
+import MainPanel from "../MainPanel";
 
 const templateMolecule: MoleculeInput = {
   label: "Benzene",
@@ -45,64 +46,44 @@ export default function CreateMoleculePage() {
   });
 
   return (
-    <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="stretch"
-      flex={1}
-      minHeight={0}
-    >
-      <Paper
-        flex={1}
-        sx={{
-          margin: "20px",
-          flex: 1,
-          minHeight: 0,
-          alignItems: "stretch",
-          display: "flex",
-          flexDirection: "column",
-          spacing: "5px",
-        }}
-        elevation={12}
-      >
-        <Stack spacing={"10px"}>
-          <Toolbar
-            sx={{
-              justifyContent: "space-between",
-              alignItems: "center",
-              backgroundColor: theme.palette.action.disabled,
-              borderRadius: "4px 4px 0px 0px",
-            }}
-          >
-            <Typography variant="h5" component="div">
-              Create Molecule
-            </Typography>
-          </Toolbar>
-          <Stack direction={"row"} spacing="10px">
-            <MoleculeEditor
-              molecule={molecule}
-              setMolecule={setMolecule}
-            ></MoleculeEditor>
-            <React3dMol
-              moleculedata={molecule}
-              color="#3465A4"
-              style="Stick"
-              orbital={null}
-            ></React3dMol>
-          </Stack>
-          <Button
-            variant="contained"
-            disabled={molecule == null}
-            onClick={() => {
-              if (molecule != null) {
-                mutation.mutate(molecule);
-              }
-            }}
-          >
+    <MainPanel>
+      <Stack spacing={"10px"}>
+        <Toolbar
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
+            backgroundColor: theme.palette.action.disabled,
+            borderRadius: "4px 4px 0px 0px",
+          }}
+        >
+          <Typography variant="h5" component="div">
             Create Molecule
-          </Button>
+          </Typography>
+        </Toolbar>
+        <Stack direction={"row"} spacing="10px">
+          <MoleculeEditor
+            molecule={molecule}
+            setMolecule={setMolecule}
+          ></MoleculeEditor>
+          <React3dMol
+            moleculedata={molecule}
+            color="#3465A4"
+            style="Stick"
+            orbital={null}
+          ></React3dMol>
         </Stack>
-      </Paper>
-    </Box>
+        <Button
+          variant="contained"
+          disabled={molecule == null}
+          onClick={() => {
+            if (molecule != null) {
+              mutation.mutate(molecule);
+            }
+          }}
+        >
+          Create Molecule
+        </Button>
+      </Stack>
+    </MainPanel>
   );
 }

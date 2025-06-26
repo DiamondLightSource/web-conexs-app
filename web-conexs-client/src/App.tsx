@@ -2,7 +2,7 @@ import { CssBaseline, Stack } from "@mui/material";
 import Header from "./components/Header";
 import WelcomePage from "./components/WelcomePage";
 import MoleculePage from "./components/molecules/MoleculePage";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import OrcaSubmitPage from "./components/orca/OrcaSubmitPage";
 import CrystalPage from "./components/crystals/CrystalPage";
 import CreateMoleculePage from "./components/molecules/CreateMoleculePage";
@@ -20,6 +20,8 @@ import {
 import QeSubmitPage from "./components/qe/QESubmitPage";
 import OrcaEulaPage from "./components/orca/OrcaEulaPage";
 import RequireAuth from "./components/RequireAuth";
+import SideDrawer from "./components/SideDrawer";
+import LoginPage from "./components/LoginPage";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +33,8 @@ function App() {
         <UserProvider>
           <Stack height="100vh" width="100vw" spacing={1}>
             <Header />
+            {/* <Stack direction="row" flex={1}> */}
+            <SideDrawer />
             <Routes>
               <Route path="/" element={<WelcomePage />} />
               <Route
@@ -113,8 +117,22 @@ function App() {
                   </RequireAuth>
                 }
               />
+              <Route
+                path="/login"
+                element={
+                  <RequireAuth requireOrcaEULA={false}>
+                    <LoginPage />
+                  </RequireAuth>
+                }
+              />
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-            <Footer copyright="Diamond Light Source" logo={null} />
+            {/* </Stack> */}
+            <Footer
+              copyright="Diamond Light Source"
+              logo={null}
+              sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            />
           </Stack>
         </UserProvider>
       </QueryClientProvider>

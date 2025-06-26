@@ -283,7 +283,7 @@ def build_qe_xspectra_input(atom_number, edge, filecore):
         + "calculation='xanes_dipole',\n"
         + "prefix='',\n"
         + f"edge='{edge}',\n"
-        + f"xiabs={atom_number},\n"
+        + "xiabs=1,\n"
         + "xepsilon(1)=1.0,\n"
         + "xepsilon(2)=0.0,\n"
         + "xepsilon(3)=0.0,\n"
