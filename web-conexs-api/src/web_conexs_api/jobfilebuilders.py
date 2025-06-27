@@ -2,7 +2,7 @@ import io
 import re
 
 import numpy as np
-from pymatgen.core import Lattice, Molecule
+from pymatgen.core import Lattice, Molecule, Structure
 
 from .models.models import (
     ConductivityType,
@@ -350,5 +350,25 @@ def fdmnes_molecule_to_crystal(
         gamma=90,
         structure=structure_string,
     )
+
+    return crystal
+
+
+def pymatstruct_to_crystal(structure: Structure, label="materials project structure"):
+    structure_string = ""
+
+    for site in structure.sites:
+        structure_string += f"{site.species_string} {site.a} {site.b} {site.c}\n"
+
+        crystal: CrystalStructure = CrystalStructure(
+            label=label,
+            a=structure.lattice.a,
+            b=structure.lattice.b,
+            c=structure.lattice.c,
+            alpha=structure.lattice.alpha,
+            beta=structure.lattice.beta,
+            gamma=structure.lattice.gamma,
+            structure=structure_string,
+        )
 
     return crystal

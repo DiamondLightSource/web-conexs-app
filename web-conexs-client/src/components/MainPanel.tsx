@@ -5,7 +5,6 @@ export default function MainPanel(props: { children: React.ReactNode }) {
 
   const sideGap = theme.spacing(10);
 
-  console.log(sideGap);
   return (
     <Box
       display="flex"

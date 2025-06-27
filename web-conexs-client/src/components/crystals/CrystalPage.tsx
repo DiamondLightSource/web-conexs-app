@@ -1,11 +1,4 @@
-import {
-  Box,
-  Typography,
-  Stack,
-  Paper,
-  Toolbar,
-  useTheme,
-} from "@mui/material";
+import { Typography, Stack, Toolbar, useTheme } from "@mui/material";
 
 import React3dMol from "../React3dMol";
 import MoleculeTable from "../molecules/MoleculeTable";

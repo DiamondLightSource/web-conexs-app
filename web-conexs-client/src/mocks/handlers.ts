@@ -162,6 +162,15 @@ export const handlers = [
     return new HttpResponse(null, { status: 401 });
   }),
 
+  http.get("/api/matproj/:id", async (request) => {
+    const auth = request.request.headers.get("authorization");
+
+    if (auth && auth.startsWith("Bearer ")) {
+      return HttpResponse.json(mockCrystal);
+    }
+
+    return new HttpResponse(null, { status: 401 });
+  }),
   //   # mapspc
   // # @app.get("/api/orca/{id}/spectra")
   // # @app.get("/api/orca/{id}/spectra/{spectrum_id}")

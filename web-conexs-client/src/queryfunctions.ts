@@ -23,6 +23,7 @@ const qeUrl = "/api/qe";
 const moleculeUrl = "/api/molecules";
 const crystalUrl = "/api/crystals";
 const userUrl = "/api/user";
+const matprojUrl = "/api/matproj"
 
 export const getSimulationPage = async (
   cursor: string | null,
@@ -216,4 +217,16 @@ export const cancelSimulation = async (id: number) => {
     simulationUrl + "/" + id + "/status"
   );
   return data;
+};
+
+export const getMatProjStructure = async (id: string) => {
+  const  response  = await axios.get<
+    Crystal,
+    AxiosResponse<Crystal>
+  >(matprojUrl + "/" + id);
+
+  if (response.status != 200) {
+    throw new Error("Failed to submit job");
+  }
+  return response.data;
 };
