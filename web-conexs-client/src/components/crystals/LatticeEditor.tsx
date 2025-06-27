@@ -1,12 +1,4 @@
-import {
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  TextField,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Stack, TextField, Typography, useTheme } from "@mui/material";
 import { LatticeParameter } from "../../models";
 
 function NumberNoSpinner(props: {

@@ -22,6 +22,7 @@ import OrcaEulaPage from "./components/orca/OrcaEulaPage";
 import RequireAuth from "./components/RequireAuth";
 import SideDrawer from "./components/SideDrawer";
 import LoginPage from "./components/LoginPage";
+import MatProjPage from "./components/crystals/MatProjPage";
 
 const queryClient = new QueryClient();
 
@@ -122,6 +123,14 @@ function App() {
                 element={
                   <RequireAuth requireOrcaEULA={false}>
                     <LoginPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/matprojcrystal"
+                element={
+                  <RequireAuth requireOrcaEULA={false}>
+                    <MatProjPage />
                   </RequireAuth>
                 }
               />

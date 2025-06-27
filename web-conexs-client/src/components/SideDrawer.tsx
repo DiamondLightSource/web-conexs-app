@@ -211,6 +211,13 @@ export default function SideDrawer() {
             <ListItemStyled
               theme={theme}
               open={open}
+              to={"/matprojcrystal"}
+              label="Crystal From Materials Project"
+              icon={<GrainPlusIcon />}
+            ></ListItemStyled>
+            <ListItemStyled
+              theme={theme}
+              open={open}
               to={"/fdmnescrystal"}
               label="Submit FDMNES Crystal"
               icon={<FDMNESIcon />}

@@ -1,12 +1,4 @@
-import {
-  Box,
-  Button,
-  Paper,
-  Stack,
-  Toolbar,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Button, Stack, Toolbar, Typography, useTheme } from "@mui/material";
 import { CrystalInput } from "../../models";
 import { useState } from "react";
 import React3dMol from "../React3dMol";
