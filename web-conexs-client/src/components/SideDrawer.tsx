@@ -1,13 +1,9 @@
 import {
-  Box,
-  Collapse,
   CSSObject,
   Divider,
   Drawer,
-  IconButton,
   List,
   ListItem,
-  ListItemButton,
   ListItemIcon,
   ListItemText,
   Stack,
@@ -17,11 +13,9 @@ import {
   useTheme,
 } from "@mui/material";
 import React, { useContext, useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 import HomeIcon from "@mui/icons-material/Home";
-import ScienceIcon from "@mui/icons-material/Science";
-import FunctionsIcon from "@mui/icons-material/Functions";
 import { UserContext } from "../UserContext";
 import GrainIcon from "./icons/GrainIcon";
 import LabIcon from "./icons/LabIcon";
@@ -39,12 +33,14 @@ function ListItemStyled(props: {
   to: string;
   label: string;
   icon: React.ReactElement;
+  reloadDocument: boolean;
 }) {
-  const { theme, open, to, label, icon } = props;
+  const { theme, open, to, label, icon, reloadDocument } = props;
   return (
     <ListItem
       component={NavLink}
       to={to}
+      reloadDocument={reloadDocument}
       key={label}
       disablePadding
       sx={{
@@ -152,6 +148,7 @@ export default function SideDrawer() {
           to={"/"}
           label="Home Page"
           icon={<HomeIcon />}
+          reloadDocument={false}
         ></ListItemStyled>
 
         {user && (
@@ -163,6 +160,7 @@ export default function SideDrawer() {
               to={"/simulations"}
               label="Simulations"
               icon={<LabIcon />}
+              reloadDocument={false}
             ></ListItemStyled>
             <Divider />
             <ListItemStyled
@@ -171,6 +169,7 @@ export default function SideDrawer() {
               to={"/molecules"}
               label="Molecules"
               icon={<MoleculeIcon />}
+              reloadDocument={false}
             ></ListItemStyled>
             <ListItemStyled
               theme={theme}
@@ -178,6 +177,7 @@ export default function SideDrawer() {
               to={"/createmolecule"}
               label="Create Molecule"
               icon={<MoleculePlusIcon />}
+              reloadDocument={false}
             ></ListItemStyled>
             <ListItemStyled
               theme={theme}
@@ -185,6 +185,7 @@ export default function SideDrawer() {
               to={"/orca"}
               label="Submit Orca"
               icon={<OrcaIcon />}
+              reloadDocument={false}
             ></ListItemStyled>
             <ListItemStyled
               theme={theme}
@@ -192,6 +193,7 @@ export default function SideDrawer() {
               to={"/fdmnesmolecule"}
               label="Submit FDMNES Molecule"
               icon={<FDMNESIcon />}
+              reloadDocument={false}
             ></ListItemStyled>
             <Divider />
             <ListItemStyled
@@ -200,6 +202,7 @@ export default function SideDrawer() {
               to={"/crystals"}
               label="Crystals"
               icon={<GrainIcon />}
+              reloadDocument={false}
             ></ListItemStyled>
             <ListItemStyled
               theme={theme}
@@ -207,6 +210,7 @@ export default function SideDrawer() {
               to={"/createcrystal"}
               label="Create Crystal"
               icon={<GrainPlusIcon />}
+              reloadDocument={false}
             ></ListItemStyled>
             <ListItemStyled
               theme={theme}
@@ -214,6 +218,7 @@ export default function SideDrawer() {
               to={"/matprojcrystal"}
               label="Crystal From Materials Project"
               icon={<GrainPlusIcon />}
+              reloadDocument={false}
             ></ListItemStyled>
             <ListItemStyled
               theme={theme}
@@ -221,6 +226,7 @@ export default function SideDrawer() {
               to={"/fdmnescrystal"}
               label="Submit FDMNES Crystal"
               icon={<FDMNESIcon />}
+              reloadDocument={false}
             ></ListItemStyled>
             <ListItemStyled
               theme={theme}
@@ -228,6 +234,7 @@ export default function SideDrawer() {
               to={"/qe"}
               label="Submit QE"
               icon={<QEIcon />}
+              reloadDocument={false}
             ></ListItemStyled>
           </>
         )}
@@ -238,6 +245,7 @@ export default function SideDrawer() {
             to={"/login"}
             label="Login"
             icon={<Login />}
+            reloadDocument={true}
           ></ListItemStyled>
         )}
       </List>

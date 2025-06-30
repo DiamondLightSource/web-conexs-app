@@ -1,11 +1,4 @@
-import {
-  Box,
-  Paper,
-  Stack,
-  Toolbar,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Stack, Toolbar, Typography, useTheme } from "@mui/material";
 import OrcaForm from "./OrcaForm";
 import MainPanel from "../MainPanel";
 

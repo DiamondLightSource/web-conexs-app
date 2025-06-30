@@ -3,13 +3,12 @@ import {
   Button,
   Checkbox,
   FormControlLabel,
-  Paper,
   Stack,
   Toolbar,
   Typography,
   useTheme,
 } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import OpenInNewIcon from "@mui/icons-material/OpenInNew";
 import { patchUser } from "../../queryfunctions";
@@ -18,6 +17,7 @@ import MainPanel from "../MainPanel";
 
 export default function OrcaEulaPage() {
   const theme = useTheme();
+  const navigate = useNavigate();
 
   const queryClient = useQueryClient();
 
@@ -26,13 +26,13 @@ export default function OrcaEulaPage() {
     onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["user"] });
+      navigate("/orca");
     },
   });
 
   const submitHandler = (e) => {
     e.preventDefault();
     mutation.mutate();
-    //TODO redirect on success
   };
   return (
     <MainPanel>

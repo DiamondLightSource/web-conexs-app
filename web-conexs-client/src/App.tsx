@@ -136,7 +136,6 @@ function App() {
               />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-            {/* </Stack> */}
             <Footer
               copyright="Diamond Light Source"
               logo={null}
