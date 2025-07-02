@@ -37,6 +37,7 @@ SLURM_USER = os.environ.get("SLURM_USER")
 SLURM_API = os.environ.get("SLURM_API")
 SLURM_PARTITION = os.environ.get("SLURM_PARTITION")
 SLURM_RESPONSE_KEY = os.environ.get("SLURM_RESPONSE_KEY", "account")
+SLURM_TIME_LIMIT = os.environ.get("SLURM_TIME_LIMIT", "30")
 
 ORCA_IMAGE = os.environ.get("ORCA_IMAGE")
 FDMNES_IMAGE = os.environ.get("FDMNES_IMAGE")
@@ -71,7 +72,7 @@ def build_job_and_run(script, job_name, cpus, memory, cluster_dir, as_tasks):
             "nodes": 1,
             "tasks": 1 if as_tasks else cpus,
             "memory_per_node": int(memory * 1000),
-            "time_limit": 30,
+            "time_limit": int(SLURM_TIME_LIMIT),
             "current_working_directory": str(cluster_dir),
             "environment": {
                 "PATH": "/bin:/usr/bin/:/usr/local/bin/",
@@ -375,7 +376,7 @@ def submit_qe(session, sim: Simulation):
         + f"singularity exec {qe_sif} mpirun"
         + f" -np {sim.n_cores} pw.x -in job.inp > result.pwo \n"
         + f"singularity exec {qe_sif} mpirun"
-        + f" -np {sim.n_cores} xspectra.x -in xspectra_input.inp"
+        + f" -np {sim.n_cores} xspectra.x -in xspectra_input.inp > xspectra.out"
     )
 
     try:

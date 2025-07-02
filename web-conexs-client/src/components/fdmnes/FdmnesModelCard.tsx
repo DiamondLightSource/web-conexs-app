@@ -1,8 +1,10 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Link, Typography } from "@mui/material";
 
 import { useQuery } from "@tanstack/react-query";
 import { getFdmnesSimulation } from "../../queryfunctions";
 import { periodic_table } from "../../periodictable";
+
+const data_url = "/api/simulations/";
 
 export default function FdmnesModelCard(props: { fdmnesSimulationId: number }) {
   const query = useQuery({
@@ -33,6 +35,16 @@ export default function FdmnesModelCard(props: { fdmnesSimulationId: number }) {
           <Typography variant="h6" component="div">
             {"Using Green's approach"}
           </Typography>
+        )}
+        {(fdmnesSimulation.simulation.status == "completed" ||
+          fdmnesSimulation.simulation.status == "failed" ||
+          fdmnesSimulation.simulation.status == "cancelled") && (
+          <Link
+            href={data_url + String(props.fdmnesSimulationId) + "?format=zip"}
+            download={"simulation_" + String(props.fdmnesSimulationId) + ".zip"}
+          >
+            Download
+          </Link>
         )}
       </CardContent>
     </Card>

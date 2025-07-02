@@ -1,7 +1,9 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Link, Typography } from "@mui/material";
 
 import { useQuery } from "@tanstack/react-query";
 import { getQESimulation } from "../../queryfunctions";
+
+const data_url = "/api/simulations/";
 
 export default function QEModelCard(props: { qeSimulationId: number }) {
   const query = useQuery({
@@ -30,6 +32,17 @@ export default function QEModelCard(props: { qeSimulationId: number }) {
         <Typography variant="h6" component="div">
           {qeSimulation.conductivity}
         </Typography>
+
+        {(qeSimulation.simulation.status == "completed" ||
+          qeSimulation.simulation.status == "failed" ||
+          qeSimulation.simulation.status == "cancelled") && (
+          <Link
+            href={data_url + String(props.qeSimulationId) + "?format=zip"}
+            download={"simulation_" + String(props.qeSimulationId) + ".zip"}
+          >
+            Download
+          </Link>
+        )}
       </CardContent>
     </Card>
   );

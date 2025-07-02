@@ -30,6 +30,7 @@ from .models.models import (
     Simulation,
     SimulationStatus,
 )
+from .utils import create_results_zip
 
 
 def get_crystal_structures(session, user_id) -> List[CrystalStructure]:
@@ -154,6 +155,23 @@ def get_simulation(session, id, user_id) -> Simulation:
         return simulation
     else:
         raise HTTPException(status_code=404, detail=f"No simulation with id={id}")
+
+
+def get_simulation_zipped(session, id, user_id) -> Simulation:
+    statement = (
+        select(Simulation)
+        .join(Person)
+        .where(and_(Person.identifier == user_id, Simulation.id == id))
+    )
+
+    simulation = session.exec(statement).first()
+
+    if not simulation:
+        raise HTTPException(status_code=404, detail=f"No simulation with id={id}")
+
+    return create_results_zip(
+        simulation.working_directory, simulation.simulation_type_id
+    )
 
 
 def get_orca_simulation(session, id, user_id) -> OrcaSimulation:
