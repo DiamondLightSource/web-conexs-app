@@ -1,7 +1,9 @@
-import { Box, Card, CardContent, Typography } from "@mui/material";
+import { Box, Card, CardContent, Link, Typography } from "@mui/material";
 
 import { useQuery } from "@tanstack/react-query";
 import { getOrcaSimulation } from "../../queryfunctions";
+
+const data_url = "/api/simulations/";
 
 export default function OrcaModelCard(props: { orcaSimulationId: number }) {
   const query = useQuery({
@@ -32,6 +34,16 @@ export default function OrcaModelCard(props: { orcaSimulationId: number }) {
             ? "No Solvent"
             : orcaSimulation.solvent}
         </Typography>
+        {(orcaSimulation.simulation.status == "completed" ||
+          orcaSimulation.simulation.status == "failed" ||
+          orcaSimulation.simulation.status == "cancelled") && (
+          <Link
+            href={data_url + String(props.orcaSimulationId) + "?format=zip"}
+            download={"simulation_" + String(props.orcaSimulationId) + ".zip"}
+          >
+            Download
+          </Link>
+        )}
       </CardContent>
     </Card>
   );
