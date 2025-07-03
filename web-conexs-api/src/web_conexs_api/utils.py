@@ -3,9 +3,6 @@ import os
 import zipfile
 from io import BytesIO
 
-# not gbw
-# orca_result .inp .out .xyz
-# everything but xanes.sav for qe
 smtp_files = "*.out, *.txt, job*, orca_result*, *_conv.txt, xanes.*, result.*"
 
 
@@ -21,7 +18,7 @@ def create_results_zip(working_directory: str, simulation_type_id: int):
         include_files = ["*.txt", "*.out"]
     elif simulation_type_id == 3:
         # qe
-        include_files = ["*.UPF", "*.wfc", "*.inp", "*.pwo", "*.dat"]
+        include_files = ["*.UPF", "*.wfc", "*.inp", "*.pwo", "*.dat", "CRASH", "*.out"]
     else:
         raise RuntimeError("Simulation type id not recognised")
 
