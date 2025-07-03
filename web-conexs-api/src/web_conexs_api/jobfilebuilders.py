@@ -277,16 +277,32 @@ def build_qe_inputfile(qe_simulation: QESimulation, structure: CrystalStructure)
     )
 
 
-def build_qe_xspectra_input(atom_number, edge, filecore):
+def build_qe_xspectra_inputs(edge, filecore):
+    files = []
+    for i in range(3):
+        files.append(build_qe_xspectra_input(edge, filecore, i))
+
+    return files
+
+
+def build_qe_xspectra_input(edge, filecore, dir):
+    one = "1.0"
+    zero = "0.0"
+
+    name = ["0", "0", "0"]
+    name[dir] = "1"
+
+    str_name = "".join(name)
+
     jobfile = (
         "&input_xspectra\n"
         + "calculation='xanes_dipole',\n"
         + "prefix='',\n"
         + f"edge='{edge}',\n"
         + "xiabs=1,\n"
-        + "xepsilon(1)=1.0,\n"
-        + "xepsilon(2)=0.0,\n"
-        + "xepsilon(3)=0.0,\n"
+        + f"xepsilon(1)={one if dir == 0 else zero},\n"
+        + f"xepsilon(2)={one if dir == 1 else zero},\n"
+        + f"xepsilon(3)={one if dir == 2 else zero},\n"
         + "xniter=1000,\n"
         + "xcheck_conv=50,\n"
         + "xerror=0.001,\n"
@@ -300,6 +316,7 @@ def build_qe_xspectra_input(atom_number, edge, filecore):
         + "xemax=30.0,\n"
         + "terminator=.true.,\n"
         + "cut_occ_states=.true.,\n"
+        + f"xanes_file={str_name}xanes.dat,"
         + "/\n"
     )
     jobfile += "&pseudos\n" + f"filecore='{filecore}',\n" + "r_paw(1)=3.2,\n" + "/\n"

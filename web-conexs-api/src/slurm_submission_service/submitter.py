@@ -13,7 +13,7 @@ from pprint import pformat
 import requests
 
 from web_conexs_api.database import get_session
-from web_conexs_api.jobfilebuilders import build_qe_xspectra_input
+from web_conexs_api.jobfilebuilders import build_qe_xspectra_inputs
 from web_conexs_api.models.models import OrcaCalculation, Simulation, SimulationStatus
 
 from .crud import (
@@ -357,17 +357,22 @@ def submit_qe(session, sim: Simulation):
     for pp_filename in pp:
         shutil.copy(os.path.join(PP_DIR, pp_filename), working_dir)
 
-    xspectra_input_file = working_dir / Path("xspectra_input.inp")
+    # 3 xspectra calculations for different axes
+    xspectra_input_files = []
+
+    for i in range(3):
+        xspectra_input_files.append(working_dir / Path(f"{i}.xspectra_input.inp"))
 
     core_file = Path(pp_abs).with_suffix(".wfc")
 
     wffile = WFC_DIR / core_file
     shutil.copy(wffile, working_dir)
 
-    xspectra_jobfile = build_qe_xspectra_input(absorbing_atom, abs_edge, str(core_file))
+    xspectra_jobfiles = build_qe_xspectra_inputs(abs_edge, str(core_file))
 
-    with open(xspectra_input_file, "w+") as ff:
-        ff.write(xspectra_jobfile)
+    for i in range(3):
+        with open(xspectra_input_files[i], "w+") as ff:
+            ff.write(xspectra_jobfiles[i])
 
     qe_sif = os.path.join(CONTAINER_IMAGE_DIR, QE_IMAGE)
 
@@ -376,7 +381,13 @@ def submit_qe(session, sim: Simulation):
         + f"singularity exec {qe_sif} mpirun"
         + f" -np {sim.n_cores} pw.x -in job.inp > result.pwo \n"
         + f"singularity exec {qe_sif} mpirun"
-        + f" -np {sim.n_cores} xspectra.x -in xspectra_input.inp > xspectra.out"
+        + f" -np {sim.n_cores} xspectra.x -in 0.xspectra_input.inp > xspectra.out\n"
+        + f"singularity exec {qe_sif} mpirun"
+        + f" -np {sim.n_cores} xspectra.x -in 1.xspectra_input.inp >> xspectra.out\n"
+        + f"singularity exec {qe_sif} mpirun"
+        + f" -np {sim.n_cores} xspectra.x -in 2.xspectra_input.inp >> xspectra.out\n"
+        + "paste 100xanes.dat 010xanes.dat 001xanes.dat | tail -n +5 |"
+        + " awk '{print $1, $2+$4+$6}' > xanes.dat"
     )
 
     try:
