@@ -13,6 +13,11 @@ import XYZFileViewer from "./XYZFileViewer";
 import { useQuery } from "@tanstack/react-query";
 import { getMolecules } from "../../queryfunctions";
 import MainPanel from "../MainPanel";
+import NavButton from "../NavButton";
+import MoleculeIcon from "../icons/MoleculeIcon";
+import MoleculePlusIcon from "../icons/MoleculePlusIcon";
+import OrcaIcon from "../icons/OrcaIcon";
+import FDMNESIcon from "../icons/FDMNESIcon";
 
 export default function MoleculePage() {
   const query = useQuery({
@@ -66,6 +71,23 @@ export default function MoleculePage() {
             orbital={null}
           ></React3dMol>
         </Stack>
+      </Stack>
+      <Stack direction="row" padding={"2em"} spacing={"2em"}>
+        <NavButton
+          label="Create Molecule"
+          path={"/createmolecule"}
+          icon={<MoleculePlusIcon sx={{ width: "5em", height: "5em" }} />}
+        ></NavButton>
+        <NavButton
+          label="Submit ORCA"
+          path={"/orca"}
+          icon={<OrcaIcon sx={{ width: "5em", height: "5em" }} />}
+        ></NavButton>
+        <NavButton
+          label="Submit FDMNES"
+          path={"/fdmnesmolecule"}
+          icon={<FDMNESIcon sx={{ width: "5em", height: "5em" }} />}
+        ></NavButton>
       </Stack>
     </MainPanel>
   );
