@@ -1,8 +1,8 @@
-import { SvgIcon } from "@mui/material";
+import { IconProps, SvgIcon } from "@mui/material";
 
-export default function FDMNESIcon() {
+export default function FDMNESIcon({ sx = [] }: IconProps) {
   return (
-    <SvgIcon>
+    <SvgIcon sx={[...(Array.isArray(sx) ? sx : [sx])]}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         height="24px"
