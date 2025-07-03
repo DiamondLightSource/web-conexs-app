@@ -3,11 +3,12 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
+import { INIT, UPDATE_CORE, UPDATE_DATA } from "@jsonforms/core";
 import { Box, Button, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postQe } from "../../queryfunctions";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import CrystalViewer from "../crystals/CrystalViewer";
 
 import CompactGroupRenderer, {
@@ -61,6 +62,20 @@ export default function QEForm() {
     }
   }
 
+  const middleware = (state, action, defaultReducer) => {
+    const newState = defaultReducer(state, action);
+    switch (action.type) {
+      case INIT:
+      case UPDATE_CORE:
+      case UPDATE_DATA: {
+        console.log(newState);
+        return newState;
+      }
+      default:
+        return newState;
+    }
+  };
+
   return (
     <Stack
       className="jsonFormsContainer"
@@ -76,6 +91,7 @@ export default function QEForm() {
               schema={schema}
               data={data}
               renderers={renderers}
+              middleware={middleware}
               uischema={uischema}
               cells={materialCells}
               onChange={({ data }) => {

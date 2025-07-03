@@ -1,11 +1,4 @@
-import {
-  Box,
-  Typography,
-  Stack,
-  Paper,
-  Toolbar,
-  useTheme,
-} from "@mui/material";
+import { Typography, Stack, Toolbar, useTheme } from "@mui/material";
 import React3dMol from "../React3dMol";
 import MoleculeTable from "./MoleculeTable";
 import { useState } from "react";
@@ -14,7 +7,6 @@ import { useQuery } from "@tanstack/react-query";
 import { getMolecules } from "../../queryfunctions";
 import MainPanel from "../MainPanel";
 import NavButton from "../NavButton";
-import MoleculeIcon from "../icons/MoleculeIcon";
 import MoleculePlusIcon from "../icons/MoleculePlusIcon";
 import OrcaIcon from "../icons/OrcaIcon";
 import FDMNESIcon from "../icons/FDMNESIcon";
@@ -77,16 +69,19 @@ export default function MoleculePage() {
           label="Create Molecule"
           path={"/createmolecule"}
           icon={<MoleculePlusIcon sx={{ width: "5em", height: "5em" }} />}
+          reload={false}
         ></NavButton>
         <NavButton
           label="Submit ORCA"
           path={"/orca"}
           icon={<OrcaIcon sx={{ width: "5em", height: "5em" }} />}
+          reload={false}
         ></NavButton>
         <NavButton
           label="Submit FDMNES"
           path={"/fdmnesmolecule"}
           icon={<FDMNESIcon sx={{ width: "5em", height: "5em" }} />}
+          reload={false}
         ></NavButton>
       </Stack>
     </MainPanel>

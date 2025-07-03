@@ -17,7 +17,7 @@ const schemaTemplate = {
     },
     absorbing_atom: {
       title: "Absorbing Atom",
-      type: "number",
+      type: "integer",
       default: 1,
     },
     edge: {
@@ -34,12 +34,12 @@ const schemaTemplate = {
     },
     n_cores: {
       title: "Number of Cores",
-      type: "number",
+      type: "integer",
       default: 4,
     },
     memory: {
       title: "Memory",
-      type: "number",
+      type: "integer",
       default: 3072,
       enum: [1024, 2048, 3072, 4096, 6144, 8192, 12288],
     },

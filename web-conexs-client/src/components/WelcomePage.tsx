@@ -58,6 +58,7 @@ export default function WelcomePage() {
             label="Login"
             path={"/login"}
             icon={<LoginIcon sx={{ width: "3em", height: "3em" }} />}
+            reload={true}
           ></NavButton>
         ) : (
           <Stack padding={"1em"} sx={{ border: 1, borderRadius: 1 }}>
@@ -69,11 +70,13 @@ export default function WelcomePage() {
                 label="Molecules"
                 path={"/molecules"}
                 icon={<MoleculeIcon sx={{ width: "3em", height: "3em" }} />}
+                reload={false}
               ></NavButton>
               <NavButton
                 label="Crystals"
                 path={"/crystals"}
                 icon={<GrainIcon sx={{ width: "5em", height: "5em" }} />}
+                reload={false}
               ></NavButton>
             </Stack>
           </Stack>

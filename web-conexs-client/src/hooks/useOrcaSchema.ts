@@ -15,7 +15,7 @@ const schemaTemplate = {
   type: "object",
   properties: {
     molecular_structure_id: {
-      type: "number",
+      type: "integer",
       oneOf: [
         {
           const: -1,
@@ -42,12 +42,12 @@ const schemaTemplate = {
     },
     charge: {
       title: "Charge Value",
-      type: "number",
+      type: "integer",
       default: 0,
     },
     multiplicity: {
       title: "Multiplicity Value",
-      type: "number",
+      type: "integer",
       default: 1,
     },
     solvent: {
@@ -67,33 +67,33 @@ const schemaTemplate = {
     },
     n_cores: {
       title: "Number of Cores",
-      type: "number",
+      type: "integer",
       default: 4,
     },
     memory_per_core: {
       title: "Memory per Core",
-      type: "number",
+      type: "integer",
       default: 3072,
       enum: [1024, 2048, 3072, 4096, 6144, 8192, 12288],
     },
     orb_win_0_start: {
       title: "OrbWin[0] Start",
-      type: "number",
+      type: "integer",
       default: 0,
     },
     orb_win_0_stop: {
       title: "OrbWin[0] Stop",
-      type: "number",
+      type: "integer",
       default: 0,
     },
     orb_win_1_start: {
       title: "OrbWin[1] Start",
-      type: "number",
+      type: "integer",
       default: 0,
     },
     orb_win_1_stop: {
       title: "OrbWin[0] Stop",
-      type: "number",
+      type: "integer",
       default: 0,
     },
   },
