@@ -1,9 +1,39 @@
-import { CrystalInput, MoleculeInput } from "./models";
-import { elementSet } from "./periodictable";
+import { CrystalInput, MoleculeInput, Site } from "./models";
+import { elementSet, periodic_table } from "./periodictable";
+
+
+
+function sortSites(sites : Site[]) {
+
+  const s = [...sites]
+
+  return s.sort((a, b) => a.index - b.index)
+
+}
+
+function joinSites(sites: Site[], output: string) {
+  sites.forEach((s) => {output += periodic_table[s.element_z-1].symbol + " " + s.x + " " + s.y + " " + s.z + "\n"})
+  return output
+}
+
+export function moleculeInputToXYZNoHeader(input: MoleculeInput) {
+  const sites = sortSites(input.sites)
+  const output = joinSites(sites, "")
+  return output
+
+}
 
 export function moleculeInputToXYZ(input: MoleculeInput) {
-  const lines = (input.structure.match(/\n/g) || "").length + 1;
-  return lines.toString() + "\n\n" + input.structure;
+
+  const sites = sortSites(input.sites)
+
+  let output = input.sites.length + "\n\n"
+
+  output = joinSites(sites, output)
+
+  console.log(output)
+
+  return output
 }
 
 export function crystalInputToCIF(input: CrystalInput) {

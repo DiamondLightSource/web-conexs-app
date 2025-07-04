@@ -15,6 +15,7 @@ from .jobfilebuilders import (
     fdmnes_molecule_to_crystal,
 )
 from .models.models import (
+    ChemicalStructure,
     CrystalStructure,
     CrystalStructureInput,
     FdmnesSimulation,
@@ -90,7 +91,11 @@ def upload_crystal_structure(
 
 def get_molecular_structures(session, user_id) -> List[MolecularStructure]:
     statement = (
-        select(MolecularStructure).join(Person).where(Person.identifier == user_id)
+        select(ChemicalStructure)
+        .join(Person)
+        .where(
+            and_(Person.identifier == user_id, ChemicalStructure.lattice_id.is_(None)),
+        )
     )
 
     results = session.exec(statement)
@@ -100,9 +105,14 @@ def get_molecular_structures(session, user_id) -> List[MolecularStructure]:
 
 def get_molecular_structure(session, id, user_id) -> MolecularStructure:
     statement = (
-        select(MolecularStructure)
+        select(ChemicalStructure)
         .join(Person)
-        .where(and_(Person.identifier == user_id, MolecularStructure.id == id))
+        .where(
+            and_(
+                ChemicalStructure.lattice_id.is_(None),
+                and_(Person.identifier == user_id, ChemicalStructure.id == id),
+            )
+        )
     )
 
     structure = session.exec(statement).first()

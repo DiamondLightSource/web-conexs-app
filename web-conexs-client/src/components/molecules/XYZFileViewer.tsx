@@ -1,6 +1,7 @@
 import { Stack, TextField } from "@mui/material";
 
 import { MoleculeInput } from "../../models";
+import { moleculeInputToXYZ, moleculeInputToXYZNoHeader } from "../../utils";
 
 export default function XYZFileViewer(props: {
   molecule: MoleculeInput | null;
@@ -18,7 +19,11 @@ export default function XYZFileViewer(props: {
         label="Atomic Coordinates (Angstroms)"
         multiline
         rows={12}
-        value={props.molecule != null ? props.molecule.structure : ""}
+        value={
+          props.molecule != null
+            ? moleculeInputToXYZNoHeader(props.molecule)
+            : ""
+        }
       />
     </Stack>
   );

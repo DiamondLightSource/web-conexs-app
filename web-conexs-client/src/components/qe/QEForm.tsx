@@ -3,12 +3,11 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { INIT, UPDATE_CORE, UPDATE_DATA } from "@jsonforms/core";
 import { Box, Button, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postQe } from "../../queryfunctions";
 import { Link, useNavigate } from "react-router-dom";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import CrystalViewer from "../crystals/CrystalViewer";
 
 import CompactGroupRenderer, {
@@ -48,7 +47,8 @@ export default function QEForm() {
     window.alert("Error Submitting Job!");
   };
 
-  const { data, setData, schema, uischema, hasData } = useQESchema();
+  const { data, setData, schema, uischema, hasData, middleware } =
+    useQESchema();
 
   if (data != null && data.crystal_structure_id != selectedCrystalID) {
     setSelectedCrystalId(data.crystal_structure_id);
@@ -62,19 +62,7 @@ export default function QEForm() {
     }
   }
 
-  const middleware = (state, action, defaultReducer) => {
-    const newState = defaultReducer(state, action);
-    switch (action.type) {
-      case INIT:
-      case UPDATE_CORE:
-      case UPDATE_DATA: {
-        console.log(newState);
-        return newState;
-      }
-      default:
-        return newState;
-    }
-  };
+  console.log(middleware);
 
   return (
     <Stack

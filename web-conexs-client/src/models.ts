@@ -1,6 +1,15 @@
+export interface Site {
+  element_z: number
+  x: number
+  y: number
+  z: number
+  index: number
+
+}
+
 export interface MoleculeInput {
   label: string;
-  structure: string;
+  sites: Site[]
 }
 
 export interface Person {
