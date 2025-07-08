@@ -6,7 +6,7 @@ import numpy as np
 from fastapi import HTTPException
 from fastapi_pagination.cursor import CursorPage
 from fastapi_pagination.ext.sqlalchemy import paginate
-from sqlmodel import Session, and_, select
+from sqlmodel import Session, and_, func, select
 
 from .jobfilebuilders import (
     build_fdmnes_inputfile,
@@ -15,6 +15,7 @@ from .jobfilebuilders import (
     fdmnes_molecule_to_crystal,
 )
 from .models.models import (
+    ChemicalSite,
     ChemicalStructure,
     CrystalStructure,
     CrystalStructureInput,
@@ -30,25 +31,65 @@ from .models.models import (
     QESimulationInput,
     Simulation,
     SimulationStatus,
+    StructureWithMetadata,
 )
 from .utils import create_results_zip
 
+# def get_crystal_structures(session, user_id) -> List[CrystalStructure]:
+#     statement = (
+#         select(ChemicalStructure)
+#         .join(Person)
+#         .where(
+#             and_(Person.identifier == user_id,
+#                  ChemicalStructure.lattice_id.is_not(None)),
+#         )
+#     )
 
-def get_crystal_structures(session, user_id) -> List[CrystalStructure]:
+#     results = session.exec(statement)
+
+#     output = results.all()
+
+#     print(output[0].lattice)
+
+#     return output
+
+
+def get_crystal_structures(session, user_id) -> List[StructureWithMetadata]:
     statement = (
-        select(CrystalStructure).join(Person).where(Person.identifier == user_id)
+        select(
+            ChemicalStructure,
+            func.count(ChemicalSite.id),
+            func.array_agg(func.distinct(ChemicalSite.element_z)),
+        )
+        .join(ChemicalSite)
+        .join(Person)
+        .where(
+            and_(
+                Person.identifier == user_id, ChemicalStructure.lattice_id.is_not(None)
+            ),
+        )
+        .group_by(ChemicalStructure.id)
     )
 
-    results = session.exec(statement)
+    structure = session.exec(statement).all()
+    # t = TypeAdapter(List[StructureWithMetadata])
 
-    return results.all()
+    output = [
+        {"structure": s[0], "atom_count": s[1], "elements": s[2]} for s in structure
+    ]
+    return output
 
 
 def get_crystal_structure(session, id, user_id) -> CrystalStructure:
     statement = (
-        select(CrystalStructure)
+        select(ChemicalStructure)
         .join(Person)
-        .where(and_(Person.identifier == user_id, CrystalStructure.id == id))
+        .where(
+            and_(
+                ChemicalStructure.lattice_id.is_not(None),
+                and_(Person.identifier == user_id, ChemicalStructure.id == id),
+            )
+        )
     )
 
     structure = session.exec(statement).first()
@@ -79,28 +120,38 @@ def upload_crystal_structure(
 ) -> CrystalStructure:
     person = get_or_create_person(session, user_id)
 
-    crystal = CrystalStructure.model_validate(structure)
-    crystal.person_id = person.id
+    chem_struct = ChemicalStructure.model_validate(structure)
 
-    session.add(crystal)
+    chem_struct.person_id = person.id
+
+    session.add(chem_struct)
     session.commit()
-    session.refresh(crystal)
+    session.refresh(chem_struct)
 
-    return crystal
+    return chem_struct
 
 
-def get_molecular_structures(session, user_id) -> List[MolecularStructure]:
+def get_molecular_structures(session, user_id) -> List[StructureWithMetadata]:
     statement = (
-        select(ChemicalStructure)
+        select(
+            ChemicalStructure,
+            func.count(ChemicalSite.id),
+            func.array_agg(func.distinct(ChemicalSite.element_z)),
+        )
+        .join(ChemicalSite)
         .join(Person)
         .where(
             and_(Person.identifier == user_id, ChemicalStructure.lattice_id.is_(None)),
         )
+        .group_by(ChemicalStructure.id)
     )
 
-    results = session.exec(statement)
+    structure = session.exec(statement).all()
 
-    return results.all()
+    output = [
+        {"structure": s[0], "atom_count": s[1], "elements": s[2]} for s in structure
+    ]
+    return output
 
 
 def get_molecular_structure(session, id, user_id) -> MolecularStructure:
@@ -128,14 +179,15 @@ def upload_molecular_structure(
 ) -> MolecularStructure:
     person = get_or_create_person(session, user_id)
 
-    molecule = MolecularStructure.model_validate(structure)
-    molecule.person_id = person.id
+    chem_struct = ChemicalStructure.model_validate(structure)
 
-    session.add(molecule)
+    chem_struct.person_id = person.id
+
+    session.add(chem_struct)
     session.commit()
-    session.refresh(molecule)
+    session.refresh(chem_struct)
 
-    return molecule
+    return chem_struct
 
 
 def get_simulations(session, user_id) -> List[Simulation]:

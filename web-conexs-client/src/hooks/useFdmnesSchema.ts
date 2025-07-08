@@ -189,8 +189,6 @@ export function useFDMNESSchema(isCrystal: boolean) {
 
   const uischema = isCrystal ? crystal_uischema : molecule_uischema;
 
-  console.log(uischema);
-
   return {
     data,
     setData,

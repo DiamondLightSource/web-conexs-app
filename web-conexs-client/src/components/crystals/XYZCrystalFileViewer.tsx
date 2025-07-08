@@ -1,20 +1,29 @@
 import { Stack, TextField } from "@mui/material";
 
-import { CrystalInput, LatticeParameter } from "../../models";
+import { LatticeParameter } from "../../models";
 import LatticeEditor from "./LatticeEditor";
+import { inputToXYZNoHeader } from "../../utils";
+import { skipToken, useQuery } from "@tanstack/react-query";
+import { getCrystal } from "../../queryfunctions";
 
 export default function XYZCrystalFileViewer(props: {
-  crystal: CrystalInput | null;
+  id: number | undefined;
 }) {
+  const id = props.id;
+
+  const query = useQuery({
+    queryKey: ["crystal", props.id],
+    queryFn: id ? () => getCrystal(id) : skipToken,
+  });
   const lp: LatticeParameter =
-    props.crystal != null
+    query.data != null
       ? {
-          alpha: props.crystal.alpha,
-          beta: props.crystal.beta,
-          gamma: props.crystal.gamma,
-          a: props.crystal.a,
-          b: props.crystal.b,
-          c: props.crystal.c,
+          alpha: query.data.lattice.alpha,
+          beta: query.data.lattice.beta,
+          gamma: query.data.lattice.gamma,
+          a: query.data.lattice.a,
+          b: query.data.lattice.b,
+          c: query.data.lattice.c,
         }
       : {
           a: 1,
@@ -30,7 +39,7 @@ export default function XYZCrystalFileViewer(props: {
       <TextField
         id="Label"
         label="Label"
-        value={props.crystal == null ? " " : props.crystal.label}
+        value={query.data ? query.data.label : ""}
       />
       <LatticeEditor lattice={lp} setLattice={() => {}}></LatticeEditor>
 
@@ -40,7 +49,7 @@ export default function XYZCrystalFileViewer(props: {
         label="Atomic Coordinate (Fractional)"
         multiline
         rows={12}
-        value={props.crystal != null ? props.crystal.structure : ""}
+        value={query.data ? inputToXYZNoHeader(query.data) : ""}
       />
     </Stack>
   );

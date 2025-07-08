@@ -10,7 +10,11 @@ from ..crud import (
     upload_molecular_structure,
 )
 from ..database import get_session
-from ..models.models import MolecularStructure, MolecularStructureInput
+from ..models.models import (
+    MolecularStructure,
+    MolecularStructureInput,
+    StructureWithMetadata,
+)
 
 router = APIRouter()
 
@@ -36,7 +40,6 @@ def upload_molecular_endpoint(
 @router.get("/api/molecules")
 def get_molecular_list_endpoint(
     session: Session = Depends(get_session), user_id: str = Depends(get_current_user)
-) -> List[MolecularStructure]:
+) -> List[StructureWithMetadata]:
     output = get_molecular_structures(session, user_id)
-    print(output)
     return output

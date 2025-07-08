@@ -1,6 +1,5 @@
 import { Typography, Stack, Toolbar, useTheme } from "@mui/material";
 
-import React3dMol from "../React3dMol";
 import MoleculeTable from "../molecules/MoleculeTable";
 import XYZCrystalFileViewer from "./XYZCrystalFileViewer";
 import { getCrystals } from "../../queryfunctions";
@@ -11,6 +10,7 @@ import FDMNESIcon from "../icons/FDMNESIcon";
 import QEIcon from "../icons/QEIcon";
 import NavButton from "../NavButton";
 import GrainPlusIcon from "../icons/GrainPlusIcon";
+import CrystalViewer from "./CrystalViewer";
 
 export default function CrystalPage() {
   const query = useQuery({
@@ -24,11 +24,13 @@ export default function CrystalPage() {
   let finalCrystal = null;
 
   if (query.data && query.data.length != 0 && selectedCrystalId) {
-    finalCrystal = query.data.find((d) => d.id == selectedCrystalId);
+    finalCrystal = query.data.find((d) => d.structure.id == selectedCrystalId);
     if (finalCrystal == undefined) {
       finalCrystal = null;
     }
   }
+
+  console.log(finalCrystal);
   return (
     <MainPanel>
       <Stack spacing={"10px"}>
@@ -50,20 +52,16 @@ export default function CrystalPage() {
             selectedMolecule={undefined}
             setSelectedMolecule={(data) => {
               if (data) {
-                setSelectedCrystalId(data.id);
+                console.log(data.structure.id);
+                setSelectedCrystalId(data.structure.id);
               }
             }}
             setCurrent={() => {}}
             prevNext={null}
           ></MoleculeTable>
 
-          <XYZCrystalFileViewer crystal={finalCrystal} />
-          <React3dMol
-            moleculedata={finalCrystal}
-            color="#3465A4"
-            style="Stick"
-            orbital={null}
-          ></React3dMol>
+          <XYZCrystalFileViewer id={finalCrystal?.structure.id} />
+          <CrystalViewer id={finalCrystal?.structure.id}></CrystalViewer>
         </Stack>
       </Stack>
       <Stack direction="row" padding={"2em"} spacing={"2em"}>

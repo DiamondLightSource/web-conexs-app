@@ -10,7 +10,11 @@ from ..crud import (
     upload_crystal_structure,
 )
 from ..database import get_session
-from ..models.models import CrystalStructure, CrystalStructureInput
+from ..models.models import (
+    CrystalStructure,
+    CrystalStructureInput,
+    StructureWithMetadata,
+)
 
 router = APIRouter()
 
@@ -37,5 +41,5 @@ def upload_crystal_endpoint(
 def get_crystal_list_endpoint(
     session: Session = Depends(get_session),
     user_id: str = Depends(get_current_user),
-) -> List[CrystalStructure]:
+) -> List[StructureWithMetadata]:
     return get_crystal_structures(session, user_id)

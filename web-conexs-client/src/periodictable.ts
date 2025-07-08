@@ -568,3 +568,7 @@ export const periodic_table: Element[] = [
 ];
 
 export const elementSet = new Set(periodic_table.map((e) => e.symbol));
+export const elementMap = periodic_table.reduce((map, obj) => {
+  map.set(obj.symbol, obj.atomic_number);
+  return map;
+}, new Map<string, number>());

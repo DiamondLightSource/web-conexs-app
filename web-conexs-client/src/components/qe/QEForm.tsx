@@ -62,8 +62,6 @@ export default function QEForm() {
     }
   }
 
-  console.log(middleware);
-
   return (
     <Stack
       className="jsonFormsContainer"

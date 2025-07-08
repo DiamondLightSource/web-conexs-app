@@ -13,6 +13,7 @@ import {
   QESimulationInput,
   Simulation,
   SimulationPage,
+  StructureWithMetadata,
   XASData,
 } from "./models";
 
@@ -23,7 +24,7 @@ const qeUrl = "/api/qe";
 const moleculeUrl = "/api/molecules";
 const crystalUrl = "/api/crystals";
 const userUrl = "/api/user";
-const matprojUrl = "/api/matproj"
+const matprojUrl = "/api/matproj";
 
 export const getSimulationPage = async (
   cursor: string | null,
@@ -73,9 +74,10 @@ export const getQESimulation = async (id: number) => {
 };
 
 export const getMolecules = async () => {
-  const { data } = await axios.get<Molecule[], AxiosResponse<Molecule[]>>(
-    moleculeUrl
-  );
+  const { data } = await axios.get<
+    StructureWithMetadata[],
+    AxiosResponse<StructureWithMetadata[]>
+  >(moleculeUrl);
   return data;
 };
 
@@ -87,13 +89,18 @@ export const getMolecule = async (id: number) => {
 };
 
 export const postMolecule = async (input: MoleculeInput) => {
-  axios.post(moleculeUrl, input);
+  const response = await axios.post(moleculeUrl, input);
+
+  if (response.status != 200) {
+    throw new Error("Failed to submit molecule");
+  }
 };
 
 export const getCrystals = async () => {
-  const { data } = await axios.get<Crystal[], AxiosResponse<Crystal[]>>(
-    crystalUrl
-  );
+  const { data } = await axios.get<
+    StructureWithMetadata[],
+    AxiosResponse<StructureWithMetadata[]>
+  >(crystalUrl);
   return data;
 };
 
@@ -105,7 +112,11 @@ export const getCrystal = async (id: number) => {
 };
 
 export const postCrystal = async (input: CrystalInput) => {
-  axios.post(crystalUrl, input);
+  const response = await axios.post(crystalUrl, input);
+
+  if (response.status != 200) {
+    throw new Error("Failed to submit crystal");
+  }
 };
 
 export const postOrca = async (input: OrcaSimulationInput) => {
@@ -220,10 +231,9 @@ export const cancelSimulation = async (id: number) => {
 };
 
 export const getMatProjStructure = async (id: string) => {
-  const  response  = await axios.get<
-    Crystal,
-    AxiosResponse<Crystal>
-  >(matprojUrl + "/" + id);
+  const response = await axios.get<Crystal, AxiosResponse<Crystal>>(
+    matprojUrl + "/" + id
+  );
 
   if (response.status != 200) {
     throw new Error("Failed to submit job");

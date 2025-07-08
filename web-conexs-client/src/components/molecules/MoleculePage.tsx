@@ -1,5 +1,4 @@
 import { Typography, Stack, Toolbar, useTheme } from "@mui/material";
-import React3dMol from "../React3dMol";
 import MoleculeTable from "./MoleculeTable";
 import { useState } from "react";
 import XYZFileViewer from "./XYZFileViewer";
@@ -10,6 +9,7 @@ import NavButton from "../NavButton";
 import MoleculePlusIcon from "../icons/MoleculePlusIcon";
 import OrcaIcon from "../icons/OrcaIcon";
 import FDMNESIcon from "../icons/FDMNESIcon";
+import MoleculeViewer from "./MoleculeViewer";
 
 export default function MoleculePage() {
   const query = useQuery({
@@ -23,7 +23,9 @@ export default function MoleculePage() {
   let finalMolecule = null;
 
   if (query.data && query.data.length != 0 && selectedMoleculeId) {
-    finalMolecule = query.data.find((d) => d.id == selectedMoleculeId);
+    finalMolecule = query.data.find(
+      (d) => d.structure.id == selectedMoleculeId
+    );
     if (finalMolecule == undefined) {
       finalMolecule = null;
     }
@@ -48,20 +50,17 @@ export default function MoleculePage() {
           <MoleculeTable
             molecules={query.data ? query.data : []}
             selectedMolecule={undefined}
-            setSelectedMolecule={(data) => setSelectedMoleculeId(data?.id)}
+            setSelectedMolecule={(data) => {
+              console.log(data?.structure.id);
+              setSelectedMoleculeId(data?.structure.id);
+            }}
             setCurrent={() => {}}
             prevNext={null}
           ></MoleculeTable>
           <Stack spacing={"2px"}>
-            <XYZFileViewer molecule={finalMolecule} />
+            <XYZFileViewer id={finalMolecule?.structure.id} />
           </Stack>
-
-          <React3dMol
-            moleculedata={finalMolecule}
-            color="#3465A4"
-            style="Stick"
-            orbital={null}
-          ></React3dMol>
+          <MoleculeViewer id={finalMolecule?.structure.id}></MoleculeViewer>
         </Stack>
       </Stack>
       <Stack direction="row" padding={"2em"} spacing={"2em"}>

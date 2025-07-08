@@ -3,16 +3,24 @@ import { useState } from "react";
 import { CrystalInput, LatticeParameter } from "../../models";
 import LatticeEditor from "./LatticeEditor";
 import XYZEditor from "../XYZEditor";
+import { inputToXYZNoHeader, siteFromString } from "../../utils";
 
 const templateCrystal: CrystalInput = {
-  a: 4.1043564,
-  b: 4.1043564,
-  c: 4.1043564,
-  alpha: 90,
-  beta: 90,
-  gamma: 90,
-  label: "Silver",
-  structure: "Ag 0.0 0.0 0.0\nAg 0.5 0.5 0.0\nAg 0.5 0.0 0.5\nAg 0.0 0.5 0.5",
+  lattice: {
+    a: 4.1043564,
+    b: 4.1043564,
+    c: 4.1043564,
+    alpha: 90,
+    beta: 90,
+    gamma: 90,
+  },
+  label: "test",
+  sites: [
+    { element_z: 47, x: 0.0, y: 0.0, z: 0.0, index: 1 },
+    { element_z: 47, x: 0.5, y: 0.5, z: 0.0, index: 2 },
+    { element_z: 47, x: 0.5, y: 0.0, z: 0.5, index: 3 },
+    { element_z: 47, x: 0.0, y: 0.5, z: 0.5, index: 4 },
+  ],
 };
 
 export default function CrystalEditor(props: {
@@ -22,10 +30,10 @@ export default function CrystalEditor(props: {
   const [label, setLabel] = useState(templateCrystal.label);
   const [labelError, setLabelError] = useState("");
   const [lattice, setLattice] = useState<LatticeParameter | null>({
-    ...templateCrystal,
+    ...templateCrystal.lattice,
   });
   const [structure, setStructure] = useState<string | null>(
-    templateCrystal.structure
+    inputToXYZNoHeader(templateCrystal)
   );
 
   const updateStructure = (structure: string | null) => {
@@ -35,13 +43,8 @@ export default function CrystalEditor(props: {
     } else {
       props.setCrystal({
         label: label,
-        structure: structure,
-        a: lattice.a,
-        b: lattice.b,
-        c: lattice.c,
-        alpha: lattice.alpha,
-        beta: lattice.beta,
-        gamma: lattice.gamma,
+        lattice: { ...lattice },
+        sites: siteFromString(structure),
       });
     }
   };
@@ -58,13 +61,8 @@ export default function CrystalEditor(props: {
     } else {
       props.setCrystal({
         label: label,
-        structure: structure,
-        a: latticeParams.a,
-        b: latticeParams.b,
-        c: latticeParams.c,
-        alpha: latticeParams.alpha,
-        beta: latticeParams.beta,
-        gamma: latticeParams.gamma,
+        lattice: { ...latticeParams },
+        sites: siteFromString(structure),
       });
     }
   };
@@ -77,13 +75,8 @@ export default function CrystalEditor(props: {
       if (props.crystal != null) {
         props.setCrystal({
           label: label,
-          structure: props.crystal.structure,
-          a: lattice.a,
-          b: lattice.b,
-          c: lattice.c,
-          alpha: lattice.alpha,
-          beta: lattice.beta,
-          gamma: lattice.gamma,
+          sites: [...props.crystal.sites],
+          lattice: { ...props.crystal.lattice },
         });
       }
     }
@@ -105,7 +98,7 @@ export default function CrystalEditor(props: {
         setLattice={updateLattice}
       ></LatticeEditor>
       <XYZEditor
-        structure={templateCrystal.structure}
+        structure={inputToXYZNoHeader(templateCrystal)}
         setStructure={updateStructure}
         isFractional={true}
       ></XYZEditor>

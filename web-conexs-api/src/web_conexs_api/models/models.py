@@ -1,6 +1,6 @@
 import datetime
 import enum
-from typing import Optional
+from typing import List, Optional
 
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -13,6 +13,20 @@ class Element(SQLModel, table=True):
     name: str = Field(unique=True)
 
 
+class LatticeBase(SQLModel):
+    a: float
+    b: float
+    c: float
+    alpha: float
+    beta: float
+    gamma: float
+
+
+class Lattice(LatticeBase, table=True):
+    __tablename__: str = "lattice"
+    id: int | None = Field(primary_key=True, unique=True, default=None)
+
+
 class StructureBase(SQLModel):
     label: str
     person_id: int = Field(foreign_key="person.id", default=None)
@@ -20,33 +34,49 @@ class StructureBase(SQLModel):
 
 class ChemicalStructure(StructureBase, table=True):
     __tablename__: str = "chemical_structure"
-    id: int = Field(primary_key=True, unique=True)
+    id: int | None = Field(primary_key=True, unique=True, default=None)
     lattice_id: int | None = Field(foreign_key="lattice.id", default=None)
     sites: list["ChemicalSite"] = Relationship(back_populates="chemical_structure")
+    lattice: Lattice = Relationship(
+        sa_relationship_kwargs={
+            "lazy": "selectin",
+            "foreign_keys": "[ChemicalStructure.lattice_id]",
+        }
+    )
+
+
+class StructureWithMetadata(SQLModel):
+    structure: ChemicalStructure
+    atom_count: int
+    elements: List[int]
 
 
 class CrystalStructure(StructureBase):
     sites: list["ChemicalSite"]
     id: int
     lattice_id: int
+    lattice: Lattice
 
 
 class MolecularStructure(StructureBase):
-    sites: list["ChemicalSite"]
-    id: int
+    sites: list["SiteBase"]
+    id: int | None
 
 
-class ChemicalSite(SQLModel, table=True):
-    __tablename__: str = "chemical_site"
-    id: int = Field(primary_key=True, unique=True)
-    chemical_structure_id: int = Field(
-        foreign_key="chemical_structure.id", default=None
-    )
+class SiteBase(SQLModel):
     element_z: int = Field(foreign_key="element.z", default=None)
     x: float
     y: float
     z: float
     index: int
+
+
+class ChemicalSite(SiteBase, table=True):
+    __tablename__: str = "chemical_site"
+    id: int | None = Field(primary_key=True, unique=True, default=None)
+    chemical_structure_id: int = Field(
+        foreign_key="chemical_structure.id", default=None
+    )
 
     chemical_structure: ChemicalStructure | None = Relationship(back_populates="sites")
 
@@ -80,18 +110,11 @@ class SimulationStatus(enum.Enum):
 
 class MolecularStructureInput(SQLModel):
     label: str
-    chemical_structure_id: int = Field(
-        foreign_key="chemical_structure.id", default=None
-    )
+    sites: List[ChemicalSite]
 
 
 class CrystalStructureInput(MolecularStructureInput):
-    a: float
-    b: float
-    c: float
-    alpha: float
-    beta: float
-    gamma: float
+    lattice: Lattice
 
 
 # class CrystalStructure(CrystalStructureInput, table=True):

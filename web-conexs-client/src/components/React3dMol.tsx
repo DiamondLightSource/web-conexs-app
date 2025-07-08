@@ -79,7 +79,7 @@ export default function React3dMol(props: Molecule3DProps) {
             ],
           });
         }
-      } else if (props.moleculedata && "alpha" in props.moleculedata) {
+      } else if (props.moleculedata && "lattice" in props.moleculedata) {
         const crystaldata = props.moleculedata as CrystalInput;
 
         const cif = crystalInputToCIF(crystaldata);
@@ -94,11 +94,6 @@ export default function React3dMol(props: Molecule3DProps) {
         });
       } else if (props.moleculedata) {
         const xyz = moleculeInputToXYZ(props.moleculedata);
-        // const lines =
-        //   (props.moleculedata.structure.match(/\n/g) || "").length + 1;
-
-        // const newMolecule =
-        //   lines.toString() + "\n\n" + props.moleculedata.structure;
 
         const model = viewer.addModel(xyz, "xyz");
         viewer.addUnitCell(model, {

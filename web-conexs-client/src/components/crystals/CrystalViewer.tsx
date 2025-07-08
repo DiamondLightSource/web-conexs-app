@@ -1,13 +1,17 @@
 import { Box } from "@mui/material";
 import React3dMol from "../React3dMol";
 import { getCrystal } from "../../queryfunctions";
-import { useQuery } from "@tanstack/react-query";
+import { skipToken, useQuery } from "@tanstack/react-query";
 
-export default function CrystalViewer(props: { id: number }) {
+export default function CrystalViewer(props: { id: number | undefined }) {
+  const id = props.id;
   const query = useQuery({
-    queryKey: ["crystal", props.id],
-    queryFn: () => getCrystal(props.id),
+    queryKey: ["crystal", id],
+    queryFn: id ? () => getCrystal(id) : skipToken,
   });
+
+  console.log(id);
+  console.log(query.data);
 
   return (
     <Box height="100%" width="100%">

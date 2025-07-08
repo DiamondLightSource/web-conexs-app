@@ -1,29 +1,19 @@
 export interface Site {
-  element_z: number
-  x: number
-  y: number
-  z: number
-  index: number
-
+  element_z: number;
+  x: number;
+  y: number;
+  z: number;
+  index: number;
 }
 
 export interface MoleculeInput {
   label: string;
-  sites: Site[]
+  sites: Site[];
 }
 
 export interface Person {
   identifier: string;
   accepted_orca_eula: boolean;
-}
-
-export interface CrystalInput extends MoleculeInput {
-  a: number;
-  b: number;
-  c: number;
-  alpha: number;
-  beta: number;
-  gamma: number;
 }
 
 export interface LatticeParameter {
@@ -35,12 +25,29 @@ export interface LatticeParameter {
   gamma: number | null;
 }
 
+export interface CrystalInput extends MoleculeInput {
+  lattice: LatticeParameter;
+}
+
 export interface Molecule extends MoleculeInput {
   id: number;
 }
 
 export interface Crystal extends CrystalInput {
   id: number;
+}
+
+export interface Structure {
+  label: string;
+  person_id: number;
+  id: number;
+  lattice_id: number;
+}
+
+export interface StructureWithMetadata {
+  structure: Structure;
+  atom_count: number;
+  elements: number[];
 }
 
 export interface SimulationType {
