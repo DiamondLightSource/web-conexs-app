@@ -17,6 +17,15 @@ const structure_template = {
 const schemaTemplate = {
   type: "object",
   properties: {
+    chemical_structure_id: {
+      type: "integer",
+      oneOf: [
+        {
+          const: -1,
+          title: "No Structures",
+        },
+      ],
+    },
     element: {
       title: "Element",
       type: "integer",
@@ -60,6 +69,16 @@ const schemaTemplate = {
   required: [],
 };
 
+const chemical_schema_properties = {
+  ...schemaTemplate.properties,
+  crystal_structure_id: structure_template,
+};
+
+const chemical_schema_template = {
+  ...schemaTemplate,
+  properties: chemical_schema_properties,
+};
+
 const crystal_schema_properties = {
   ...schemaTemplate.properties,
   crystal_structure_id: structure_template,
@@ -87,7 +106,7 @@ const crystal_uischema = {
       elements: [
         {
           type: "Control",
-          scope: "#/properties/crystal_structure_id",
+          scope: "#/properties/chemical_structure_id",
         },
         {
           type: "HorizontalLayout",
@@ -148,9 +167,7 @@ molecule_uischema.elements[0].elements[0].scope =
 
 export function useFDMNESSchema(isCrystal: boolean) {
   const [data, setData] = useState({ ...fdmnesDefaultValues });
-  const [schema, setSchema] = useState(
-    isCrystal ? { ...crystal_schema_template } : { ...molecule_schema_template }
-  );
+  const [schema, setSchema] = useState({ ...schemaTemplate });
   const [hasData, setHasData] = useState(false);
 
   const query = useQuery({
@@ -162,32 +179,30 @@ export function useFDMNESSchema(isCrystal: boolean) {
     const tmpSchema = { ...schema };
 
     const output = query.data.map((m) => ({
-      const: m.id,
-      title: m.id + " " + m.label,
+      const: m.structure.id,
+      title: m.structure.id + " " + m.structure.label,
     }));
 
-    if ("crystal_structure_id" in tmpSchema.properties) {
-      tmpSchema.properties.crystal_structure_id.oneOf = output;
-    }
+    tmpSchema.properties.chemical_structure_id.oneOf = output;
 
-    if ("molecular_structure_id" in tmpSchema.properties) {
-      tmpSchema.properties.molecular_structure_id.oneOf = output;
-    }
+    // if ("chemical_structure_id" in tmpSchema.properties) {
+    //   tmpSchema.properties.chemical_structure_id.oneOf = output;
+    // }
+
+    // if ("molecular_structure_id" in tmpSchema.properties) {
+    //   tmpSchema.properties..oneOf = output;
+    // }
 
     const tmpData = { ...data };
 
-    if (isCrystal) {
-      tmpData.crystal_structure_id = output[0].const;
-    } else {
-      tmpData.molecular_structure_id = output[0].const;
-    }
+    tmpData.chemical_structure_id = output[0].const;
 
     setData(tmpData);
     setSchema(tmpSchema);
     setHasData(true);
   }
 
-  const uischema = isCrystal ? crystal_uischema : molecule_uischema;
+  const uischema = crystal_uischema;
 
   return {
     data,
@@ -212,13 +227,12 @@ export function useFDMNESMoleculeSchema() {
     const tmpSchema = { ...schema };
 
     const output = query.data.map((m) => ({
-      const: m.id,
-      title: m.id + " " + m.label,
+      const: m.structure.id,
+      title: m.structure.id + " " + m.structure.label,
     }));
-
-    molecule_schema_template.properties.molecular_structure_id.oneOf = output;
+    molecule_schema_template.properties.chemical_structure_id.oneOf = output;
     const tmpData = { ...data };
-    tmpData.molecular_structure_id = output[0].const;
+    tmpData.chemical_structure_id = output[0].const;
     setData(tmpData);
     setSchema(tmpSchema);
     setHasData(true);

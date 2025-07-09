@@ -8,12 +8,12 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postQe } from "../../queryfunctions";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import CrystalViewer from "../crystals/CrystalViewer";
 
 import CompactGroupRenderer, {
   CompactGroupTester,
 } from "../renderers/CompactGroup";
 import useQESchema from "../../hooks/useQESchema";
+import StructureViewer from "../StructureViewer";
 
 const renderers = [
   ...materialRenderers,
@@ -97,7 +97,7 @@ export default function QEForm() {
           </Stack>
           <Stack flex={1}>
             {selectedCrystalID != null && (
-              <CrystalViewer id={selectedCrystalID} />
+              <StructureViewer id={selectedCrystalID} />
             )}
           </Stack>
           <Paper

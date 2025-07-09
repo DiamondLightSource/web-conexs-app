@@ -65,6 +65,7 @@ export interface XASData {
 export interface Simulation {
   id: number;
   person_id: number;
+  chemical_structure_id: number;
   working_directory: string;
   message: string | null;
   status: string;
@@ -85,8 +86,8 @@ export interface SimulationPage {
 
 export interface OrcaSimulationInput {
   calculation_type: string;
-  molecular_structure_id: number;
   memory_per_core: number;
+  chemical_structure_id: number;
   functional: string;
   basis_set: string;
   charge: number;
@@ -108,7 +109,6 @@ export interface OrcaSimulationWithResource extends OrcaSimulationInput {
 
 export const orcaDefaultValues: OrcaSimulationWithResource = {
   calculation_type: "xas",
-  molecular_structure_id: -1,
   memory_per_core: 1024,
   functional: "B3LYP RIJCOSX",
   basis_set: "def2-SVP",
@@ -120,16 +120,16 @@ export const orcaDefaultValues: OrcaSimulationWithResource = {
   orb_win_1_start: 0,
   orb_win_1_stop: 0,
   n_cores: 4,
+  chemical_structure_id: -1,
 };
 
 export interface FDMNESSimulationInput {
-  crystal_structure_id: number | null;
-  molecular_structure_id: number | null;
   element: number;
   edge: string;
   greens_approach: boolean;
   n_cores: number;
   memory: number;
+  chemical_structure_id: number;
 }
 
 export interface FDMNESSimulation extends FDMNESSimulationInput {
@@ -137,17 +137,15 @@ export interface FDMNESSimulation extends FDMNESSimulationInput {
 }
 
 export const fdmnesDefaultValues: FDMNESSimulationInput = {
-  crystal_structure_id: null,
-  molecular_structure_id: null,
   memory: 1024,
   element: 1,
   edge: "k",
   greens_approach: false,
   n_cores: 4,
+  chemical_structure_id: -1,
 };
 
 export interface QESimulationInput {
-  crystal_structure_id: number;
   absorbing_atom: number;
   edge: string;
   conductivity: string;
@@ -160,7 +158,6 @@ export interface QESimulation extends QESimulationInput {
 }
 
 export const qeDefaultValues: QESimulationInput = {
-  crystal_structure_id: -1,
   memory: 1024,
   absorbing_atom: 1,
   edge: "k",

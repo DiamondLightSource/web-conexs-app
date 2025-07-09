@@ -21,8 +21,9 @@ const simulationUrl = "/api/simulations";
 const orcaUrl = "/api/orca";
 const fdmnesUrl = "/api/fdmnes";
 const qeUrl = "/api/qe";
-const moleculeUrl = "/api/molecules";
-const crystalUrl = "/api/crystals";
+// const moleculeUrl = "/api/molecules";
+// const crystalUrl = "/api/crystals";
+const structureUrl = "/api/structures";
 const userUrl = "/api/user";
 const matprojUrl = "/api/matproj";
 
@@ -77,19 +78,19 @@ export const getMolecules = async () => {
   const { data } = await axios.get<
     StructureWithMetadata[],
     AxiosResponse<StructureWithMetadata[]>
-  >(moleculeUrl);
+  >(structureUrl + "?type=molecule");
   return data;
 };
 
 export const getMolecule = async (id: number) => {
   const { data } = await axios.get<Molecule, AxiosResponse<Molecule>>(
-    moleculeUrl + "/" + id
+    structureUrl + "/" + id
   );
   return data;
 };
 
 export const postMolecule = async (input: MoleculeInput) => {
-  const response = await axios.post(moleculeUrl, input);
+  const response = await axios.post(structureUrl, input);
 
   if (response.status != 200) {
     throw new Error("Failed to submit molecule");
@@ -100,19 +101,27 @@ export const getCrystals = async () => {
   const { data } = await axios.get<
     StructureWithMetadata[],
     AxiosResponse<StructureWithMetadata[]>
-  >(crystalUrl);
+  >(structureUrl + "?type=crystal");
   return data;
 };
 
 export const getCrystal = async (id: number) => {
   const { data } = await axios.get<Crystal, AxiosResponse<Crystal>>(
-    crystalUrl + "/" + id
+    structureUrl + "/" + id
   );
   return data;
 };
 
+export const getStructure = async (id: number) => {
+  const { data } = await axios.get<
+    Crystal | Molecule,
+    AxiosResponse<Crystal | Molecule>
+  >(structureUrl + "/" + id);
+  return data;
+};
+
 export const postCrystal = async (input: CrystalInput) => {
-  const response = await axios.post(crystalUrl, input);
+  const response = await axios.post(structureUrl, input);
 
   if (response.status != 200) {
     throw new Error("Failed to submit crystal");

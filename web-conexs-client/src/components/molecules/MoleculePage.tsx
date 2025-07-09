@@ -9,7 +9,7 @@ import NavButton from "../NavButton";
 import MoleculePlusIcon from "../icons/MoleculePlusIcon";
 import OrcaIcon from "../icons/OrcaIcon";
 import FDMNESIcon from "../icons/FDMNESIcon";
-import MoleculeViewer from "./MoleculeViewer";
+import StructureViewer from "../StructureViewer";
 
 export default function MoleculePage() {
   const query = useQuery({
@@ -60,7 +60,7 @@ export default function MoleculePage() {
           <Stack spacing={"2px"}>
             <XYZFileViewer id={finalMolecule?.structure.id} />
           </Stack>
-          <MoleculeViewer id={finalMolecule?.structure.id}></MoleculeViewer>
+          <StructureViewer id={finalMolecule?.structure.id}></StructureViewer>
         </Stack>
       </Stack>
       <Stack direction="row" padding={"2em"} spacing={"2em"}>

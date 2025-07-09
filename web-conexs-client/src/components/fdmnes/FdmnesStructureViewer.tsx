@@ -15,8 +15,6 @@ export default function FdmnesStructureViewer(props: {
     queryFn: () => getFdmnesSimulation(props.fdmnesSimulationid),
   });
 
-  const isCrystal = fdmnesSim?.crystal_structure_id != null;
-
   const query = useQuery({
     queryKey: [
       isCrystal ? "crystal" : "molecule",

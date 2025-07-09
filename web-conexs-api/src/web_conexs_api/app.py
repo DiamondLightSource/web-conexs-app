@@ -9,6 +9,7 @@ from .routers import (
     orca,
     qe,
     simulations,
+    structures,
     user,
 )
 
@@ -22,5 +23,6 @@ app.include_router(crystals.router)
 app.include_router(simulations.router)
 app.include_router(user.router)
 app.include_router(matproject.router)
+app.include_router(structures.router)
 
 add_pagination(app)

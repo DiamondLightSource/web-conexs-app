@@ -19,11 +19,11 @@ import { postOrca } from "../../queryfunctions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import MoleculeViewer from "../molecules/MoleculeViewer";
 
 import CompactGroupRenderer, {
   CompactGroupTester,
 } from "../renderers/CompactGroup";
+import StructureViewer from "../StructureViewer";
 
 const renderers = [
   ...materialRenderers,
@@ -109,7 +109,7 @@ export default function OrcaForm() {
           </Stack>
           <Stack flex={1}>
             {selectedMoleculeID != null && (
-              <MoleculeViewer id={selectedMoleculeID} />
+              <StructureViewer id={selectedMoleculeID} />
             )}
           </Stack>
           <Paper

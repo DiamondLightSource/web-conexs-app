@@ -31,6 +31,7 @@ from .models.models import (
     QESimulationInput,
     Simulation,
     SimulationStatus,
+    StructureType,
     StructureWithMetadata,
 )
 from .utils import create_results_zip
@@ -154,6 +155,44 @@ def get_molecular_structures(session, user_id) -> List[StructureWithMetadata]:
     return output
 
 
+def get_structures(
+    session, user_id, structure_type: StructureType
+) -> List[StructureWithMetadata]:
+    statement = (
+        select(
+            ChemicalStructure,
+            func.count(ChemicalSite.id),
+            func.array_agg(func.distinct(ChemicalSite.element_z)),
+        )
+        .join(ChemicalSite)
+        .join(Person)
+    )
+
+    if structure_type is None:
+        statement = statement.where(
+            Person.identifier == user_id,
+        )
+    elif structure_type is StructureType.molecule:
+        statement = statement.where(
+            and_(Person.identifier == user_id, ChemicalStructure.lattice_id.is_(None)),
+        )
+    elif structure_type is StructureType.crystal:
+        statement = statement.where(
+            and_(
+                Person.identifier == user_id, ChemicalStructure.lattice_id.is_not(None)
+            ),
+        )
+
+    statement = statement.group_by(ChemicalStructure.id)
+
+    structure = session.exec(statement).all()
+
+    output = [
+        {"structure": s[0], "atom_count": s[1], "elements": s[2]} for s in structure
+    ]
+    return output
+
+
 def get_molecular_structure(session, id, user_id) -> MolecularStructure:
     statement = (
         select(ChemicalStructure)
@@ -174,10 +213,45 @@ def get_molecular_structure(session, id, user_id) -> MolecularStructure:
         raise HTTPException(status_code=404, detail=f"No structure with id={id}")
 
 
+def get_structure(session, id, user_id) -> CrystalStructure:
+    statement = (
+        select(ChemicalStructure)
+        .join(Person)
+        .where(
+            and_(Person.identifier == user_id, ChemicalStructure.id == id),
+        )
+    )
+
+    structure = session.exec(statement).first()
+
+    if structure:
+        return structure
+    else:
+        raise HTTPException(status_code=404, detail=f"No structure with id={id}")
+
+
 def upload_molecular_structure(
     structure: MolecularStructureInput, session, user_id
 ) -> MolecularStructure:
     person = get_or_create_person(session, user_id)
+
+    chem_struct = ChemicalStructure.model_validate(structure)
+
+    chem_struct.person_id = person.id
+
+    session.add(chem_struct)
+    session.commit()
+    session.refresh(chem_struct)
+
+    return chem_struct
+
+
+def upload_structure(
+    structure: MolecularStructureInput | CrystalStructureInput, session, user_id
+) -> MolecularStructure | CrystalStructure:
+    person = get_or_create_person(session, user_id)
+
+    print(structure)
 
     chem_struct = ChemicalStructure.model_validate(structure)
 

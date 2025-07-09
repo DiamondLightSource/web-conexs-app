@@ -22,9 +22,9 @@ const renderers = [
 ];
 
 export default function FdmnesForm(props: { isCrystal: boolean }) {
-  const [selectedStructureID, setSelectedStructureId] = useState<null | number>(
-    null
-  );
+  const [selectedStructureID, setSelectedStructureId] = useState<
+    undefined | number
+  >(undefined);
   const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: postFdmnes,
@@ -79,11 +79,7 @@ export default function FdmnesForm(props: { isCrystal: boolean }) {
               cells={materialCells}
               onChange={({ data }) => {
                 setData(data);
-                setSelectedStructureId(
-                  props.isCrystal
-                    ? data.crystal_structure_id
-                    : data.molecular_structure_id
-                );
+                setSelectedStructureId(data.chemical_structure_id);
               }}
             />
             <Button
@@ -97,12 +93,7 @@ export default function FdmnesForm(props: { isCrystal: boolean }) {
             </Button>
           </Stack>
           <Stack flex={1}>
-            {selectedStructureID != null && (
-              <StructureViewer
-                id={selectedStructureID}
-                isCrystal={props.isCrystal}
-              />
-            )}
+            <StructureViewer id={selectedStructureID} />
           </Stack>
           <Paper
             flex={1}

@@ -97,6 +97,11 @@ class SimulationType(SQLModel, table=True):
     type: str
 
 
+class StructureType(enum.Enum):
+    crystal = "crystal"
+    molecule = "molecule"
+
+
 class SimulationStatus(enum.Enum):
     requested = "requested"
     submitted = "submitted"

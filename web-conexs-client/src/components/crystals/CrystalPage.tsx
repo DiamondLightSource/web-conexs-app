@@ -10,7 +10,7 @@ import FDMNESIcon from "../icons/FDMNESIcon";
 import QEIcon from "../icons/QEIcon";
 import NavButton from "../NavButton";
 import GrainPlusIcon from "../icons/GrainPlusIcon";
-import CrystalViewer from "./CrystalViewer";
+import StructureViewer from "../StructureViewer";
 
 export default function CrystalPage() {
   const query = useQuery({
@@ -61,7 +61,7 @@ export default function CrystalPage() {
           ></MoleculeTable>
 
           <XYZCrystalFileViewer id={finalCrystal?.structure.id} />
-          <CrystalViewer id={finalCrystal?.structure.id}></CrystalViewer>
+          <StructureViewer id={finalCrystal?.structure.id}></StructureViewer>
         </Stack>
       </Stack>
       <Stack direction="row" padding={"2em"} spacing={"2em"}>
