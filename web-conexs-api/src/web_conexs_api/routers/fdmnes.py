@@ -13,8 +13,8 @@ from ..crud import (
 from ..database import get_session
 from ..models.models import (
     FdmnesSimulation,
-    FdmnesSimulationInput,
     FdmnesSimulationResponse,
+    FDMNESSimulationSubmission,
 )
 
 router = APIRouter()
@@ -58,7 +58,7 @@ def get_fdmnes_xas_endpoint(
 
 @router.post("/api/fdmnes")
 def submit_fdmnes(
-    fdmnes_input: FdmnesSimulationInput,
+    fdmnes_input: FDMNESSimulationSubmission,
     session: Session = Depends(get_session),
     user_id: str = Depends(get_current_user),
 ) -> FdmnesSimulation:

@@ -4,27 +4,30 @@ import {
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
 import { Box, Button, Paper, Skeleton, Stack, Typography } from "@mui/material";
-import { useFDMNESSchema } from "../../hooks/useFdmnesSchema";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postFdmnes } from "../../queryfunctions";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
 
 import CompactGroupRenderer, {
   CompactGroupTester,
 } from "../renderers/CompactGroup";
 import StructureViewer from "../StructureViewer";
+import { FDMNESSimulationInput } from "../../models";
+import { JsonSchema, UISchemaElement } from "@jsonforms/core";
 
 const renderers = [
   ...materialRenderers,
   { tester: CompactGroupTester, renderer: CompactGroupRenderer },
 ];
 
-export default function FdmnesForm(props: { isCrystal: boolean }) {
-  const [selectedStructureID, setSelectedStructureId] = useState<
-    undefined | number
-  >(undefined);
+export default function FdmnesForm(props: {
+  data: FDMNESSimulationInput;
+  schema: JsonSchema;
+  uischema: UISchemaElement;
+  setData: (newData: FDMNESSimulationInput) => void;
+  hasData: boolean;
+}) {
   const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: postFdmnes,
@@ -48,10 +51,6 @@ export default function FdmnesForm(props: { isCrystal: boolean }) {
     window.alert("Error Submitting Job!");
   };
 
-  const { data, setData, schema, uischema, hasData } = useFDMNESSchema(
-    props.isCrystal
-  );
-
   function getPlacemarker(noCrystals: boolean) {
     if (!noCrystals) {
       return <Skeleton width={"100%"} height={"100%"} />;
@@ -68,24 +67,23 @@ export default function FdmnesForm(props: { isCrystal: boolean }) {
       margin="5px"
       spacing="5px"
     >
-      {hasData && data != null ? (
+      {props.hasData && props.data != null ? (
         <Stack direction="row" flex={1} spacing={"5px"}>
           <Stack flex={1}>
             <JsonForms
-              schema={schema}
-              data={data}
+              schema={props.schema}
+              data={props.data}
               renderers={renderers}
-              uischema={uischema}
+              uischema={props.uischema}
               cells={materialCells}
               onChange={({ data }) => {
-                setData(data);
-                setSelectedStructureId(data.chemical_structure_id);
+                props.setData(data);
               }}
             />
             <Button
               variant="contained"
               onClick={() => {
-                const localData = { ...data };
+                const localData = { ...props.data };
                 mutation.mutate(localData);
               }}
             >
@@ -93,7 +91,7 @@ export default function FdmnesForm(props: { isCrystal: boolean }) {
             </Button>
           </Stack>
           <Stack flex={1}>
-            <StructureViewer id={selectedStructureID} />
+            <StructureViewer id={props.data.chemical_structure_id} />
           </Stack>
           <Paper
             flex={1}
@@ -142,7 +140,7 @@ export default function FdmnesForm(props: { isCrystal: boolean }) {
           </Paper>
         </Stack>
       ) : (
-        getPlacemarker(hasData && data == null)
+        getPlacemarker(props.hasData && props.data == null)
       )}
     </Stack>
   );

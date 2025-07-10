@@ -134,6 +134,12 @@ class CrystalStructureInput(MolecularStructureInput):
 #     person_id: int = Field(foreign_key="person.id", default=None)
 
 
+class SimulationInputBase(SQLModel):
+    n_cores: int = 4
+    memory: int = 32
+    chemical_structure_id: int
+
+
 class SimulationBase(SQLModel):
     person_id: Optional[int] = Field(foreign_key="person.id", default=None)
     working_directory: Optional[str] = None
@@ -141,7 +147,7 @@ class SimulationBase(SQLModel):
         foreign_key="simulation_type.id", default=None
     )
     chemical_structure_id: Optional[int] = Field(
-        foreign_key="simulation_type.id", default=None
+        foreign_key="chemical_structure.id", default=None
     )
     n_cores: Optional[int] = 4
     memory: Optional[int] = 32
@@ -200,7 +206,6 @@ class OrcaSolvent(enum.Enum):
 
 
 class OrcaSimulationInput(SQLModel):
-    memory_per_core: int
     functional: str
     basis_set: str
     charge: int
@@ -336,3 +341,20 @@ class QESimulation(QESimulationInput, table=True):
 
 class QESimulationResponse(QESimulationInput):
     simulation: Simulation
+
+
+class ORCASimulationSubmission(SQLModel):
+    orca_input: OrcaSimulationInput
+    simulation_input: SimulationInputBase
+
+
+class QESimulationSubmission(QESimulationInput, SimulationInputBase):
+    pass
+
+
+class FDMNESSimulationSubmission(FdmnesSimulationInput, SimulationInputBase):
+    pass
+
+
+class OrcaSimulationSubmission(OrcaSimulationInput, SimulationInputBase):
+    pass

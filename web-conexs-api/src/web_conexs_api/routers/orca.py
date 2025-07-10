@@ -12,7 +12,11 @@ from ..crud import (
     submit_orca_simulation,
 )
 from ..database import get_session
-from ..models.models import OrcaSimulation, OrcaSimulationInput, OrcaSimulationResponse
+from ..models.models import (
+    OrcaSimulation,
+    OrcaSimulationResponse,
+    OrcaSimulationSubmission,
+)
 
 router = APIRouter()
 
@@ -64,7 +68,7 @@ def get_orca_xas_endpoint(
 
 @router.post("/api/orca")
 def submit_orca(
-    orca_input: OrcaSimulationInput,
+    orca_input: OrcaSimulationSubmission,
     session: Session = Depends(get_session),
     user_id: str = Depends(get_current_user),
 ) -> OrcaSimulation:

@@ -1,13 +1,7 @@
-import {
-  Box,
-  Paper,
-  Stack,
-  Toolbar,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import QEForm from "./QEForm";
+import { Stack, Toolbar, Typography, useTheme } from "@mui/material";
+
 import MainPanel from "../MainPanel";
+import QEFormOuter from "./QEFormOuter";
 
 export default function QeSubmitPage() {
   const theme = useTheme();
@@ -26,7 +20,7 @@ export default function QeSubmitPage() {
             Submit QE Simulation
           </Typography>
         </Toolbar>
-        <QEForm></QEForm>
+        <QEFormOuter></QEFormOuter>
       </Stack>
     </MainPanel>
   );

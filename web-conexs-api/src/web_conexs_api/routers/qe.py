@@ -13,8 +13,8 @@ from ..crud import (
 from ..database import get_session
 from ..models.models import (
     QESimulation,
-    QESimulationInput,
     QESimulationResponse,
+    QESimulationSubmission,
 )
 
 router = APIRouter()
@@ -58,7 +58,7 @@ def get_fdmnes_xas_endpoint(
 
 @router.post("/api/qe")
 def submit_qe(
-    qe_input: QESimulationInput,
+    qe_input: QESimulationSubmission,
     session: Session = Depends(get_session),
     user_id: str = Depends(get_current_user),
 ) -> QESimulation:

@@ -20,15 +20,15 @@ from .models.models import (
     CrystalStructure,
     CrystalStructureInput,
     FdmnesSimulation,
-    FdmnesSimulationInput,
+    FDMNESSimulationSubmission,
     MolecularStructure,
     MolecularStructureInput,
     OrcaSimulation,
-    OrcaSimulationInput,
+    OrcaSimulationSubmission,
     Person,
     PersonInput,
     QESimulation,
-    QESimulationInput,
+    QESimulationSubmission,
     Simulation,
     SimulationStatus,
     StructureType,
@@ -327,7 +327,7 @@ def get_orca_simulation(session, id, user_id) -> OrcaSimulation:
 
 
 def submit_orca_simulation(
-    orca_input: OrcaSimulationInput, session: Session, user_id
+    orca_input: OrcaSimulationSubmission, session: Session, user_id
 ) -> OrcaSimulation:
     person = get_or_create_person(session, user_id)
 
@@ -340,6 +340,7 @@ def submit_orca_simulation(
         "person_id": person.id,
         "simulation_type_id": 1,
         "request_date": datetime.datetime.now(),
+        "chemical_structure_id": orca_input.chemical_structure_id,
     }
 
     simulation = Simulation.model_validate(smodel)
@@ -354,7 +355,7 @@ def submit_orca_simulation(
 
 
 def submit_fdmnes_simulation(
-    fdmnes_input: FdmnesSimulationInput, session: Session, user_id: str
+    fdmnes_input: FDMNESSimulationSubmission, session: Session, user_id: str
 ) -> FdmnesSimulation:
     person = get_or_create_person(session, user_id)
 
@@ -362,6 +363,7 @@ def submit_fdmnes_simulation(
         "person_id": person.id,
         "simulation_type_id": 2,
         "request_date": datetime.datetime.now(),
+        "chemical_structure_id": fdmnes_input.chemical_structure_id,
     }
 
     simulation = Simulation.model_validate(smodel)
@@ -423,6 +425,9 @@ def get_fdmnes_output(session, id, user_id):
 
     wd = fdmnes_simulation.simulation.working_directory
 
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+
     result_file = wd + "/fdmnes_result.txt"
 
     with open(result_file) as fh:
@@ -435,6 +440,9 @@ def get_orca_output(session, id, user_id):
     orca_simulation = get_orca_simulation(session, id, user_id)
 
     wd = orca_simulation.simulation.working_directory
+
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
 
     result_file = wd + "/orca_result.txt"
 
@@ -449,6 +457,9 @@ def get_orca_xyz(session, id, user_id):
 
     wd = orca_simulation.simulation.working_directory
 
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+
     result_file = wd + "/job.xyz"
 
     with open(result_file) as fh:
@@ -461,6 +472,9 @@ def get_fdmnes_xas(session, id, user_id):
     fdmnes_simulation = get_fdmnes_simulation(session, id, user_id)
 
     wd = fdmnes_simulation.simulation.working_directory
+
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
 
     result_file = wd + "/result_conv.txt"
 
@@ -534,7 +548,7 @@ def get_user(session, user_id):
 
 
 def submit_qe_simulation(
-    qe_input: QESimulationInput, session: Session, user_id: str
+    qe_input: QESimulationSubmission, session: Session, user_id: str
 ) -> QESimulation:
     person = get_or_create_person(session, user_id)
 
@@ -542,6 +556,7 @@ def submit_qe_simulation(
         "person_id": person.id,
         "simulation_type_id": 3,
         "request_date": datetime.datetime.now(),
+        "chemical_structure_id": qe_input.chemical_structure_id,
     }
 
     simulation = Simulation.model_validate(smodel)
@@ -587,6 +602,9 @@ def get_qe_output(session, id, user_id):
 
     wd = qe_simulation.simulation.working_directory
 
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+
     result_file = wd + "/result.pwo"
 
     with open(result_file) as fh:
@@ -599,6 +617,9 @@ def get_qe_xas(session, id, user_id):
     qe_simulation = get_qe_simulation(session, id, user_id)
 
     wd = qe_simulation.simulation.working_directory
+
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
 
     result_file = wd + "/xanes.dat"
 

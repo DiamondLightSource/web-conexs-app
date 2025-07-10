@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { orcaDefaultValues, OrcaSimulationWithResource } from "../models";
+import { orcaDefaultValues, OrcaSimulationInput } from "../models";
 import { useQuery } from "@tanstack/react-query";
 import { getMolecules } from "../queryfunctions";
 
@@ -14,7 +14,7 @@ const orb_rule = {
 const schemaTemplate = {
   type: "object",
   properties: {
-    molecular_structure_id: {
+    chemical_structure_id: {
       type: "integer",
       oneOf: [
         {
@@ -70,7 +70,7 @@ const schemaTemplate = {
       type: "integer",
       default: 4,
     },
-    memory_per_core: {
+    memory: {
       title: "Memory per Core",
       type: "integer",
       default: 3072,
@@ -109,7 +109,7 @@ const uischema = {
       elements: [
         {
           type: "Control",
-          scope: "#/properties/molecular_structure_id",
+          scope: "#/properties/chemical_structure_id",
         },
         {
           type: "HorizontalLayout",
@@ -202,7 +202,7 @@ const uischema = {
             },
             {
               type: "Control",
-              scope: "#/properties/memory_per_core",
+              scope: "#/properties/memory",
             },
           ],
         },
@@ -211,7 +211,7 @@ const uischema = {
   ],
 };
 export default function useOrcaSchema() {
-  const [data, setData] = useState<OrcaSimulationWithResource | null>(null);
+  const [data, setData] = useState<OrcaSimulationInput | null>(null);
   const [schema, setSchema] = useState({ ...schemaTemplate });
   const [hasData, setHasData] = useState(false);
   const query = useQuery({
@@ -223,14 +223,14 @@ export default function useOrcaSchema() {
     const tmpSchema = { ...schema };
 
     const output = query.data.map((m) => ({
-      const: m.id,
-      title: m.id + " " + m.label,
+      const: m.structure.id,
+      title: m.structure.id + " " + m.structure.label,
     }));
 
-    tmpSchema.properties.molecular_structure_id.oneOf = output;
-    let tmpData: OrcaSimulationWithResource | null = { ...orcaDefaultValues };
+    tmpSchema.properties.chemical_structure_id.oneOf = output;
+    let tmpData: OrcaSimulationInput | null = { ...orcaDefaultValues };
     if (output.length != 0) {
-      tmpData.molecular_structure_id = output[0].const;
+      tmpData.chemical_structure_id = output[0].const;
     } else {
       tmpData = null;
     }

@@ -232,7 +232,6 @@ CREATE TABLE orca_simulation (
     simulation_id INTEGER PRIMARY KEY,
     simulation_type_id INTEGER GENERATED ALWAYS AS (1) STORED,
     calculation_type orca_calculation_enum,
-    memory_per_core INTEGER NOT NULL,
     functional TEXT NOT NULL,
     basis_set TEXT NOT NULL,
     charge INTEGER NOT NULL,

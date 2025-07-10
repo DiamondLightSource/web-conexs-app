@@ -1,9 +1,8 @@
 import { Box, Stack } from "@mui/material";
 
 import FdmnesModelCard from "./FdmnesModelCard";
-
 import FdmnesResultsTabs from "./FdmnesResultsTabs";
-import FdmnesStructureViewer from "./FdmnesStructureViewer";
+import SimulationStructureViewer from "../SimulationStructureViewer";
 
 export default function FdmnesResults(props: { fdmnesSimulationId: number }) {
   return (
@@ -17,9 +16,7 @@ export default function FdmnesResults(props: { fdmnesSimulationId: number }) {
           fdmnesSimulationId={props.fdmnesSimulationId}
         ></FdmnesModelCard>
         <Box flex={1}>
-          <FdmnesStructureViewer
-            fdmnesSimulationid={props.fdmnesSimulationId}
-          />
+          <SimulationStructureViewer simulationId={props.fdmnesSimulationId} />
         </Box>
       </Stack>
       <FdmnesResultsTabs fdmnesSimulationId={props.fdmnesSimulationId} />

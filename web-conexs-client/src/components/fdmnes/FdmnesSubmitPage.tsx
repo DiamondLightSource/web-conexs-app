@@ -1,13 +1,6 @@
-import {
-  Box,
-  Paper,
-  Stack,
-  Toolbar,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import FdmnesForm from "./FdmnesForm";
+import { Stack, Toolbar, Typography, useTheme } from "@mui/material";
 import MainPanel from "../MainPanel";
+import FdmnesFormOuter from "./FdmnesFormOuter";
 
 export default function FdmnesSubmitPage(props: { isCrystal: boolean }) {
   const theme = useTheme();
@@ -26,7 +19,7 @@ export default function FdmnesSubmitPage(props: { isCrystal: boolean }) {
             Submit FDMNES {props.isCrystal ? "Crystal" : "Molecule"} Simulation
           </Typography>
         </Toolbar>
-        <FdmnesForm isCrystal={props.isCrystal}></FdmnesForm>
+        <FdmnesFormOuter isCrystal={props.isCrystal}></FdmnesFormOuter>
       </Stack>
     </MainPanel>
   );

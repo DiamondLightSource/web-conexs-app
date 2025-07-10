@@ -12,14 +12,12 @@ export default function StructureViewer(props: { id: number | undefined }) {
 
   return (
     <Box height="100%" width="100%">
-      {query.data && (
-        <React3dMol
-          moleculedata={query.data}
-          color="#3465A4"
-          style="Stick"
-          orbital={null}
-        ></React3dMol>
-      )}
+      <React3dMol
+        moleculedata={query.data == undefined ? null : query.data}
+        color="#3465A4"
+        style="Stick"
+        orbital={null}
+      ></React3dMol>
     </Box>
   );
 }

@@ -84,10 +84,14 @@ export interface SimulationPage {
   next_page: string | null;
 }
 
-export interface OrcaSimulationInput {
+export interface SimulationInputBase {
+  n_cores: number,
+  chemical_structure_id: number,
+  memory: number,
+}
+
+export interface OrcaSimulationInput extends SimulationInputBase {
   calculation_type: string;
-  memory_per_core: number;
-  chemical_structure_id: number;
   functional: string;
   basis_set: string;
   charge: number;
@@ -103,13 +107,17 @@ export interface OrcaSimulation extends OrcaSimulationInput {
   simulation: Simulation;
 }
 
-export interface OrcaSimulationWithResource extends OrcaSimulationInput {
-  n_cores: number;
+export interface QESimulationSubmission extends QESimulationInput, SimulationInputBase {
+
 }
 
-export const orcaDefaultValues: OrcaSimulationWithResource = {
+// export interface OrcaSimulationWithResource extends OrcaSimulationInput {
+//   n_cores: number;
+// }
+
+export const orcaDefaultValues: OrcaSimulationInput = {
   calculation_type: "xas",
-  memory_per_core: 1024,
+  memory: 1024,
   functional: "B3LYP RIJCOSX",
   basis_set: "def2-SVP",
   charge: 0,
@@ -123,18 +131,16 @@ export const orcaDefaultValues: OrcaSimulationWithResource = {
   chemical_structure_id: -1,
 };
 
-export interface FDMNESSimulationInput {
+export interface FDMNESSimulationInput extends SimulationInputBase {
   element: number;
   edge: string;
   greens_approach: boolean;
-  n_cores: number;
-  memory: number;
-  chemical_structure_id: number;
 }
 
 export interface FDMNESSimulation extends FDMNESSimulationInput {
   simulation: Simulation;
 }
+
 
 export const fdmnesDefaultValues: FDMNESSimulationInput = {
   memory: 1024,
@@ -149,18 +155,17 @@ export interface QESimulationInput {
   absorbing_atom: number;
   edge: string;
   conductivity: string;
-  n_cores: number;
-  memory: number;
 }
 
 export interface QESimulation extends QESimulationInput {
   simulation: Simulation;
 }
 
-export const qeDefaultValues: QESimulationInput = {
-  memory: 1024,
+export const qeDefaultValues: QESimulationSubmission = {
   absorbing_atom: 1,
   edge: "k",
   conductivity: "metallic",
   n_cores: 4,
+  memory: 1024,
+  chemical_structure_id: -1,
 };

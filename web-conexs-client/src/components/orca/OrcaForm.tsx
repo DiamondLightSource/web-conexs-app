@@ -3,16 +3,7 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Paper,
-  Skeleton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import useOrcaSchema from "../../hooks/useOrcaSchema";
 // import React3dMol from "./React3dMol";
 import { postOrca } from "../../queryfunctions";
@@ -67,8 +58,8 @@ export default function OrcaForm() {
     },
   });
 
-  if (data != null && data.molecular_structure_id != selectedMoleculeID) {
-    setSelectedMoleculeId(data.molecular_structure_id);
+  if (data != null && data.chemical_structure_id != selectedMoleculeID) {
+    setSelectedMoleculeId(data.chemical_structure_id);
   }
 
   return (

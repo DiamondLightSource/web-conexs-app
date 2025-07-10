@@ -1,7 +1,7 @@
 import { Box, Stack } from "@mui/material";
 import QEModelCard from "./QEModelCard";
-import QECrystalViewer from "./QECrystalViewer";
 import QEResultsTabs from "./QEResultsTabs";
+import SimulationStructureViewer from "../SimulationStructureViewer";
 
 export default function QEResults(props: { qeSimulationId: number }) {
   return (
@@ -13,7 +13,7 @@ export default function QEResults(props: { qeSimulationId: number }) {
       <Stack minHeight={200} direction="row" spacing={2}>
         <QEModelCard qeSimulationId={props.qeSimulationId}></QEModelCard>
         <Box flex={1}>
-          <QECrystalViewer qeSimulationid={props.qeSimulationId} />
+          <SimulationStructureViewer simulationId={props.qeSimulationId} />
         </Box>
       </Stack>
       <QEResultsTabs qeSimulationId={props.qeSimulationId} />

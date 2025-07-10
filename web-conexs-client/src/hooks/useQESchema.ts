@@ -1,26 +1,29 @@
 import { useState } from "react";
-import { qeDefaultValues } from "../models";
+import { qeDefaultValues, QESimulationSubmission } from "../models";
 import { useQuery } from "@tanstack/react-query";
 import { getCrystals } from "../queryfunctions";
-import { INIT, Middleware, UPDATE_CORE, UPDATE_DATA } from "@jsonforms/core";
 
 const schemaTemplate = {
   type: "object",
   properties: {
-    crystal_structure_id: {
-      type: "number",
+    chemical_structure_id: {
+      type: "integer",
       oneOf: [
         {
           const: -1,
           title: "No Structures",
-          noOfAtoms: 0,
         },
       ],
     },
     absorbing_atom: {
       title: "Absorbing Atom",
       type: "integer",
-      default: 1,
+      oneOf: [
+        {
+          const: 1,
+          title: "1",
+        },
+      ],
     },
     edge: {
       title: "Absorption Edge",
@@ -58,7 +61,7 @@ const uischema = {
       elements: [
         {
           type: "Control",
-          scope: "#/properties/crystal_structure_id",
+          scope: "#/properties/chemical_structure_id",
         },
         {
           type: "HorizontalLayout",
@@ -104,69 +107,66 @@ export default function useQESchema() {
   const [data, setData] = useState({ ...qeDefaultValues });
   const [schema, setSchema] = useState({ ...schemaTemplate });
   const [hasData, setHasData] = useState(false);
-  const [middleware, setMiddleware] = useState<Middleware | undefined>(
-    undefined
-  );
 
   const query = useQuery({
     queryKey: ["crystals"],
     queryFn: getCrystals,
   });
 
+    function updateData(newData: QESimulationSubmission){
+  
+      if (query.data == undefined) {
+        setData(newData)
+        return
+      }
+  
+      if (data.chemical_structure_id != newData.chemical_structure_id) {
+  
+        const tmpSchema = structuredClone(schema)
+  
+      const s = query.data.find((s) => {return s.structure.id == newData.chemical_structure_id})
+  
+      if (s == undefined) {
+        setData(newData)
+        return
+      }
+
+      const oneOfAtoms = [...Array(s.atom_count).keys()].map((i) => {return {
+          const: i+1,
+          title: String(i+1),
+        }});
+
+
+      tmpSchema.properties.absorbing_atom.oneOf = oneOfAtoms
+  
+      newData.absorbing_atom = 1
+  
+        setSchema(tmpSchema)
+      }
+        setData(newData)
+    }
+
   if (query.data != null && query.data.length != 0 && !hasData) {
     const tmpSchema = { ...schema };
 
     const output = query.data.map((m) => ({
-      const: m.id,
-      title: m.id + " " + m.label,
-      // noOfAtoms: m.structure.split(/\r\n|\r|\n/).length,
+      const: m.structure.id,
+      title: m.structure.id + " " + m.structure.label,
     }));
 
-    // const lookup: { [id: number]: number } = {};
 
-    // query.data.forEach(
-    //   (m) => (lookup[m.id] = m.structure.split(/\r\n|\r|\n/).length)
-    // );
-
-    tmpSchema.properties.crystal_structure_id.oneOf = output;
+    tmpSchema.properties.chemical_structure_id.oneOf = output;
     const tmpData = { ...data };
-    tmpData.crystal_structure_id = output[0].const;
-    setData(tmpData);
-    setSchema(tmpSchema);
+    tmpData.chemical_structure_id = output[0].const;
+    updateData(tmpData);
     setHasData(true);
-
-    const tmp_middleware: Middleware = (state, action, defaultReducer) => {
-      console.log(defaultReducer);
-      const newState = defaultReducer(state, action);
-
-      // const id = newState.data.crystal_structure_id;
-
-      // const structures = newState.schema.properties?.crystal_structure_id.oneOf;
-
-      console.log(output);
-
-      // console.log(id);
-      // console.log(structures);
-      switch (action.type) {
-        case INIT:
-        case UPDATE_CORE:
-        case UPDATE_DATA: {
-          // console.log(newState);
-          return newState;
-        }
-        default:
-          return newState;
-      }
-    };
-    setMiddleware(() => tmp_middleware);
   }
 
   return {
     data,
-    setData,
+    updateData,
     schema,
     uischema,
     hasData,
-    middleware,
   };
 }
