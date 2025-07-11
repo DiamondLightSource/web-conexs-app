@@ -108,7 +108,11 @@ def build_orca_input_file(
 
     jobfile += "\n"
 
-    jobfile += "%maxcore " + str(orca_simulation.memory_per_core) + "\n\n"
+    memory_per_core = int(
+        (orca_simulation.simulation.memory * 0.7) / orca_simulation.simulation.n_cores
+    )
+
+    jobfile += "%maxcore " + str(memory_per_core) + "\n\n"
     jobfile += "%pal nprocs " + str(orca_simulation.simulation.n_cores) + "\n"
     jobfile += "end" + "\n\n"
 
@@ -167,13 +171,22 @@ def build_qe_inputfile(
     number_of_atoms = 0
     number_of_electrons = 0
 
+    abs_el_count = 0
+
     for atom in structure.sites:
         number_of_atoms += 1
         element_set.add(periodic_table_by_z[atom.element_z])
         atomic_number = atom.element_z
+
+        if atomic_number == abs_atom.element_z:
+            abs_el_count += 1
+
         number_of_electrons += atomic_number
 
-    n_type = len(element_set) + 1
+    n_type = len(element_set)
+
+    if abs_el_count > 1:
+        n_type += 1
 
     lattice = Lattice.from_parameters(
         a=structure.lattice.a,
@@ -245,6 +258,9 @@ def build_qe_inputfile(
 
     pp = []
     for el in element_set:
+        if el == abs_el and abs_el_count == 1:
+            continue
+
         jobfile += (
             el
             + " "
@@ -270,7 +286,6 @@ def build_qe_inputfile(
 
     jobfile += "CELL_PARAMETERS {angstrom}\n"
 
-    print(np.array2string(matrix))
     s = io.BytesIO()
 
     np.savetxt(s, matrix)
