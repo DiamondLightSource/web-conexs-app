@@ -5,6 +5,7 @@ interface NavButtonProps {
   label: string;
   path: string;
   icon: JSX.Element;
+  reload: boolean;
 }
 
 export default function NavButton(props: NavButtonProps) {
@@ -18,7 +19,11 @@ export default function NavButton(props: NavButtonProps) {
       tabIndex={-1}
       startIcon={props.icon}
       onClick={() => {
-        navigate(props.path);
+        if (props.reload) {
+          window.location.href = props.path;
+        } else {
+          navigate(props.path);
+        }
       }}
     >
       {props.label}

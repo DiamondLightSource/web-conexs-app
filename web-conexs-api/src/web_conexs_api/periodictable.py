@@ -113,6 +113,8 @@ periodic_table = {
     "Cn": 114,
 }
 
+periodic_table_by_z = {v: k for (k, v) in periodic_table.items()}
+
 elements = {
     "H": {"number": 1, "mass": 1.0078, "pseudopotential": "H.pbe-rrkjus_gipaw.UPF"},
     "He": {"number": 2, "mass": 4.0026, "pseudopotential": "He.pbe-rrkjus_gipaw.UPF"},

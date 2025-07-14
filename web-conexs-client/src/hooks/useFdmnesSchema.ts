@@ -1,25 +1,24 @@
 import { useState } from "react";
-import { fdmnesDefaultValues } from "../models";
+import { fdmnesDefaultValues, FDMNESSimulationInput } from "../models";
 import { periodic_table } from "../periodictable";
 import { useQuery } from "@tanstack/react-query";
 import { getCrystals, getMolecules } from "../queryfunctions";
 
-const structure_template = {
-  type: "number",
-  oneOf: [
-    {
-      const: -1,
-      title: "No Structures",
-    },
-  ],
-};
-
 const schemaTemplate = {
   type: "object",
   properties: {
+    chemical_structure_id: {
+      type: "integer",
+      oneOf: [
+        {
+          const: -1,
+          title: "No Structures",
+        },
+      ],
+    },
     element: {
       title: "Element",
-      type: "number",
+      type: "integer",
       oneOf: periodic_table.map((e) => ({
         const: e.atomic_number,
         title: e.name,
@@ -47,12 +46,12 @@ const schemaTemplate = {
     },
     n_cores: {
       title: "Number of Cores",
-      type: "number",
+      type: "integer",
       default: 4,
     },
     memory: {
       title: "Memory",
-      type: "number",
+      type: "integer",
       default: 3072,
       enum: [1024, 2048, 3072, 4096, 6144, 8192, 12288],
     },
@@ -60,25 +59,7 @@ const schemaTemplate = {
   required: [],
 };
 
-const crystal_schema_properties = {
-  ...schemaTemplate.properties,
-  crystal_structure_id: structure_template,
-};
-const crystal_schema_template = {
-  ...schemaTemplate,
-  properties: crystal_schema_properties,
-};
-
-const molecule_schema_properties = {
-  ...schemaTemplate.properties,
-  molecular_structure_id: structure_template,
-};
-const molecule_schema_template = {
-  ...schemaTemplate,
-  properties: molecule_schema_properties,
-};
-
-const crystal_uischema = {
+const uischema = {
   type: "VerticalLayout",
   elements: [
     {
@@ -87,7 +68,7 @@ const crystal_uischema = {
       elements: [
         {
           type: "Control",
-          scope: "#/properties/crystal_structure_id",
+          scope: "#/properties/chemical_structure_id",
         },
         {
           type: "HorizontalLayout",
@@ -141,17 +122,43 @@ const crystal_uischema = {
   ],
 };
 
-const molecule_uischema = structuredClone(crystal_uischema);
-
-molecule_uischema.elements[0].elements[0].scope =
-  "#/properties/molecular_structure_id";
 
 export function useFDMNESSchema(isCrystal: boolean) {
   const [data, setData] = useState({ ...fdmnesDefaultValues });
-  const [schema, setSchema] = useState(
-    isCrystal ? { ...crystal_schema_template } : { ...molecule_schema_template }
-  );
+  const [schema, setSchema] = useState({ ...schemaTemplate });
   const [hasData, setHasData] = useState(false);
+
+  function updateData(newData: FDMNESSimulationInput){
+
+    if (query.data == undefined) {
+      setData(newData)
+      return
+    }
+
+    if (data.chemical_structure_id != newData.chemical_structure_id) {
+
+      const tmpSchema = structuredClone(schema)
+
+    const s = query.data.find((s) => {return s.structure.id == newData.chemical_structure_id})
+
+    if (s == undefined) {
+      setData(newData)
+      return
+    }
+     const newElements = s.elements.map((el) =>  { const e = periodic_table.at(el-1); return {
+        const: e.atomic_number,
+        title: e.name,
+      };});
+
+    tmpSchema.properties.element.oneOf = newElements;
+
+    newData.element = s.elements[0]
+
+      setSchema(tmpSchema)
+    }
+      setData(newData)
+  }
+
 
   const query = useQuery({
     queryKey: [isCrystal ? "crystals" : "molecules"],
@@ -162,77 +169,30 @@ export function useFDMNESSchema(isCrystal: boolean) {
     const tmpSchema = { ...schema };
 
     const output = query.data.map((m) => ({
-      const: m.id,
-      title: m.id + " " + m.label,
+      const: m.structure.id,
+      title: m.structure.id + " " + m.structure.label,
+      elements: m.elements
     }));
 
-    if ("crystal_structure_id" in tmpSchema.properties) {
-      tmpSchema.properties.crystal_structure_id.oneOf = output;
-    }
+    tmpSchema.properties.chemical_structure_id.oneOf = output;
 
-    if ("molecular_structure_id" in tmpSchema.properties) {
-      tmpSchema.properties.molecular_structure_id.oneOf = output;
-    }
+    tmpSchema.properties.element.oneOf = query.data[0].elements.map((el) =>  { const e = periodic_table.at(el-1); return {
+        const: e.atomic_number,
+        title: e.name,
+      };});
 
     const tmpData = { ...data };
 
-    if (isCrystal) {
-      tmpData.crystal_structure_id = output[0].const;
-    } else {
-      tmpData.molecular_structure_id = output[0].const;
-    }
-
-    setData(tmpData);
-    setSchema(tmpSchema);
+    tmpData.chemical_structure_id = query.data[0].structure.id
+    updateData(tmpData);
     setHasData(true);
   }
 
-  const uischema = isCrystal ? crystal_uischema : molecule_uischema;
-
-  console.log(uischema);
-
   return {
     data,
-    setData,
     schema,
     uischema,
     hasData,
-  };
-}
-
-export function useFDMNESMoleculeSchema() {
-  const [data, setData] = useState({ ...fdmnesDefaultValues });
-  const [schema, setSchema] = useState({ ...molecule_schema_template });
-  const [hasData, setHasData] = useState(false);
-
-  const query = useQuery({
-    queryKey: ["molecules"],
-    queryFn: getMolecules,
-  });
-
-  if (query.data != null && query.data.length != 0 && !hasData) {
-    const tmpSchema = { ...schema };
-
-    const output = query.data.map((m) => ({
-      const: m.id,
-      title: m.id + " " + m.label,
-    }));
-
-    molecule_schema_template.properties.molecular_structure_id.oneOf = output;
-    const tmpData = { ...data };
-    tmpData.molecular_structure_id = output[0].const;
-    setData(tmpData);
-    setSchema(tmpSchema);
-    setHasData(true);
-  }
-
-  const uischema = molecule_uischema;
-
-  return {
-    data,
-    setData,
-    schema,
-    uischema,
-    hasData,
+    updateData,
   };
 }

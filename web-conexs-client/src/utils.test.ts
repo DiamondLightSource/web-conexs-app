@@ -2,18 +2,19 @@ import { expect, test } from "vitest";
 
 import { CrystalInput } from "./models";
 import { crystalInputToCIF, validateMoleculeData } from "./utils";
-import { periodic_table } from "./periodictable";
 
 test("adds 1 + 2 to equal 3", () => {
   const input: CrystalInput = {
-    alpha: 90,
-    beta: 90,
-    gamma: 90,
-    a: 1,
-    b: 1,
-    c: 1,
+    lattice: {
+      alpha: 90,
+      beta: 90,
+      gamma: 90,
+      a: 1,
+      b: 1,
+      c: 1,
+    },
     label: "test",
-    structure: "Zn 0.0 0.0 0.0",
+    sites: [{ element_z: 30, x: 0, y: 0, z: 0, index: 0 }],
   };
 
   expect(crystalInputToCIF(input)).toContain("loop_");

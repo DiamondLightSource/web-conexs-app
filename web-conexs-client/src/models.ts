@@ -1,20 +1,19 @@
+export interface Site {
+  element_z: number;
+  x: number;
+  y: number;
+  z: number;
+  index: number;
+}
+
 export interface MoleculeInput {
   label: string;
-  structure: string;
+  sites: Site[];
 }
 
 export interface Person {
   identifier: string;
   accepted_orca_eula: boolean;
-}
-
-export interface CrystalInput extends MoleculeInput {
-  a: number;
-  b: number;
-  c: number;
-  alpha: number;
-  beta: number;
-  gamma: number;
 }
 
 export interface LatticeParameter {
@@ -26,12 +25,29 @@ export interface LatticeParameter {
   gamma: number | null;
 }
 
+export interface CrystalInput extends MoleculeInput {
+  lattice: LatticeParameter;
+}
+
 export interface Molecule extends MoleculeInput {
   id: number;
 }
 
 export interface Crystal extends CrystalInput {
   id: number;
+}
+
+export interface Structure {
+  label: string;
+  person_id: number;
+  id: number;
+  lattice_id: number;
+}
+
+export interface StructureWithMetadata {
+  structure: Structure;
+  atom_count: number;
+  elements: number[];
 }
 
 export interface SimulationType {
@@ -49,6 +65,7 @@ export interface XASData {
 export interface Simulation {
   id: number;
   person_id: number;
+  chemical_structure_id: number;
   working_directory: string;
   message: string | null;
   status: string;
@@ -67,10 +84,14 @@ export interface SimulationPage {
   next_page: string | null;
 }
 
-export interface OrcaSimulationInput {
+export interface SimulationInputBase {
+  n_cores: number,
+  chemical_structure_id: number,
+  memory: number,
+}
+
+export interface OrcaSimulationInput extends SimulationInputBase {
   calculation_type: string;
-  molecular_structure_id: number;
-  memory_per_core: number;
   functional: string;
   basis_set: string;
   charge: number;
@@ -86,14 +107,17 @@ export interface OrcaSimulation extends OrcaSimulationInput {
   simulation: Simulation;
 }
 
-export interface OrcaSimulationWithResource extends OrcaSimulationInput {
-  n_cores: number;
+export interface QESimulationSubmission extends QESimulationInput, SimulationInputBase {
+
 }
 
-export const orcaDefaultValues: OrcaSimulationWithResource = {
+// export interface OrcaSimulationWithResource extends OrcaSimulationInput {
+//   n_cores: number;
+// }
+
+export const orcaDefaultValues: OrcaSimulationInput = {
   calculation_type: "xas",
-  molecular_structure_id: -1,
-  memory_per_core: 1024,
+  memory: 1024,
   functional: "B3LYP RIJCOSX",
   basis_set: "def2-SVP",
   charge: 0,
@@ -104,50 +128,44 @@ export const orcaDefaultValues: OrcaSimulationWithResource = {
   orb_win_1_start: 0,
   orb_win_1_stop: 0,
   n_cores: 4,
+  chemical_structure_id: -1,
 };
 
-export interface FDMNESSimulationInput {
-  crystal_structure_id: number | null;
-  molecular_structure_id: number | null;
+export interface FDMNESSimulationInput extends SimulationInputBase {
   element: number;
   edge: string;
   greens_approach: boolean;
-  n_cores: number;
-  memory: number;
 }
 
 export interface FDMNESSimulation extends FDMNESSimulationInput {
   simulation: Simulation;
 }
 
+
 export const fdmnesDefaultValues: FDMNESSimulationInput = {
-  crystal_structure_id: null,
-  molecular_structure_id: null,
   memory: 1024,
   element: 1,
   edge: "k",
   greens_approach: false,
   n_cores: 4,
+  chemical_structure_id: -1,
 };
 
 export interface QESimulationInput {
-  crystal_structure_id: number;
   absorbing_atom: number;
   edge: string;
   conductivity: string;
-  n_cores: number;
-  memory: number;
 }
 
 export interface QESimulation extends QESimulationInput {
   simulation: Simulation;
 }
 
-export const qeDefaultValues: QESimulationInput = {
-  crystal_structure_id: -1,
-  memory: 1024,
+export const qeDefaultValues: QESimulationSubmission = {
   absorbing_atom: 1,
   edge: "k",
   conductivity: "metallic",
   n_cores: 4,
+  memory: 1024,
+  chemical_structure_id: -1,
 };

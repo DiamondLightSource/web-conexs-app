@@ -3,27 +3,18 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Paper,
-  Skeleton,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import useOrcaSchema from "../../hooks/useOrcaSchema";
 // import React3dMol from "./React3dMol";
 import { postOrca } from "../../queryfunctions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import MoleculeViewer from "../molecules/MoleculeViewer";
 
 import CompactGroupRenderer, {
   CompactGroupTester,
 } from "../renderers/CompactGroup";
+import StructureViewer from "../StructureViewer";
 
 const renderers = [
   ...materialRenderers,
@@ -67,8 +58,8 @@ export default function OrcaForm() {
     },
   });
 
-  if (data != null && data.molecular_structure_id != selectedMoleculeID) {
-    setSelectedMoleculeId(data.molecular_structure_id);
+  if (data != null && data.chemical_structure_id != selectedMoleculeID) {
+    setSelectedMoleculeId(data.chemical_structure_id);
   }
 
   return (
@@ -109,7 +100,7 @@ export default function OrcaForm() {
           </Stack>
           <Stack flex={1}>
             {selectedMoleculeID != null && (
-              <MoleculeViewer id={selectedMoleculeID} />
+              <StructureViewer id={selectedMoleculeID} />
             )}
           </Stack>
           <Paper

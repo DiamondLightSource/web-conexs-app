@@ -1,16 +1,23 @@
 import { Stack, TextField } from "@mui/material";
 
-import { MoleculeInput } from "../../models";
+import { inputToXYZNoHeader } from "../../utils";
+import { skipToken, useQuery } from "@tanstack/react-query";
+import { getMolecule } from "../../queryfunctions";
 
-export default function XYZFileViewer(props: {
-  molecule: MoleculeInput | null;
-}) {
+export default function XYZFileViewer(props: { id: number | undefined }) {
+  const id = props.id;
+
+  const query = useQuery({
+    queryKey: ["molecule", props.id],
+    queryFn: id ? () => getMolecule(id) : skipToken,
+  });
+
   return (
     <Stack spacing={3} minWidth={"450px"}>
       <TextField
         id="Label"
         label="Label"
-        value={props.molecule == null ? " " : props.molecule.label}
+        value={query.data == null ? " " : query.data.label}
       />
       <TextField
         sx={{ width: "100%" }}
@@ -18,7 +25,7 @@ export default function XYZFileViewer(props: {
         label="Atomic Coordinates (Angstroms)"
         multiline
         rows={12}
-        value={props.molecule != null ? props.molecule.structure : ""}
+        value={query.data != null ? inputToXYZNoHeader(query.data) : ""}
       />
     </Stack>
   );

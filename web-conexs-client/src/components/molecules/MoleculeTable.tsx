@@ -16,7 +16,8 @@ import { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
 import { useState } from "react";
 
-import { Molecule } from "../../models";
+import { StructureWithMetadata } from "../../models";
+import { periodic_table } from "../../periodictable";
 
 const nResults = 7;
 
@@ -43,17 +44,26 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function MoleculeMetadata(props: {
   key: number;
-  molecule: Molecule | null;
-  selected: Molecule | undefined;
+  molecule: StructureWithMetadata | null;
+  selected: StructureWithMetadata | undefined;
   selectedRow: number;
-  clickMolecule: (molecule: Molecule | null) => void;
+  clickMolecule: (molecule: StructureWithMetadata | null) => void;
   setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
 }): JSX.Element {
   const className = props.molecule === props.selected ? "activeclicked" : "";
 
+  const elementString: string = props.molecule
+    ? props.molecule.elements
+        .map((e) => {
+          return periodic_table[e - 1].symbol;
+        })
+        .join(", ")
+    : "";
+
   return (
     <StyledTableRow
       onClick={() => {
+        console.log("click");
         props.setSelectedRow(props.key);
         props.clickMolecule(props.molecule);
       }}
@@ -64,37 +74,33 @@ function MoleculeMetadata(props: {
       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
     >
       <StyledTableCell align="left">
-        {props.molecule?.id ?? "\xa0"}
+        {props.molecule?.structure.id ?? "\xa0"}
       </StyledTableCell>
       <StyledTableCell align="center">
-        {props.molecule?.label ?? ""}
+        {props.molecule?.structure.label ?? ""}
       </StyledTableCell>
+      <StyledTableCell align="center">
+        {props.molecule?.atom_count ?? ""}
+      </StyledTableCell>
+      <StyledTableCell align="center">{elementString}</StyledTableCell>
     </StyledTableRow>
   );
 }
 
 export default function MoleculeTable(props: {
-  molecules: Molecule[];
-  selectedMolecule: Molecule | undefined;
-  setSelectedMolecule: (x: Molecule | null) => void;
+  molecules: StructureWithMetadata[];
+  selectedMolecule: StructureWithMetadata | undefined;
+  setSelectedMolecule: (x: StructureWithMetadata | null) => void;
   setCurrent: (cursor: string | null) => void;
   prevNext: string[] | null;
 }) {
   const [selectedRow, setSelectedRow] = useState(-1);
 
-  const nextPage = () => {
-    props.setCurrent(props.prevNext == null ? null : props.prevNext[1]);
-  };
-
-  const prevPage = () => {
-    props.setCurrent(props.prevNext == null ? null : props.prevNext[0]);
-  };
-
-  const clickMolecule = (molecule: Molecule | null) => {
+  const clickMolecule = (molecule: StructureWithMetadata | null) => {
     props.setSelectedMolecule(molecule);
   };
 
-  const moleculesList: (Molecule | null)[] = [...props.molecules];
+  const moleculesList: (StructureWithMetadata | null)[] = [...props.molecules];
 
   if (props.molecules.length < nResults) {
     while (moleculesList.length < nResults) {
@@ -110,6 +116,8 @@ export default function MoleculeTable(props: {
             <TableRow>
               <TableCell align="left">ID</TableCell>
               <TableCell align="center">Label</TableCell>
+              <TableCell align="center">No. Atoms</TableCell>
+              <TableCell align="center">Elements</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -126,22 +134,6 @@ export default function MoleculeTable(props: {
           </TableBody>
         </Table>
       </TableContainer>
-      <Stack direction="row" spacing={2}>
-        <Button
-          variant="contained"
-          disabled={props.prevNext == null || props.prevNext[0] == null}
-          onClick={prevPage}
-        >
-          &lt;
-        </Button>
-        <Button
-          variant="contained"
-          disabled={props.prevNext == null || props.prevNext[1] == null}
-          onClick={nextPage}
-        >
-          &gt;
-        </Button>
-      </Stack>
     </Box>
   );
 }

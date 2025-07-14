@@ -1,10 +1,12 @@
 import io
-import re
+from typing import List
 
 import numpy as np
-from pymatgen.core import Lattice, Molecule, Structure
+from pymatgen.core import Lattice, Structure
 
 from .models.models import (
+    ChemicalSite,
+    ChemicalStructure,
     ConductivityType,
     CrystalStructure,
     FdmnesSimulation,
@@ -13,7 +15,23 @@ from .models.models import (
     OrcaSimulation,
     QESimulation,
 )
-from .periodictable import elements, periodic_table
+from .models.models import Lattice as CrystalLattice
+from .periodictable import elements, periodic_table_by_z
+
+
+def sites_to_string(sites: List[ChemicalSite], use_symbol=True, absorbing_index=None):
+    structure_string = ""
+    sorted_sites = sorted(sites, key=lambda site: site.index)
+
+    for idx, s in enumerate(sorted_sites, start=1):
+        site_string = (
+            periodic_table_by_z[s.element_z] if use_symbol else str(s.element_z)
+        )
+        if absorbing_index is not None and absorbing_index == idx:
+            site_string += "*"
+        structure_string += f"{site_string} {s.x} {s.y} {s.z}\n"
+
+    return structure_string
 
 
 def build_fdmnes_inputfile(
@@ -50,14 +68,14 @@ def build_fdmnes_inputfile(
 
     jobfile += "Crystal\n" if not crystalIsMolecule else "Molecule\n"
 
-    jobfile += f"{structure.a} {structure.b} {structure.c}"
-    jobfile += f" {structure.alpha} {structure.beta} {structure.gamma}\n"
+    jobfile += f"{structure.lattice.a} {structure.lattice.b} {structure.lattice.c}"
+    jobfile += (
+        f" {structure.lattice.alpha}"
+        + f" {structure.lattice.beta}"
+        + f" {structure.lattice.gamma}\n"
+    )
 
-    keys = (re.escape(k) for k in periodic_table.keys())
-    pattern = re.compile(r"\b(" + "|".join(keys) + r")\b")
-
-    result = pattern.sub(lambda x: str(periodic_table[x.group()]), structure.structure)
-    jobfile += result
+    jobfile += sites_to_string(structure.sites, use_symbol=False)
 
     jobfile += "\n\nConvolution\n\nEnd"
 
@@ -90,7 +108,11 @@ def build_orca_input_file(
 
     jobfile += "\n"
 
-    jobfile += "%maxcore " + str(orca_simulation.memory_per_core) + "\n\n"
+    memory_per_core = int(
+        (orca_simulation.simulation.memory * 0.7) / orca_simulation.simulation.n_cores
+    )
+
+    jobfile += "%maxcore " + str(memory_per_core) + "\n\n"
     jobfile += "%pal nprocs " + str(orca_simulation.simulation.n_cores) + "\n"
     jobfile += "end" + "\n\n"
 
@@ -133,38 +155,46 @@ def build_orca_input_file(
         + "\n"
     )
 
-    jobfile += structure.structure
+    jobfile += sites_to_string(structure.sites)
     jobfile += "\nend"
 
     return jobfile
 
 
-def build_qe_inputfile(qe_simulation: QESimulation, structure: CrystalStructure) -> str:
-    atoms = structure.structure.splitlines()
-
-    abs_atom = atoms[qe_simulation.absorbing_atom - 1]
-    abs_el = abs_atom.split()[0]
+def build_qe_inputfile(
+    qe_simulation: QESimulation, structure: ChemicalStructure
+) -> str:
+    abs_atom = structure.sites[qe_simulation.absorbing_atom - 1]
+    abs_el = periodic_table_by_z[abs_atom.element_z]
 
     element_set = set()
     number_of_atoms = 0
     number_of_electrons = 0
 
-    for atom in atoms:
+    abs_el_count = 0
+
+    for atom in structure.sites:
         number_of_atoms += 1
-        el = atom.split()[0]
-        element_set.add(el)
-        atomic_number = periodic_table[el]
+        element_set.add(periodic_table_by_z[atom.element_z])
+        atomic_number = atom.element_z
+
+        if atomic_number == abs_atom.element_z:
+            abs_el_count += 1
+
         number_of_electrons += atomic_number
 
-    n_type = len(element_set) + 1
+    n_type = len(element_set)
+
+    if abs_el_count > 1:
+        n_type += 1
 
     lattice = Lattice.from_parameters(
-        a=structure.a,
-        b=structure.b,
-        c=structure.c,
-        alpha=structure.alpha,
-        beta=structure.beta,
-        gamma=structure.gamma,
+        a=structure.lattice.a,
+        b=structure.lattice.b,
+        c=structure.lattice.c,
+        alpha=structure.lattice.alpha,
+        beta=structure.lattice.beta,
+        gamma=structure.lattice.gamma,
     )
 
     matrix = lattice.matrix
@@ -228,6 +258,9 @@ def build_qe_inputfile(qe_simulation: QESimulation, structure: CrystalStructure)
 
     pp = []
     for el in element_set:
+        if el == abs_el and abs_el_count == 1:
+            continue
+
         jobfile += (
             el
             + " "
@@ -242,15 +275,9 @@ def build_qe_inputfile(qe_simulation: QESimulation, structure: CrystalStructure)
 
     jobfile += "ATOMIC_POSITIONS {crystal} \n"
 
-    count = 0
-    for atom in atoms:
-        if count + 1 == qe_simulation.absorbing_atom:
-            segments = atom.split(None, 1)
-            jobfile += segments[0] + "* " + segments[1] + "\n"
-        else:
-            jobfile += atom + "\n"
-
-        count += 1
+    jobfile += sites_to_string(
+        structure.sites, absorbing_index=qe_simulation.absorbing_atom
+    )
 
     jobfile += "\n\n"
     jobfile += "K_POINTS automatic\n"
@@ -259,7 +286,6 @@ def build_qe_inputfile(qe_simulation: QESimulation, structure: CrystalStructure)
 
     jobfile += "CELL_PARAMETERS {angstrom}\n"
 
-    print(np.array2string(matrix))
     s = io.BytesIO()
 
     np.savetxt(s, matrix)
@@ -327,13 +353,9 @@ def build_qe_xspectra_input(edge, filecore, dir):
 
 def fdmnes_molecule_to_crystal(
     moleculeStructure: MolecularStructure,
-) -> CrystalStructure:
-    nlines = moleculeStructure.structure.count("\n") + 1
-    xyz = f"{nlines}\n\n" + moleculeStructure.structure
-
-    molecule = Molecule.from_str(xyz, fmt="xyz")
-
-    coords = molecule.cart_coords
+) -> ChemicalStructure:
+    coords = [[s.x, s.y, s.z] for s in moleculeStructure.sites]
+    coords = np.asarray(coords)
 
     abs_max = np.abs(coords).max(axis=0)
     # if only zero coord set cell dim to 1
@@ -341,31 +363,30 @@ def fdmnes_molecule_to_crystal(
 
     norm_coords = coords / abs_max
 
-    structure_string = ""
+    new_sites: List[ChemicalSite] = []
 
-    sites = molecule.sites
-
-    for i in range(len(sites)):
-        structure_string += (
-            sites[i].species_string
-            + " "
-            + str(norm_coords[i, 0])
-            + " "
-            + str(norm_coords[i, 1])
-            + " "
-            + str(norm_coords[i, 2])
-            + "\n"
+    for i in range(norm_coords.shape[0]):
+        new_sites.append(
+            ChemicalSite(
+                element_z=moleculeStructure.sites[i].element_z,
+                x=norm_coords[i, 0],
+                y=norm_coords[i, 1],
+                z=norm_coords[i, 2],
+                index=i,
+            )
         )
 
-    crystal: CrystalStructure = CrystalStructure(
+    crystal: ChemicalStructure = ChemicalStructure(
         label=moleculeStructure.label,
-        a=abs_max[0],
-        b=abs_max[1],
-        c=abs_max[2],
-        alpha=90,
-        beta=90,
-        gamma=90,
-        structure=structure_string,
+        lattice=CrystalLattice(
+            a=abs_max[0],
+            b=abs_max[1],
+            c=abs_max[2],
+            alpha=90,
+            beta=90,
+            gamma=90,
+        ),
+        sites=new_sites,
     )
 
     return crystal

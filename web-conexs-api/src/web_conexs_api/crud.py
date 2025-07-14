@@ -6,7 +6,7 @@ import numpy as np
 from fastapi import HTTPException
 from fastapi_pagination.cursor import CursorPage
 from fastapi_pagination.ext.sqlalchemy import paginate
-from sqlmodel import Session, and_, select
+from sqlmodel import Session, and_, func, select
 
 from .jobfilebuilders import (
     build_fdmnes_inputfile,
@@ -15,39 +15,82 @@ from .jobfilebuilders import (
     fdmnes_molecule_to_crystal,
 )
 from .models.models import (
+    ChemicalSite,
+    ChemicalStructure,
     CrystalStructure,
     CrystalStructureInput,
     FdmnesSimulation,
-    FdmnesSimulationInput,
+    FDMNESSimulationSubmission,
     MolecularStructure,
     MolecularStructureInput,
     OrcaSimulation,
-    OrcaSimulationInput,
+    OrcaSimulationSubmission,
     Person,
     PersonInput,
     QESimulation,
-    QESimulationInput,
+    QESimulationSubmission,
     Simulation,
     SimulationStatus,
+    StructureType,
+    StructureWithMetadata,
 )
 from .utils import create_results_zip
 
+# def get_crystal_structures(session, user_id) -> List[CrystalStructure]:
+#     statement = (
+#         select(ChemicalStructure)
+#         .join(Person)
+#         .where(
+#             and_(Person.identifier == user_id,
+#                  ChemicalStructure.lattice_id.is_not(None)),
+#         )
+#     )
 
-def get_crystal_structures(session, user_id) -> List[CrystalStructure]:
+#     results = session.exec(statement)
+
+#     output = results.all()
+
+#     print(output[0].lattice)
+
+#     return output
+
+
+def get_crystal_structures(session, user_id) -> List[StructureWithMetadata]:
     statement = (
-        select(CrystalStructure).join(Person).where(Person.identifier == user_id)
+        select(
+            ChemicalStructure,
+            func.count(ChemicalSite.id),
+            func.array_agg(func.distinct(ChemicalSite.element_z)),
+        )
+        .join(ChemicalSite)
+        .join(Person)
+        .where(
+            and_(
+                Person.identifier == user_id, ChemicalStructure.lattice_id.is_not(None)
+            ),
+        )
+        .group_by(ChemicalStructure.id)
     )
 
-    results = session.exec(statement)
+    structure = session.exec(statement).all()
+    # t = TypeAdapter(List[StructureWithMetadata])
 
-    return results.all()
+    output = [
+        {"structure": s[0], "atom_count": s[1], "elements": s[2]} for s in structure
+    ]
+    return output
 
 
 def get_crystal_structure(session, id, user_id) -> CrystalStructure:
     statement = (
-        select(CrystalStructure)
+        select(ChemicalStructure)
         .join(Person)
-        .where(and_(Person.identifier == user_id, CrystalStructure.id == id))
+        .where(
+            and_(
+                ChemicalStructure.lattice_id.is_not(None),
+                and_(Person.identifier == user_id, ChemicalStructure.id == id),
+            )
+        )
     )
 
     structure = session.exec(statement).first()
@@ -78,31 +121,105 @@ def upload_crystal_structure(
 ) -> CrystalStructure:
     person = get_or_create_person(session, user_id)
 
-    crystal = CrystalStructure.model_validate(structure)
-    crystal.person_id = person.id
+    chem_struct = ChemicalStructure.model_validate(structure)
 
-    session.add(crystal)
+    chem_struct.person_id = person.id
+
+    session.add(chem_struct)
     session.commit()
-    session.refresh(crystal)
+    session.refresh(chem_struct)
 
-    return crystal
+    return chem_struct
 
 
-def get_molecular_structures(session, user_id) -> List[MolecularStructure]:
+def get_molecular_structures(session, user_id) -> List[StructureWithMetadata]:
     statement = (
-        select(MolecularStructure).join(Person).where(Person.identifier == user_id)
+        select(
+            ChemicalStructure,
+            func.count(ChemicalSite.id),
+            func.array_agg(func.distinct(ChemicalSite.element_z)),
+        )
+        .join(ChemicalSite)
+        .join(Person)
+        .where(
+            and_(Person.identifier == user_id, ChemicalStructure.lattice_id.is_(None)),
+        )
+        .group_by(ChemicalStructure.id)
     )
 
-    results = session.exec(statement)
+    structure = session.exec(statement).all()
 
-    return results.all()
+    output = [
+        {"structure": s[0], "atom_count": s[1], "elements": s[2]} for s in structure
+    ]
+    return output
+
+
+def get_structures(
+    session, user_id, structure_type: StructureType
+) -> List[StructureWithMetadata]:
+    statement = (
+        select(
+            ChemicalStructure,
+            func.count(ChemicalSite.id),
+            func.array_agg(func.distinct(ChemicalSite.element_z)),
+        )
+        .join(ChemicalSite)
+        .join(Person)
+    )
+
+    if structure_type is None:
+        statement = statement.where(
+            Person.identifier == user_id,
+        )
+    elif structure_type is StructureType.molecule:
+        statement = statement.where(
+            and_(Person.identifier == user_id, ChemicalStructure.lattice_id.is_(None)),
+        )
+    elif structure_type is StructureType.crystal:
+        statement = statement.where(
+            and_(
+                Person.identifier == user_id, ChemicalStructure.lattice_id.is_not(None)
+            ),
+        )
+
+    statement = statement.group_by(ChemicalStructure.id)
+
+    structure = session.exec(statement).all()
+
+    output = [
+        {"structure": s[0], "atom_count": s[1], "elements": s[2]} for s in structure
+    ]
+    return output
 
 
 def get_molecular_structure(session, id, user_id) -> MolecularStructure:
     statement = (
-        select(MolecularStructure)
+        select(ChemicalStructure)
         .join(Person)
-        .where(and_(Person.identifier == user_id, MolecularStructure.id == id))
+        .where(
+            and_(
+                ChemicalStructure.lattice_id.is_(None),
+                and_(Person.identifier == user_id, ChemicalStructure.id == id),
+            )
+        )
+    )
+
+    structure = session.exec(statement).first()
+
+    if structure:
+        return structure
+    else:
+        raise HTTPException(status_code=404, detail=f"No structure with id={id}")
+
+
+def get_structure(session, id, user_id) -> CrystalStructure:
+    statement = (
+        select(ChemicalStructure)
+        .join(Person)
+        .where(
+            and_(Person.identifier == user_id, ChemicalStructure.id == id),
+        )
     )
 
     structure = session.exec(statement).first()
@@ -118,14 +235,33 @@ def upload_molecular_structure(
 ) -> MolecularStructure:
     person = get_or_create_person(session, user_id)
 
-    molecule = MolecularStructure.model_validate(structure)
-    molecule.person_id = person.id
+    chem_struct = ChemicalStructure.model_validate(structure)
 
-    session.add(molecule)
+    chem_struct.person_id = person.id
+
+    session.add(chem_struct)
     session.commit()
-    session.refresh(molecule)
+    session.refresh(chem_struct)
 
-    return molecule
+    return chem_struct
+
+
+def upload_structure(
+    structure: MolecularStructureInput | CrystalStructureInput, session, user_id
+) -> MolecularStructure | CrystalStructure:
+    person = get_or_create_person(session, user_id)
+
+    print(structure)
+
+    chem_struct = ChemicalStructure.model_validate(structure)
+
+    chem_struct.person_id = person.id
+
+    session.add(chem_struct)
+    session.commit()
+    session.refresh(chem_struct)
+
+    return chem_struct
 
 
 def get_simulations(session, user_id) -> List[Simulation]:
@@ -191,7 +327,7 @@ def get_orca_simulation(session, id, user_id) -> OrcaSimulation:
 
 
 def submit_orca_simulation(
-    orca_input: OrcaSimulationInput, session: Session, user_id
+    orca_input: OrcaSimulationSubmission, session: Session, user_id
 ) -> OrcaSimulation:
     person = get_or_create_person(session, user_id)
 
@@ -204,6 +340,7 @@ def submit_orca_simulation(
         "person_id": person.id,
         "simulation_type_id": 1,
         "request_date": datetime.datetime.now(),
+        "chemical_structure_id": orca_input.chemical_structure_id,
     }
 
     simulation = Simulation.model_validate(smodel)
@@ -218,7 +355,7 @@ def submit_orca_simulation(
 
 
 def submit_fdmnes_simulation(
-    fdmnes_input: FdmnesSimulationInput, session: Session, user_id: str
+    fdmnes_input: FDMNESSimulationSubmission, session: Session, user_id: str
 ) -> FdmnesSimulation:
     person = get_or_create_person(session, user_id)
 
@@ -226,6 +363,7 @@ def submit_fdmnes_simulation(
         "person_id": person.id,
         "simulation_type_id": 2,
         "request_date": datetime.datetime.now(),
+        "chemical_structure_id": fdmnes_input.chemical_structure_id,
     }
 
     simulation = Simulation.model_validate(smodel)
@@ -287,6 +425,9 @@ def get_fdmnes_output(session, id, user_id):
 
     wd = fdmnes_simulation.simulation.working_directory
 
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+
     result_file = wd + "/fdmnes_result.txt"
 
     with open(result_file) as fh:
@@ -299,6 +440,9 @@ def get_orca_output(session, id, user_id):
     orca_simulation = get_orca_simulation(session, id, user_id)
 
     wd = orca_simulation.simulation.working_directory
+
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
 
     result_file = wd + "/orca_result.txt"
 
@@ -313,6 +457,9 @@ def get_orca_xyz(session, id, user_id):
 
     wd = orca_simulation.simulation.working_directory
 
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+
     result_file = wd + "/job.xyz"
 
     with open(result_file) as fh:
@@ -325,6 +472,9 @@ def get_fdmnes_xas(session, id, user_id):
     fdmnes_simulation = get_fdmnes_simulation(session, id, user_id)
 
     wd = fdmnes_simulation.simulation.working_directory
+
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
 
     result_file = wd + "/result_conv.txt"
 
@@ -398,7 +548,7 @@ def get_user(session, user_id):
 
 
 def submit_qe_simulation(
-    qe_input: QESimulationInput, session: Session, user_id: str
+    qe_input: QESimulationSubmission, session: Session, user_id: str
 ) -> QESimulation:
     person = get_or_create_person(session, user_id)
 
@@ -406,6 +556,7 @@ def submit_qe_simulation(
         "person_id": person.id,
         "simulation_type_id": 3,
         "request_date": datetime.datetime.now(),
+        "chemical_structure_id": qe_input.chemical_structure_id,
     }
 
     simulation = Simulation.model_validate(smodel)
@@ -451,6 +602,9 @@ def get_qe_output(session, id, user_id):
 
     wd = qe_simulation.simulation.working_directory
 
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+
     result_file = wd + "/result.pwo"
 
     with open(result_file) as fh:
@@ -463,6 +617,9 @@ def get_qe_xas(session, id, user_id):
     qe_simulation = get_qe_simulation(session, id, user_id)
 
     wd = qe_simulation.simulation.working_directory
+
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
 
     result_file = wd + "/xanes.dat"
 

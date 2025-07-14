@@ -7,23 +7,26 @@ import { Box, Button, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postQe } from "../../queryfunctions";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import CrystalViewer from "../crystals/CrystalViewer";
 
 import CompactGroupRenderer, {
   CompactGroupTester,
 } from "../renderers/CompactGroup";
-import useQESchema from "../../hooks/useQESchema";
+import StructureViewer from "../StructureViewer";
+import { QESimulationSubmission } from "../../models";
+import { JsonSchema, UISchemaElement } from "@jsonforms/core";
 
 const renderers = [
   ...materialRenderers,
   { tester: CompactGroupTester, renderer: CompactGroupRenderer },
 ];
 
-export default function QEForm() {
-  const [selectedCrystalID, setSelectedCrystalId] = useState<null | number>(
-    null
-  );
+export default function QEForm(props: {
+  data: QESimulationSubmission;
+  schema: JsonSchema;
+  uischema: UISchemaElement;
+  setData: (newData: QESimulationSubmission) => void;
+  hasData: boolean;
+}) {
   const navigate = useNavigate();
   const mutation = useMutation({
     mutationFn: postQe,
@@ -47,12 +50,6 @@ export default function QEForm() {
     window.alert("Error Submitting Job!");
   };
 
-  const { data, setData, schema, uischema, hasData } = useQESchema();
-
-  if (data != null && data.crystal_structure_id != selectedCrystalID) {
-    setSelectedCrystalId(data.crystal_structure_id);
-  }
-
   function getPlacemarker(noCrystals: boolean) {
     if (!noCrystals) {
       return <Skeleton width={"100%"} height={"100%"} />;
@@ -69,24 +66,23 @@ export default function QEForm() {
       margin="5px"
       spacing="5px"
     >
-      {hasData && data != null ? (
+      {props.hasData && props.data != null ? (
         <Stack direction="row" flex={1} spacing={"5px"}>
           <Stack flex={1}>
             <JsonForms
-              schema={schema}
-              data={data}
+              schema={props.schema}
+              data={props.data}
               renderers={renderers}
-              uischema={uischema}
+              uischema={props.uischema}
               cells={materialCells}
               onChange={({ data }) => {
-                setData(data);
-                setSelectedCrystalId(data.crystal_structure_id);
+                props.setData(data);
               }}
             />
             <Button
               variant="contained"
               onClick={() => {
-                const localData = { ...data };
+                const localData = { ...props.data };
                 mutation.mutate(localData);
               }}
             >
@@ -94,9 +90,7 @@ export default function QEForm() {
             </Button>
           </Stack>
           <Stack flex={1}>
-            {selectedCrystalID != null && (
-              <CrystalViewer id={selectedCrystalID} />
-            )}
+            <StructureViewer id={props.data.chemical_structure_id} />
           </Stack>
           <Paper
             flex={1}
@@ -147,7 +141,7 @@ export default function QEForm() {
           </Paper>
         </Stack>
       ) : (
-        getPlacemarker(hasData && data == null)
+        getPlacemarker(props.hasData && props.data == null)
       )}
     </Stack>
   );

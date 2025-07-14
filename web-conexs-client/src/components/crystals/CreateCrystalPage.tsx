@@ -9,14 +9,21 @@ import CrystalEditor from "./CrystalEditor";
 import MainPanel from "../MainPanel";
 
 const templateCrystal: CrystalInput = {
-  a: 4.1043564,
-  b: 4.1043564,
-  c: 4.1043564,
-  alpha: 90,
-  beta: 90,
-  gamma: 90,
+  lattice: {
+    a: 4.1043564,
+    b: 4.1043564,
+    c: 4.1043564,
+    alpha: 90,
+    beta: 90,
+    gamma: 90,
+  },
   label: "test",
-  structure: "Ag 0.0 0.0 0.0\nAg 0.5 0.5 0.0\nAg 0.5 0.0 0.5\nAg 0.0 0.5 0.5",
+  sites: [
+    { element_z: 47, x: 0.0, y: 0.0, z: 0.0, index: 1 },
+    { element_z: 47, x: 0.5, y: 0.5, z: 0.0, index: 2 },
+    { element_z: 47, x: 0.5, y: 0.0, z: 0.5, index: 3 },
+    { element_z: 47, x: 0.0, y: 0.5, z: 0.5, index: 4 },
+  ],
 };
 
 export default function CreateCystalPage() {
@@ -35,6 +42,9 @@ export default function CreateCystalPage() {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["crystals"] });
       callback();
+    },
+    onError: () => {
+      window.alert("Error submitting structure!");
     },
   });
 

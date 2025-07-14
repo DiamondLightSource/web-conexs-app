@@ -1,12 +1,4 @@
-import {
-  Box,
-  Typography,
-  Stack,
-  Paper,
-  Toolbar,
-  useTheme,
-} from "@mui/material";
-import React3dMol from "../React3dMol";
+import { Typography, Stack, Toolbar, useTheme } from "@mui/material";
 import MoleculeTable from "./MoleculeTable";
 import { useState } from "react";
 import XYZFileViewer from "./XYZFileViewer";
@@ -14,10 +6,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getMolecules } from "../../queryfunctions";
 import MainPanel from "../MainPanel";
 import NavButton from "../NavButton";
-import MoleculeIcon from "../icons/MoleculeIcon";
 import MoleculePlusIcon from "../icons/MoleculePlusIcon";
 import OrcaIcon from "../icons/OrcaIcon";
 import FDMNESIcon from "../icons/FDMNESIcon";
+import StructureViewer from "../StructureViewer";
 
 export default function MoleculePage() {
   const query = useQuery({
@@ -31,7 +23,9 @@ export default function MoleculePage() {
   let finalMolecule = null;
 
   if (query.data && query.data.length != 0 && selectedMoleculeId) {
-    finalMolecule = query.data.find((d) => d.id == selectedMoleculeId);
+    finalMolecule = query.data.find(
+      (d) => d.structure.id == selectedMoleculeId
+    );
     if (finalMolecule == undefined) {
       finalMolecule = null;
     }
@@ -56,20 +50,17 @@ export default function MoleculePage() {
           <MoleculeTable
             molecules={query.data ? query.data : []}
             selectedMolecule={undefined}
-            setSelectedMolecule={(data) => setSelectedMoleculeId(data?.id)}
+            setSelectedMolecule={(data) => {
+              console.log(data?.structure.id);
+              setSelectedMoleculeId(data?.structure.id);
+            }}
             setCurrent={() => {}}
             prevNext={null}
           ></MoleculeTable>
           <Stack spacing={"2px"}>
-            <XYZFileViewer molecule={finalMolecule} />
+            <XYZFileViewer id={finalMolecule?.structure.id} />
           </Stack>
-
-          <React3dMol
-            moleculedata={finalMolecule}
-            color="#3465A4"
-            style="Stick"
-            orbital={null}
-          ></React3dMol>
+          <StructureViewer id={finalMolecule?.structure.id}></StructureViewer>
         </Stack>
       </Stack>
       <Stack direction="row" padding={"2em"} spacing={"2em"}>
@@ -77,16 +68,19 @@ export default function MoleculePage() {
           label="Create Molecule"
           path={"/createmolecule"}
           icon={<MoleculePlusIcon sx={{ width: "5em", height: "5em" }} />}
+          reload={false}
         ></NavButton>
         <NavButton
           label="Submit ORCA"
           path={"/orca"}
           icon={<OrcaIcon sx={{ width: "5em", height: "5em" }} />}
+          reload={false}
         ></NavButton>
         <NavButton
           label="Submit FDMNES"
           path={"/fdmnesmolecule"}
           icon={<FDMNESIcon sx={{ width: "5em", height: "5em" }} />}
+          reload={false}
         ></NavButton>
       </Stack>
     </MainPanel>

@@ -1,8 +1,84 @@
 import datetime
 import enum
-from typing import Optional
+from typing import List, Optional
 
 from sqlmodel import Field, Relationship, SQLModel
+
+
+class Element(SQLModel, table=True):
+    __tablename__: str = "element"
+
+    z: int = Field(primary_key=True, unique=True)
+    symbol: str = Field(unique=True)
+    name: str = Field(unique=True)
+
+
+class LatticeBase(SQLModel):
+    a: float
+    b: float
+    c: float
+    alpha: float
+    beta: float
+    gamma: float
+
+
+class Lattice(LatticeBase, table=True):
+    __tablename__: str = "lattice"
+    id: int | None = Field(primary_key=True, unique=True, default=None)
+
+
+class StructureBase(SQLModel):
+    label: str
+    person_id: int = Field(foreign_key="person.id", default=None)
+
+
+class ChemicalStructure(StructureBase, table=True):
+    __tablename__: str = "chemical_structure"
+    id: int | None = Field(primary_key=True, unique=True, default=None)
+    lattice_id: int | None = Field(foreign_key="lattice.id", default=None)
+    sites: list["ChemicalSite"] = Relationship(back_populates="chemical_structure")
+    lattice: Lattice = Relationship(
+        sa_relationship_kwargs={
+            "lazy": "selectin",
+            "foreign_keys": "[ChemicalStructure.lattice_id]",
+        }
+    )
+
+
+class StructureWithMetadata(SQLModel):
+    structure: ChemicalStructure
+    atom_count: int
+    elements: List[int]
+
+
+class CrystalStructure(StructureBase):
+    sites: list["ChemicalSite"]
+    id: int
+    lattice_id: int
+    lattice: Lattice
+
+
+class MolecularStructure(StructureBase):
+    sites: list["SiteBase"]
+    id: int | None
+
+
+class SiteBase(SQLModel):
+    element_z: int = Field(foreign_key="element.z", default=None)
+    x: float
+    y: float
+    z: float
+    index: int
+
+
+class ChemicalSite(SiteBase, table=True):
+    __tablename__: str = "chemical_site"
+    id: int | None = Field(primary_key=True, unique=True, default=None)
+    chemical_structure_id: int = Field(
+        foreign_key="chemical_structure.id", default=None
+    )
+
+    chemical_structure: ChemicalStructure | None = Relationship(back_populates="sites")
 
 
 class PersonInput(SQLModel):
@@ -21,6 +97,11 @@ class SimulationType(SQLModel, table=True):
     type: str
 
 
+class StructureType(enum.Enum):
+    crystal = "crystal"
+    molecule = "molecule"
+
+
 class SimulationStatus(enum.Enum):
     requested = "requested"
     submitted = "submitted"
@@ -34,28 +115,29 @@ class SimulationStatus(enum.Enum):
 
 class MolecularStructureInput(SQLModel):
     label: str
-    structure: str
+    sites: List[ChemicalSite]
 
 
 class CrystalStructureInput(MolecularStructureInput):
-    a: float
-    b: float
-    c: float
-    alpha: float
-    beta: float
-    gamma: float
+    lattice: Lattice
 
 
-class CrystalStructure(CrystalStructureInput, table=True):
-    __tablename__: str = "crystal_structure"
-    id: int | None = Field(primary_key=True, default=None)
-    person_id: int = Field(foreign_key="person.id", default=None)
+# class CrystalStructure(CrystalStructureInput, table=True):
+#     __tablename__: str = "crystal_structure"
+#     id: int | None = Field(primary_key=True, default=None)
+#     person_id: int = Field(foreign_key="person.id", default=None)
 
 
-class MolecularStructure(MolecularStructureInput, table=True):
-    __tablename__: str = "molecular_structure"
-    id: int | None = Field(primary_key=True, default=None)
-    person_id: int = Field(foreign_key="person.id", default=None)
+# class MolecularStructure(MolecularStructureInput, table=True):
+#     __tablename__: str = "molecular_structure"
+#     id: int | None = Field(primary_key=True, default=None)
+#     person_id: int = Field(foreign_key="person.id", default=None)
+
+
+class SimulationInputBase(SQLModel):
+    n_cores: int = 4
+    memory: int = 32
+    chemical_structure_id: int
 
 
 class SimulationBase(SQLModel):
@@ -63,6 +145,9 @@ class SimulationBase(SQLModel):
     working_directory: Optional[str] = None
     simulation_type_id: Optional[int] = Field(
         foreign_key="simulation_type.id", default=None
+    )
+    chemical_structure_id: Optional[int] = Field(
+        foreign_key="chemical_structure.id", default=None
     )
     n_cores: Optional[int] = 4
     memory: Optional[int] = 32
@@ -121,8 +206,6 @@ class OrcaSolvent(enum.Enum):
 
 
 class OrcaSimulationInput(SQLModel):
-    molecular_structure_id: int
-    memory_per_core: int
     functional: str
     basis_set: str
     charge: int
@@ -196,8 +279,6 @@ class Edge(enum.Enum):
 
 
 class FdmnesSimulationInput(SQLModel):
-    crystal_structure_id: int | None
-    molecular_structure_id: int | None
     element: int
     edge: Edge
     greens_approach: bool
@@ -237,7 +318,6 @@ class QEEdge(enum.Enum):
 
 
 class QESimulationInput(SQLModel):
-    crystal_structure_id: int
     absorbing_atom: int
     edge: Edge
     conductivity: ConductivityType
@@ -261,3 +341,20 @@ class QESimulation(QESimulationInput, table=True):
 
 class QESimulationResponse(QESimulationInput):
     simulation: Simulation
+
+
+class ORCASimulationSubmission(SQLModel):
+    orca_input: OrcaSimulationInput
+    simulation_input: SimulationInputBase
+
+
+class QESimulationSubmission(QESimulationInput, SimulationInputBase):
+    pass
+
+
+class FDMNESSimulationSubmission(FdmnesSimulationInput, SimulationInputBase):
+    pass
+
+
+class OrcaSimulationSubmission(OrcaSimulationInput, SimulationInputBase):
+    pass

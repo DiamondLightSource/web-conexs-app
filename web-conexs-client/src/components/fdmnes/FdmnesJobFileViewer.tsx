@@ -8,8 +8,6 @@ export default function FdmnesJobFileViewer(props: { id: number }) {
     queryFn: () => getFdmnesJobfile(props.id),
   });
 
-  console.log("FDMNES JOB FILE RENDER");
-
   return (
     <Typography
       sx={{

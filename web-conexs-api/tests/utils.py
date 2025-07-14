@@ -3,7 +3,8 @@ from datetime import datetime
 from sqlmodel import Session
 
 from web_conexs_api.models.models import (
-    MolecularStructure,
+    ChemicalSite,
+    ChemicalStructure,
     OrcaSimulation,
     OrcaSimulationInput,
     Person,
@@ -20,14 +21,15 @@ def build_test_database(session: Session):
 
     session.add(Person(identifier="test_user"))
 
-    molecule = MolecularStructure(
+    molecule = ChemicalStructure(
         person_id=1,
         label="Water",
-        structure=(
-            "H    0.7493682    0.0000000    0.4424329\n"
-            + "O    0.0000000    0.0000000   -0.1653507\n"
-            + "H   -0.7493682    0.0000000    0.4424329"
-        ),
+        sites=[
+            ChemicalSite(element_z=1, x=0.7493682, y=0.0000000, z=0.4424329, index=0),
+            ChemicalSite(element_z=8, x=0.0000000, y=0.0000000, z=-0.1653507, index=0),
+            ChemicalSite(element_z=1, x=-0.7493682, y=0.0000000, z=0.4424329, index=0),
+        ],
+        id=1,
     )
 
     session.add(molecule)
