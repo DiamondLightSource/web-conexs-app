@@ -136,6 +136,15 @@ CREATE TABLE person (
 
 COMMENT ON TABLE person IS 'Table to store unique identifier of user';
 
+CREATE TABLE cluster (
+    id int CHECK (id = 1) unique,
+    updated TIMESTAMP
+);
+
+COMMENT ON TABLE cluster IS 'Table to store last cluster update time';
+
+INSERT INTO cluster(id) VALUES(1);
+
 CREATE TABLE simulation_type (
     id INTEGER PRIMARY KEY,
     type TEXT NOT NULL

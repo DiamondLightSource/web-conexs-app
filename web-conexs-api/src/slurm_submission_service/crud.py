@@ -1,3 +1,6 @@
+import datetime
+import logging
+from datetime import timezone
 from typing import List
 
 from sqlmodel import or_, select
@@ -9,6 +12,7 @@ from web_conexs_api.jobfilebuilders import (
     fdmnes_molecule_to_crystal,
 )
 from web_conexs_api.models.models import (
+    Cluster,
     CrystalStructure,
     FdmnesSimulation,
     MolecularStructure,
@@ -17,6 +21,8 @@ from web_conexs_api.models.models import (
     Simulation,
     SimulationStatus,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def get_orca_jobfile(session, id):
@@ -133,3 +139,20 @@ def get_qe_jobfile(session, id):
     structure = get_crystal_structure(session, qe_simulation.crystal_structure_id)
 
     return build_qe_inputfile(qe_simulation, structure)
+
+
+def update_cluster(session):
+    statement = select(Cluster)
+    results = session.exec(statement)
+
+    cluster = results.first()
+
+    if cluster is None:
+        logger.error("Cluster not found in database!")
+        return
+
+    cluster.updated = datetime.datetime.now(timezone.utc).isoformat()
+
+    session.add(cluster)
+    session.commit()
+    session.refresh(cluster)

@@ -358,3 +358,11 @@ class FDMNESSimulationSubmission(FdmnesSimulationInput, SimulationInputBase):
 
 class OrcaSimulationSubmission(OrcaSimulationInput, SimulationInputBase):
     pass
+
+
+class Cluster(SQLModel, table=True):
+    __tablename__: str = "cluster"
+    id: int = Field(
+        primary_key=True,
+    )
+    updated: Optional[datetime.datetime]

@@ -1,5 +1,6 @@
 import datetime
 import os
+from pathlib import Path
 from typing import List
 
 import numpy as np
@@ -17,6 +18,7 @@ from .jobfilebuilders import (
 from .models.models import (
     ChemicalSite,
     ChemicalStructure,
+    Cluster,
     CrystalStructure,
     CrystalStructureInput,
     FdmnesSimulation,
@@ -35,6 +37,8 @@ from .models.models import (
     StructureWithMetadata,
 )
 from .utils import create_results_zip
+
+STORAGE_DIR = os.environ.get("CONEXS_STORAGE_DIR")
 
 # def get_crystal_structures(session, user_id) -> List[CrystalStructure]:
 #     statement = (
@@ -305,9 +309,9 @@ def get_simulation_zipped(session, id, user_id) -> Simulation:
     if not simulation:
         raise HTTPException(status_code=404, detail=f"No simulation with id={id}")
 
-    return create_results_zip(
-        simulation.working_directory, simulation.simulation_type_id
-    )
+    wd = get_working_directory(simulation)
+
+    return create_results_zip(wd, simulation.simulation_type_id)
 
 
 def get_orca_simulation(session, id, user_id) -> OrcaSimulation:
@@ -423,7 +427,7 @@ def get_fdmnes_jobfile(session, id, user_id):
 def get_fdmnes_output(session, id, user_id):
     fdmnes_simulation = get_fdmnes_simulation(session, id, user_id)
 
-    wd = fdmnes_simulation.simulation.working_directory
+    wd = get_working_directory(fdmnes_simulation.simulation)
 
     if wd is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -439,7 +443,7 @@ def get_fdmnes_output(session, id, user_id):
 def get_orca_output(session, id, user_id):
     orca_simulation = get_orca_simulation(session, id, user_id)
 
-    wd = orca_simulation.simulation.working_directory
+    wd = get_working_directory(orca_simulation.simulation)
 
     if wd is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -455,7 +459,7 @@ def get_orca_output(session, id, user_id):
 def get_orca_xyz(session, id, user_id):
     orca_simulation = get_orca_simulation(session, id, user_id)
 
-    wd = orca_simulation.simulation.working_directory
+    wd = get_working_directory(orca_simulation.simulation)
 
     if wd is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -471,7 +475,7 @@ def get_orca_xyz(session, id, user_id):
 def get_fdmnes_xas(session, id, user_id):
     fdmnes_simulation = get_fdmnes_simulation(session, id, user_id)
 
-    wd = fdmnes_simulation.simulation.working_directory
+    wd = get_working_directory(fdmnes_simulation.simulation)
 
     if wd is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -491,7 +495,7 @@ def get_fdmnes_xas(session, id, user_id):
 def get_orca_xas(session, id, user_id):
     orca_simulation = get_orca_simulation(session, id, user_id)
 
-    wd = orca_simulation.simulation.working_directory
+    wd = get_working_directory(orca_simulation.simulation)
 
     if wd is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -600,7 +604,7 @@ def get_qe_jobfile(session, id, user_id):
 def get_qe_output(session, id, user_id):
     qe_simulation = get_qe_simulation(session, id, user_id)
 
-    wd = qe_simulation.simulation.working_directory
+    wd = get_working_directory(qe_simulation.simulation)
 
     if wd is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -616,7 +620,7 @@ def get_qe_output(session, id, user_id):
 def get_qe_xas(session, id, user_id):
     qe_simulation = get_qe_simulation(session, id, user_id)
 
-    wd = qe_simulation.simulation.working_directory
+    wd = get_working_directory(qe_simulation)
 
     if wd is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -647,3 +651,18 @@ def request_cancel_simulation(session, id, user_id):
         session.refresh(sim)
 
     return sim
+
+
+def get_working_directory(simulation: Simulation):
+    return str(
+        Path(STORAGE_DIR)
+        / Path(simulation.person.identifier)
+        / Path(simulation.working_directory)
+    )
+
+
+def get_cluster(session):
+    statement = select(Cluster)
+    results = session.exec(statement)
+
+    return results.first()

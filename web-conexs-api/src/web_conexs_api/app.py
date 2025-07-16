@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 
 from .routers import (
+    cluster,
     fdmnes,
     matproject,
     orca,
@@ -20,5 +21,6 @@ app.include_router(simulations.router)
 app.include_router(user.router)
 app.include_router(matproject.router)
 app.include_router(structures.router)
+app.include_router(cluster.router)
 
 add_pagination(app)
