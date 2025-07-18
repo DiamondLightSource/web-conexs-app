@@ -4,10 +4,10 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import App from "./App.tsx";
 
-import axios from "axios";
+//import axios from "axios";
 
 async function enableMocking() {
-  axios.defaults.headers.common["Authorization"] = "Bearer test_user";
+  //axios.defaults.headers.common["Authorization"] = "Bearer test_user4";
   return;
   // if (process.env.NODE_ENV !== "development") {
   //   return;

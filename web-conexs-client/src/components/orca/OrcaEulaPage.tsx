@@ -27,6 +27,7 @@ export default function OrcaEulaPage() {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["user"] });
       navigate("/orca");
+      navigate(0);
     },
   });
 

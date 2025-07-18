@@ -75,7 +75,7 @@ export default function WelcomePage() {
               <NavButton
                 label="Crystals"
                 path={"/crystals"}
-                icon={<GrainIcon sx={{ width: "5em", height: "5em" }} />}
+                icon={<GrainIcon sx={{ width: "4em", height: "4em" }} />}
                 reload={false}
               ></NavButton>
             </Stack>
