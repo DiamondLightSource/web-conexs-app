@@ -27,25 +27,9 @@ def submit_orca(session, sim: Simulation):
     job_name = application_name + "-" + str(uid)
     working_dir = str(Path(ROOT_DIR) / Path(user) / Path(job_name))
 
-    # success = make_directory(working_dir)
+    file_map = {"job.inp": job_string}
 
-    # if not success:
-    #     return
-
-    # Path(working_dir).mkdir(parents=True)
-
-    file_map = {"job.inp", job_string}
-
-    # input_file = working_dir + "/job.inp"
-
-    # with open(input_file, "w+") as f:
-    #     f.write(job_string)
-
-    success = transfer_inputs(file_map, working_dir)
-
-    if not success:
-        logger.error(f"Could not transfer input files to {working_dir}")
-        return
+    transfer_inputs(file_map, working_dir)
 
     orca_sif = os.path.join(CONTAINER_IMAGE_DIR, ORCA_IMAGE)
 
@@ -77,17 +61,3 @@ def submit_orca(session, sim: Simulation):
         )
 
     submit_simulation(script, job_name, sim, user, session, False)
-    # try:
-    #     job_id = build_job_and_run(
-    #         script, job_name, sim.n_cores, sim.memory, cluster_dir, False
-    #     )
-    #     sim.job_id = job_id
-    #     sim.working_directory = working_dir
-    #     sim.submission_date = datetime.datetime.now()
-    #     sim.status = SimulationStatus.submitted
-    #     update_simulation(session, sim)
-    # except Exception:
-    #     logger.exception("Error submitting orca job")
-    #     sim.status = SimulationStatus.failed
-    #     update_simulation(session, sim)
-    #     logger.exception("Error submitting ORCA job")

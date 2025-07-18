@@ -9,7 +9,7 @@ from ..models.models import Cluster
 router = APIRouter()
 
 
-@router.get("/api/cluster/status")
+@router.get("/status")
 def get_cluster_status_endpoint(
     session: Session = Depends(get_session),
     user_id: str = Depends(get_current_user),

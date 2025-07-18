@@ -40,24 +40,6 @@ from .utils import create_results_zip
 
 STORAGE_DIR = os.environ.get("CONEXS_STORAGE_DIR")
 
-# def get_crystal_structures(session, user_id) -> List[CrystalStructure]:
-#     statement = (
-#         select(ChemicalStructure)
-#         .join(Person)
-#         .where(
-#             and_(Person.identifier == user_id,
-#                  ChemicalStructure.lattice_id.is_not(None)),
-#         )
-#     )
-
-#     results = session.exec(statement)
-
-#     output = results.all()
-
-#     print(output[0].lattice)
-
-#     return output
-
 
 def get_crystal_structures(session, user_id) -> List[StructureWithMetadata]:
     statement = (
@@ -77,7 +59,6 @@ def get_crystal_structures(session, user_id) -> List[StructureWithMetadata]:
     )
 
     structure = session.exec(statement).all()
-    # t = TypeAdapter(List[StructureWithMetadata])
 
     output = [
         {"structure": s[0], "atom_count": s[1], "elements": s[2]} for s in structure
@@ -345,6 +326,8 @@ def submit_orca_simulation(
         "simulation_type_id": 1,
         "request_date": datetime.datetime.now(),
         "chemical_structure_id": orca_input.chemical_structure_id,
+        "n_cores": orca_input.n_cores,
+        "memory": int(orca_input.n_cores * orca_input.memory * 1.3),
     }
 
     simulation = Simulation.model_validate(smodel)
@@ -368,6 +351,8 @@ def submit_fdmnes_simulation(
         "simulation_type_id": 2,
         "request_date": datetime.datetime.now(),
         "chemical_structure_id": fdmnes_input.chemical_structure_id,
+        "n_cores": fdmnes_input.n_cores,
+        "memory": int(fdmnes_input.memory),
     }
 
     simulation = Simulation.model_validate(smodel)
@@ -400,7 +385,7 @@ def get_fdmnes_simulation(session, id, user_id) -> FdmnesSimulation:
 def get_orca_jobfile(session, id, user_id):
     orca_simulation = get_orca_simulation(session, id, user_id)
     structure = get_molecular_structure(
-        session, orca_simulation.molecular_structure_id, user_id
+        session, orca_simulation.simulation.chemical_structure_id, user_id
     )
 
     return build_orca_input_file(orca_simulation, structure)
@@ -409,16 +394,14 @@ def get_orca_jobfile(session, id, user_id):
 def get_fdmnes_jobfile(session, id, user_id):
     fdmnes_simulation = get_fdmnes_simulation(session, id, user_id)
 
-    if fdmnes_simulation.crystal_structure_id is not None:
-        structure = get_crystal_structure(
-            session, fdmnes_simulation.crystal_structure_id, user_id
-        )
+    structure = get_structure(
+        session, fdmnes_simulation.simulation.chemical_structure_id, user_id
+    )
+
+    if structure.lattice is not None:
         crystalIsMolecule = False
     else:
-        molecule = get_molecular_structure(
-            session, fdmnes_simulation.molecular_structure_id, user_id
-        )
-        structure = fdmnes_molecule_to_crystal(molecule)
+        structure = fdmnes_molecule_to_crystal(structure)
         crystalIsMolecule = True
 
     return build_fdmnes_inputfile(fdmnes_simulation, structure, crystalIsMolecule)
@@ -561,6 +544,8 @@ def submit_qe_simulation(
         "simulation_type_id": 3,
         "request_date": datetime.datetime.now(),
         "chemical_structure_id": qe_input.chemical_structure_id,
+        "n_cores": qe_input.n_cores,
+        "memory": int(qe_input.memory),
     }
 
     simulation = Simulation.model_validate(smodel)
@@ -595,7 +580,7 @@ def get_qe_simulation(session, id, user_id) -> QESimulation:
 def get_qe_jobfile(session, id, user_id):
     qe_simulation = get_qe_simulation(session, id, user_id)
     structure = get_crystal_structure(
-        session, qe_simulation.crystal_structure_id, user_id
+        session, qe_simulation.simulation.chemical_structure_id, user_id
     )
 
     return build_qe_inputfile(qe_simulation, structure)
@@ -620,7 +605,7 @@ def get_qe_output(session, id, user_id):
 def get_qe_xas(session, id, user_id):
     qe_simulation = get_qe_simulation(session, id, user_id)
 
-    wd = get_working_directory(qe_simulation)
+    wd = get_working_directory(qe_simulation.simulation)
 
     if wd is None:
         raise HTTPException(status_code=404, detail="Item not found")
@@ -654,6 +639,9 @@ def request_cancel_simulation(session, id, user_id):
 
 
 def get_working_directory(simulation: Simulation):
+    if simulation.working_directory is None:
+        return None
+
     return str(
         Path(STORAGE_DIR)
         / Path(simulation.person.identifier)

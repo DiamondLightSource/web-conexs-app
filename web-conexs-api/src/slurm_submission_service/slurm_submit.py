@@ -51,7 +51,7 @@ def build_job_and_run(script, job_name, cpus, memory, cluster_dir, as_tasks):
             "name": job_name,
             "nodes": 1,
             "tasks": 1 if as_tasks else cpus,
-            "memory_per_node": int(memory * 1000),
+            "memory_per_node": memory,
             "time_limit": int(SLURM_TIME_LIMIT),
             "current_working_directory": str(cluster_dir),
             "environment": {
@@ -79,6 +79,8 @@ def build_job_and_run(script, job_name, cpus, memory, cluster_dir, as_tasks):
         "X-SLURM-USER-TOKEN": slurm_token,
         "Content-Type": "application/json",
     }
+
+    logger.debug(job_request)
 
     r = requests.post(url_submit, data=json.dumps(job_request), headers=headers)
 
@@ -143,7 +145,11 @@ def clean_request_cancelled(session):
 
             sim.status = SimulationStatus.cancelled
             update_simulation(session, sim)
-            # TODO sync data back
+            user = sim.person.identifier
+            calc_dir = Path(user) / Path(sim.working_directory)
+            iris_dir = Path(ROOT_DIR) / calc_dir
+            storage_dir = Path(STORAGE_DIR) / calc_dir
+            transfer_results(sim.simulation_type_id, str(iris_dir), storage_dir)
 
 
 def update_active_simulations(session):

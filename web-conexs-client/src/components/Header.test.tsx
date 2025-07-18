@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import Header from "./Header";
 import { ThemeProvider } from "@mui/material";
 import { DiamondTheme } from "@diamondlightsource/sci-react-ui";
+import React from "react";
 
 const themeProvider = ({ children }) => {
   return <ThemeProvider theme={DiamondTheme}>{children}</ThemeProvider>;

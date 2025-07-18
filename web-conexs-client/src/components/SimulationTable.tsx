@@ -69,7 +69,7 @@ function SimulationMetadata(props: {
   let request_string = "";
 
   if (request) {
-    const d = new Date(request);
+    const d = new Date(request + "+00:00");
     request_string = d.toDateString() + " " + d.toLocaleTimeString();
   }
 
@@ -78,7 +78,7 @@ function SimulationMetadata(props: {
   let complete_string = "";
 
   if (complete) {
-    const d = new Date(complete);
+    const d = new Date(complete + "+00:00");
     complete_string = d.toDateString() + " " + d.toLocaleTimeString();
   }
 
@@ -169,7 +169,7 @@ export default function SimulationTable(props: {
               <TableCell align="center">Type</TableCell>
               <TableCell align="center">Status</TableCell>
               <TableCell align="left">Request Date</TableCell>
-              <TableCell align="left">Submission Date</TableCell>
+              <TableCell align="left">Completion Date</TableCell>
               <TableCell align="left"></TableCell>
             </TableRow>
           </TableHead>

@@ -194,7 +194,6 @@ def test_qe_filebuilder():
     assert "nat = 3" in jobfile
     assert "ntyp = 3" in jobfile
 
-    print(jobfile)
     jobfile_array = jobfile.split("\n")
 
     species_line = -1

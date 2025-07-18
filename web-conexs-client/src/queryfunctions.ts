@@ -32,7 +32,7 @@ export const getSimulationPage = async (
   cursor: string | null,
   size: number
 ) => {
-  let url = simulationUrl + "?size=" + size;
+  let url = simulationUrl + "/?size=" + size;
 
   if (cursor != null) {
     url = url + "&cursor=" + cursor;

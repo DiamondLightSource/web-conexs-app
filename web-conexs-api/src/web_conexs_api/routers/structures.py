@@ -22,7 +22,7 @@ from ..models.models import (
 router = APIRouter()
 
 
-@router.get("/api/structures/{id}")
+@router.get("/{id}")
 def get_structures_endpoint(
     id: int,
     session: Session = Depends(get_session),
@@ -32,7 +32,7 @@ def get_structures_endpoint(
 
 
 # Must be Crystal then Molecule or the lattice gets dropped
-@router.post("/api/structures")
+@router.post("/")
 def upload_structures_endpoint(
     structure: CrystalStructureInput | MolecularStructureInput,
     session: Session = Depends(get_session),
@@ -41,7 +41,7 @@ def upload_structures_endpoint(
     return upload_structure(structure, session, user_id)
 
 
-@router.get("/api/structures")
+@router.get("/")
 def get_structure_list_endpoint(
     type: StructureType | None = None,
     session: Session = Depends(get_session),

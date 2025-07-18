@@ -8,14 +8,14 @@ from ..database import get_session
 router = APIRouter()
 
 
-@router.get("/api/user")
+@router.get("/")
 async def check(
     session: Session = Depends(get_session), user_id: str = Depends(get_current_user)
 ):
     return get_user(session, user_id)
 
 
-@router.patch("/api/user")
+@router.patch("/")
 async def accept_orca_eula_patch(
     session: Session = Depends(get_session), user_id: str = Depends(get_current_user)
 ):

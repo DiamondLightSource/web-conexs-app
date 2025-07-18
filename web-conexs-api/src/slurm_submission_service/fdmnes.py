@@ -25,13 +25,6 @@ def submit_fdmnes(session, sim: Simulation):
     uid = uuid.uuid4()
 
     job_name = application_name + "-" + str(uid)
-    # working_dir = ROOT_DIR + user + "/" + job_name
-    # cluster_dir = CLUSTER_ROOT_DIR + user + "/" + job_name
-
-    # success = make_directory(working_dir)
-
-    # if not success:
-    #     return
 
     file_map = {}
     file_map["job.txt"] = job_string
@@ -46,17 +39,6 @@ def submit_fdmnes(session, sim: Simulation):
 
     transfer_inputs(file_map, str(run_location))
 
-    # with open(working_dir / Path("job.txt"), "w+") as f:
-    #     f.write(job_string)
-
-    # with open(working_dir / Path("fdmfile.txt"), "w+") as ff:
-    #     ff.write(
-    #         "! number of files to process\n"
-    #         + "1\n\n"
-    #         + "! name of file to process\n"
-    #         + "job.txt"
-    #     )
-
     fdmnes_sif = os.path.join(CONTAINER_IMAGE_DIR, FDMNES_IMAGE)
 
     script = (
@@ -65,16 +47,3 @@ def submit_fdmnes(session, sim: Simulation):
     )
 
     submit_simulation(script, job_name, sim, user, session, True)
-    # try:
-    #     job_id = build_job_and_run(
-    #         script, job_name, sim.n_cores, sim.memory, cluster_dir, True
-    #     )
-    #     sim.job_id = job_id
-    #     sim.working_directory = working_dir
-    #     sim.submission_date = datetime.datetime.now()
-    #     sim.status = SimulationStatus.submitted
-    #     update_simulation(session, sim)
-    # except Exception:
-    #     sim.status = SimulationStatus.failed
-    #     update_simulation(session, sim)
-    #     logger.exception("Error submitting FDMNES job")

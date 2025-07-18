@@ -16,7 +16,7 @@ from ..models.models import SimulationResponse
 router = APIRouter()
 
 
-@router.get("/api/simulations")
+@router.get("/")
 def get_simulations_pagination_endpoint(
     session: Session = Depends(get_session),
     user_id: str = Depends(get_current_user),
@@ -24,7 +24,7 @@ def get_simulations_pagination_endpoint(
     return get_simulations_page(session, user_id)
 
 
-@router.get("/api/simulations/{id}")
+@router.get("/{id}")
 def get_simulation_endpoint(
     id: int,
     format: str | None = None,
@@ -45,7 +45,7 @@ def get_simulation_endpoint(
     return get_simulation(session, id, user_id)
 
 
-@router.patch("/api/simulations/{id}/status")
+@router.patch("/{id}/status")
 def cancel_simulation_endpoint(
     id: int,
     session: Session = Depends(get_session),

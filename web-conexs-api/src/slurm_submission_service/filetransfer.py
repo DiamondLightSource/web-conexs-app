@@ -18,6 +18,12 @@ def make_directory(path):
 
 def copy_directory(source, destination):
     logger.info(f"Attempting to make copy {source} to {destination}")
+
+    parent = Path(destination).parent
+
+    if not parent.exists:
+        parent.mkdir()
+
     shutil.copytree(source, destination)
 
 
@@ -49,15 +55,11 @@ def transfer_results(simulation_type_id, result_dir, storage_dir):
     elif simulation_type_id == 3:
         # qe
         ignore_files = ["*.UPF", "*.wfc", "xanes.sav"]
-        ignore_pattern = shutil.ignore_patterns(ignore_files)
-    else:
-        raise RuntimeError("Simulation type id not recognised")
+        ignore_pattern = shutil.ignore_patterns(*ignore_files)
+
+    parent = Path("/cake")
+
+    if not parent.exists:
+        parent.mkdir()
 
     shutil.copytree(result_dir, storage_dir, ignore=ignore_pattern, dirs_exist_ok=True)
-
-
-# def transfer_results(simulation_type_id, result_dir, storage_dir):
-#     p = Process(target=_transfer_results, args=(simulation_type_id,
-#                                                 result_dir,
-#                                                 storage_dir,))
-#     return run_and_check(p)

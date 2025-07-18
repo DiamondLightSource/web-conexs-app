@@ -16,21 +16,14 @@ from .slurm_submit import clean_request_cancelled, update_active_simulations
 logger = logging.getLogger(__name__)
 
 ROOT_DIR = os.environ.get("CONEXS_ROOT_DIR")
-# def test_read():
-#     with contextmanager(get_session)() as session:
-#         sims = get_submitted_simulations(session)
-#         for sim in sims:
-#             if sim.simulation_type_id == 1:
-#                 jf, calc = get_orca_jobfile_with_technique(session, sim.id)
-#             elif sim.simulation_type_id == 2:
-#                 jobfile = get_fdmnes_jobfile(session, sim.id)
-#                 logger.error(jobfile)
 
 
 def submit_new_simulations(session):
     sims = get_submitted_simulations(session)
 
     for sim in sims:
+        # TODO put in try catch in case generation of job file fails
+        # we don't want to keep retrying poisoned entries
         if sim.simulation_type_id == 1:
             submit_orca(session, sim)
         if sim.simulation_type_id == 2:
@@ -66,8 +59,6 @@ def main():
     rootlogger.debug("Logging Configured")
 
     logger.info("Running main loop")
-
-    # test_read()
 
     while True:
         try:

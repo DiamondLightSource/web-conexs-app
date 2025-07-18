@@ -21,7 +21,7 @@ from ..models.models import (
 router = APIRouter()
 
 
-@router.get("/api/orca/{id}")
+@router.get("/{id}")
 def get_orca_simulation_endpoint(
     id: int,
     session: Session = Depends(get_session),
@@ -30,7 +30,7 @@ def get_orca_simulation_endpoint(
     return get_orca_simulation(session, id, user_id)
 
 
-@router.get("/api/orca/{id}/output")
+@router.get("/{id}/output")
 def get_orca_output_endpoint(
     id: int,
     session: Session = Depends(get_session),
@@ -39,7 +39,7 @@ def get_orca_output_endpoint(
     return PlainTextResponse(get_orca_output(session, id, user_id))
 
 
-@router.get("/api/orca/{id}/xyz")
+@router.get("{id}/xyz")
 def get_orca_xyz_output(
     id: int,
     session: Session = Depends(get_session),
@@ -48,7 +48,7 @@ def get_orca_xyz_output(
     return PlainTextResponse(get_orca_xyz(session, id, user_id))
 
 
-@router.get("/api/orca/{id}/jobfile")
+@router.get("/{id}/jobfile")
 def get_orca_jobfile_endpoint(
     id: int,
     session: Session = Depends(get_session),
@@ -57,7 +57,7 @@ def get_orca_jobfile_endpoint(
     return PlainTextResponse(get_orca_jobfile(session, id, user_id))
 
 
-@router.get("/api/orca/{id}/xas")
+@router.get("/{id}/xas")
 def get_orca_xas_endpoint(
     id: int,
     session: Session = Depends(get_session),
@@ -66,12 +66,13 @@ def get_orca_xas_endpoint(
     return get_orca_xas(session, id, user_id)
 
 
-@router.post("/api/orca")
+@router.post("/")
 def submit_orca(
     orca_input: OrcaSimulationSubmission,
     session: Session = Depends(get_session),
     user_id: str = Depends(get_current_user),
 ) -> OrcaSimulation:
+    print(orca_input)
     return submit_orca_simulation(orca_input, session, user_id)
 
 

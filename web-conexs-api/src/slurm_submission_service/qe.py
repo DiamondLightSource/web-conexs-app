@@ -28,8 +28,6 @@ def submit_qe(session, sim: Simulation):
     uid = uuid.uuid4()
 
     job_name = application_name + "-" + str(uid)
-    # working_dir = ROOT_DIR + user + "/" + job_name
-    # cluster_dir = CLUSTER_ROOT_DIR + user + "/" + job_name
     working_dir = str(Path(ROOT_DIR) / Path(user) / Path(job_name))
 
     core_file = Path(pp_abs).with_suffix(".wfc")
@@ -42,14 +40,14 @@ def submit_qe(session, sim: Simulation):
     xspectra_input_files = []
 
     for i in range(3):
-        xspectra_input_files.append(working_dir / Path(f"{i}.xspectra_input.inp"))
+        xspectra_input_files.append(f"{i}.xspectra_input.inp")
 
     xspectra_jobfiles = build_qe_xspectra_inputs(abs_edge, str(core_file))
 
     for i in range(3):
         file_map[xspectra_input_files[i]] = xspectra_jobfiles[i]
 
-    transfer_inputs(file_map, working_dir)
+    transfer_inputs(file_map, str(working_dir))
 
     to_copy = []
 

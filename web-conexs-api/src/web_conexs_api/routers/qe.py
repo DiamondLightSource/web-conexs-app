@@ -20,7 +20,7 @@ from ..models.models import (
 router = APIRouter()
 
 
-@router.get("/api/qe/{id}")
+@router.get("/{id}")
 def get_qe_simulation_endpoint(
     id: int,
     session: Session = Depends(get_session),
@@ -29,7 +29,7 @@ def get_qe_simulation_endpoint(
     return get_qe_simulation(session, id, user_id)
 
 
-@router.get("/api/qe/{id}/jobfile")
+@router.get("/{id}/jobfile")
 def get_qe_jobfile_endpoint(
     id: int,
     session: Session = Depends(get_session),
@@ -38,7 +38,7 @@ def get_qe_jobfile_endpoint(
     return PlainTextResponse(get_qe_jobfile(session, id, user_id)[0])
 
 
-@router.get("/api/qe/{id}/output")
+@router.get("/{id}/output")
 def get_qe_output_endpoint(
     id: int,
     session: Session = Depends(get_session),
@@ -47,7 +47,7 @@ def get_qe_output_endpoint(
     return PlainTextResponse(get_qe_output(session, id, user_id))
 
 
-@router.get("/api/qe/{id}/xas")
+@router.get("/{id}/xas")
 def get_fdmnes_xas_endpoint(
     id: int,
     session: Session = Depends(get_session),
@@ -56,7 +56,7 @@ def get_fdmnes_xas_endpoint(
     return get_qe_xas(session, id, user_id)
 
 
-@router.post("/api/qe")
+@router.post("/")
 def submit_qe(
     qe_input: QESimulationSubmission,
     session: Session = Depends(get_session),

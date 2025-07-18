@@ -20,7 +20,7 @@ from ..models.models import (
 router = APIRouter()
 
 
-@router.get("/api/fdmnes/{id}")
+@router.get("/{id}")
 def get_fdmnes_simulation_endpoint(
     id: int,
     session: Session = Depends(get_session),
@@ -29,7 +29,7 @@ def get_fdmnes_simulation_endpoint(
     return get_fdmnes_simulation(session, id, user_id)
 
 
-@router.get("/api/fdmnes/{id}/jobfile")
+@router.get("/{id}/jobfile")
 def get_fdmnes_jobfile_endpoint(
     id: int,
     session: Session = Depends(get_session),
@@ -38,7 +38,7 @@ def get_fdmnes_jobfile_endpoint(
     return PlainTextResponse(get_fdmnes_jobfile(session, id, user_id))
 
 
-@router.get("/api/fdmnes/{id}/output")
+@router.get("/{id}/output")
 def get_fdmnes_output_endpoint(
     id: int,
     session: Session = Depends(get_session),
@@ -47,7 +47,7 @@ def get_fdmnes_output_endpoint(
     return PlainTextResponse(get_fdmnes_output(session, id, user_id))
 
 
-@router.get("/api/fdmnes/{id}/xas")
+@router.get("/{id}/xas")
 def get_fdmnes_xas_endpoint(
     id: int,
     session: Session = Depends(get_session),
@@ -56,7 +56,7 @@ def get_fdmnes_xas_endpoint(
     return get_fdmnes_xas(session, id, user_id)
 
 
-@router.post("/api/fdmnes")
+@router.post("/")
 def submit_fdmnes(
     fdmnes_input: FDMNESSimulationSubmission,
     session: Session = Depends(get_session),
