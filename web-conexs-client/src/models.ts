@@ -17,7 +17,7 @@ export interface Person {
 }
 
 export interface HPCCluster {
-  id: string;
+  id: number;
   updated: string | null;
 }
 

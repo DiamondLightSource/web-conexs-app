@@ -1,6 +1,7 @@
 import { http, HttpResponse, delay } from "msw";
 import {
   Crystal,
+  HPCCluster,
   Molecule,
   MoleculeInput,
   OrcaSimulation,
@@ -171,14 +172,14 @@ export const handlers = [
 
     return new HttpResponse(null, { status: 401 });
   }),
-  //   # mapspc
-  // # @app.get("/api/orca/{id}/spectra")
-  // # @app.get("/api/orca/{id}/spectra/{spectrum_id}")
-  // # request new mapspc call
-  // # @app.post("/api/orca/{id}/spectra/")
-  // # orbital cube files
-  // # @app.get("/api/orca/{id}/orbitals")
-  // # @app.get("/api/orca/{id}/orbitals/{orbital_calculation_id}")
-  // # request new mapspc call
-  // # @app.post("/api/orca/{id}/orbitals/")
+
+  http.get("/api/cluster/status", async () => {
+
+
+    const cluster : HPCCluster = {id: 1, updated: Date.now().toString()}
+
+
+
+    return HttpResponse.json(cluster)
+  }),
 ];
