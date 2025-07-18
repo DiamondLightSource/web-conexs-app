@@ -17,22 +17,21 @@ import {
   StructureWithMetadata,
   XASData,
 } from "./models";
-import { Cluster } from "cluster";
 
-const simulationUrl = "/api/simulations";
-const orcaUrl = "/api/orca";
-const fdmnesUrl = "/api/fdmnes";
-const qeUrl = "/api/qe";
-const structureUrl = "/api/structures";
-const userUrl = "/api/user";
-const matprojUrl = "/api/matproj";
+const simulationUrl = "/api/simulations/";
+const orcaUrl = "/api/orca/";
+const fdmnesUrl = "/api/fdmnes/";
+const qeUrl = "/api/qe/";
+const structureUrl = "/api/structures/";
+const userUrl = "/api/user/";
+const matprojUrl = "/api/matproj/";
 const clusterUrl = "/api/cluster/status";
 
 export const getSimulationPage = async (
   cursor: string | null,
   size: number
 ) => {
-  let url = simulationUrl + "/?size=" + size;
+  let url = simulationUrl + "?size=" + size;
 
   if (cursor != null) {
     url = url + "&cursor=" + cursor;
@@ -47,7 +46,7 @@ export const getSimulationPage = async (
 
 export const getSimulation = async (id: number) => {
   const { data } = await axios.get<Simulation, AxiosResponse<Simulation>>(
-    simulationUrl + "/" + id
+    simulationUrl  + id
   );
   return data;
 };
@@ -56,7 +55,7 @@ export const getOrcaSimulation = async (id: number) => {
   const { data } = await axios.get<
     OrcaSimulation,
     AxiosResponse<OrcaSimulation>
-  >(orcaUrl + "/" + id);
+  >(orcaUrl + id);
   return data;
 };
 
@@ -64,13 +63,13 @@ export const getFdmnesSimulation = async (id: number) => {
   const { data } = await axios.get<
     FDMNESSimulation,
     AxiosResponse<FDMNESSimulation>
-  >(fdmnesUrl + "/" + id);
+  >(fdmnesUrl + id);
   return data;
 };
 
 export const getQESimulation = async (id: number) => {
   const { data } = await axios.get<QESimulation, AxiosResponse<QESimulation>>(
-    qeUrl + "/" + id
+    qeUrl + id
   );
   return data;
 };
@@ -85,7 +84,7 @@ export const getMolecules = async () => {
 
 export const getMolecule = async (id: number) => {
   const { data } = await axios.get<Molecule, AxiosResponse<Molecule>>(
-    structureUrl + "/" + id
+    structureUrl + id
   );
   return data;
 };
@@ -108,7 +107,7 @@ export const getCrystals = async () => {
 
 export const getCrystal = async (id: number) => {
   const { data } = await axios.get<Crystal, AxiosResponse<Crystal>>(
-    structureUrl + "/" + id
+    structureUrl + id
   );
   return data;
 };
@@ -117,7 +116,7 @@ export const getStructure = async (id: number) => {
   const { data } = await axios.get<
     Crystal | Molecule,
     AxiosResponse<Crystal | Molecule>
-  >(structureUrl + "/" + id);
+  >(structureUrl + id);
   return data;
 };
 
@@ -139,70 +138,70 @@ export const postOrca = async (input: OrcaSimulationInput) => {
 
 export const getOrcaLog = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
-    orcaUrl + "/" + id + "/output"
+    orcaUrl + id + "/output"
   );
   return data;
 };
 
 export const getOrcaXyz = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
-    orcaUrl + "/" + id + "/xyz"
+    orcaUrl + id + "/xyz"
   );
   return data;
 };
 
 export const getFdmnesLog = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
-    fdmnesUrl + "/" + id + "/output"
+    fdmnesUrl + id + "/output"
   );
   return data;
 };
 
 export const getFdmnesJobfile = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
-    fdmnesUrl + "/" + id + "/jobfile"
+    fdmnesUrl + id + "/jobfile"
   );
   return data;
 };
 
 export const getFdmnesXas = async (id: number) => {
   const { data } = await axios.get<XASData, AxiosResponse<XASData>>(
-    fdmnesUrl + "/" + id + "/xas"
+    fdmnesUrl + id + "/xas"
   );
   return data;
 };
 
 export const getOrcaXas = async (id: number) => {
   const { data } = await axios.get<XASData, AxiosResponse<XASData>>(
-    orcaUrl + "/" + id + "/xas"
+    orcaUrl + id + "/xas"
   );
   return data;
 };
 
 export const getOrcaJobfile = async (id: number) => {
   const { data } = await axios.get<XASData, AxiosResponse<XASData>>(
-    orcaUrl + "/" + id + "/jobfile"
+    orcaUrl + id + "/jobfile"
   );
   return data;
 };
 
 export const getQEXas = async (id: number) => {
   const { data } = await axios.get<XASData, AxiosResponse<XASData>>(
-    qeUrl + "/" + id + "/xas"
+    qeUrl + id + "/xas"
   );
   return data;
 };
 
 export const getQELog = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
-    qeUrl + "/" + id + "/output"
+    qeUrl + id + "/output"
   );
   return data;
 };
 
 export const getQEJobFile = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
-    qeUrl + "/" + id + "/jobfile"
+    qeUrl + id + "/jobfile"
   );
   return data;
 };
@@ -235,14 +234,14 @@ export const postQe = async (input: QESimulationInput) => {
 
 export const cancelSimulation = async (id: number) => {
   const { data } = await axios.patch<Simulation, AxiosResponse<Simulation>>(
-    simulationUrl + "/" + id + "/status"
+    simulationUrl + id + "/status"
   );
   return data;
 };
 
 export const getMatProjStructure = async (id: string) => {
   const response = await axios.get<Crystal, AxiosResponse<Crystal>>(
-    matprojUrl + "/" + id
+    matprojUrl + id
   );
 
   if (response.status != 200) {

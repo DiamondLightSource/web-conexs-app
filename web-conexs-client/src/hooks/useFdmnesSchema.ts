@@ -44,17 +44,6 @@ const schemaTemplate = {
         },
       ],
     },
-    n_cores: {
-      title: "Number of Cores",
-      type: "integer",
-      default: 4,
-    },
-    memory: {
-      title: "Memory",
-      type: "integer",
-      default: 3072,
-      enum: [1024, 2048, 3072, 4096, 6144, 8192, 12288],
-    },
   },
   required: [],
 };
@@ -95,25 +84,6 @@ const uischema = {
             {
               type: "Control",
               scope: "#/properties/greens_approach",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      type: "Group",
-      label: "Resources",
-      elements: [
-        {
-          type: "HorizontalLayout",
-          elements: [
-            {
-              type: "Control",
-              scope: "#/properties/n_cores",
-            },
-            {
-              type: "Control",
-              scope: "#/properties/memory",
             },
           ],
         },

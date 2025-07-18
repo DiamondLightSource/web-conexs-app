@@ -65,17 +65,6 @@ const schemaTemplate = {
       ],
       default: "None",
     },
-    n_cores: {
-      title: "Number of Cores",
-      type: "integer",
-      default: 4,
-    },
-    memory: {
-      title: "Memory per Core",
-      type: "integer",
-      default: 3072,
-      enum: [1024, 2048, 3072, 4096, 6144, 8192, 12288],
-    },
     orb_win_0_start: {
       title: "OrbWin[0] Start",
       type: "integer",
@@ -184,25 +173,6 @@ const uischema = {
               type: "Control",
               scope: "#/properties/orb_win_1_stop",
               rule: orb_rule,
-            },
-          ],
-        },
-      ],
-    },
-    {
-      type: "Group",
-      label: "Resources",
-      elements: [
-        {
-          type: "HorizontalLayout",
-          elements: [
-            {
-              type: "Control",
-              scope: "#/properties/n_cores",
-            },
-            {
-              type: "Control",
-              scope: "#/properties/memory",
             },
           ],
         },

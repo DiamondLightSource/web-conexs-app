@@ -135,8 +135,6 @@ class CrystalStructureInput(MolecularStructureInput):
 
 
 class SimulationInputBase(SQLModel):
-    n_cores: int
-    memory: int
     chemical_structure_id: int
 
 

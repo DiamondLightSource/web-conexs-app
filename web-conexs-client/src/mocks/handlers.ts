@@ -46,6 +46,7 @@ const mockSimulation: Simulation = {
   status: "mock",
   working_directory: "/mock",
   request_date: "2025-02-27T09:22:41.035872",
+  chemical_structure_id: 1,
   submission_date: null,
   completion_date: null,
 };
@@ -54,8 +55,7 @@ const mockOrcaSimulation: OrcaSimulation = {
   basis_set: "mockBasisSet",
   charge: 0,
   functional: "mockFunctional",
-  memory_per_core: 1,
-  molecular_structure_id: 1,
+  chemical_structure_id: 1,
   multiplicity: 0,
   orb_win_0_start: null,
   orb_win_0_stop: null,
