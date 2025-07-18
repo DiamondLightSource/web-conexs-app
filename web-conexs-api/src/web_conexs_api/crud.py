@@ -326,8 +326,8 @@ def submit_orca_simulation(
         "simulation_type_id": 1,
         "request_date": datetime.datetime.now(),
         "chemical_structure_id": orca_input.chemical_structure_id,
-        "n_cores": orca_input.n_cores,
-        "memory": int(orca_input.n_cores * orca_input.memory * 1.3),
+        "n_cores": 16,
+        "memory": 49152,
     }
 
     simulation = Simulation.model_validate(smodel)
@@ -351,8 +351,8 @@ def submit_fdmnes_simulation(
         "simulation_type_id": 2,
         "request_date": datetime.datetime.now(),
         "chemical_structure_id": fdmnes_input.chemical_structure_id,
-        "n_cores": fdmnes_input.n_cores,
-        "memory": int(fdmnes_input.memory),
+        "n_cores": 16,
+        "memory": 49152,
     }
 
     simulation = Simulation.model_validate(smodel)
@@ -544,8 +544,8 @@ def submit_qe_simulation(
         "simulation_type_id": 3,
         "request_date": datetime.datetime.now(),
         "chemical_structure_id": qe_input.chemical_structure_id,
-        "n_cores": qe_input.n_cores,
-        "memory": int(qe_input.memory),
+        "n_cores": 16,
+        "memory": 49152,
     }
 
     simulation = Simulation.model_validate(smodel)

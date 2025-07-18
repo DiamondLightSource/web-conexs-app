@@ -90,9 +90,7 @@ export interface SimulationPage {
 }
 
 export interface SimulationInputBase {
-  n_cores: number;
   chemical_structure_id: number;
-  memory: number;
 }
 
 export interface OrcaSimulationInput extends SimulationInputBase {
@@ -116,13 +114,8 @@ export interface QESimulationSubmission
   extends QESimulationInput,
     SimulationInputBase {}
 
-// export interface OrcaSimulationWithResource extends OrcaSimulationInput {
-//   n_cores: number;
-// }
-
 export const orcaDefaultValues: OrcaSimulationInput = {
   calculation_type: "xas",
-  memory: 1024,
   functional: "B3LYP RIJCOSX",
   basis_set: "def2-SVP",
   charge: 0,
@@ -132,7 +125,6 @@ export const orcaDefaultValues: OrcaSimulationInput = {
   orb_win_0_stop: 0,
   orb_win_1_start: 0,
   orb_win_1_stop: 0,
-  n_cores: 4,
   chemical_structure_id: -1,
 };
 
@@ -147,11 +139,9 @@ export interface FDMNESSimulation extends FDMNESSimulationInput {
 }
 
 export const fdmnesDefaultValues: FDMNESSimulationInput = {
-  memory: 1024,
   element: 1,
   edge: "k",
   greens_approach: false,
-  n_cores: 4,
   chemical_structure_id: -1,
 };
 
@@ -169,7 +159,5 @@ export const qeDefaultValues: QESimulationSubmission = {
   absorbing_atom: 1,
   edge: "k",
   conductivity: "metallic",
-  n_cores: 4,
-  memory: 1024,
   chemical_structure_id: -1,
 };

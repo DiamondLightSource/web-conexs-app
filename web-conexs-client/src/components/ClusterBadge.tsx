@@ -8,7 +8,7 @@ export default function ClusterBadge() {
   const query = useQuery({
     queryKey: ["cluster"],
     queryFn: getClusterStatus,
-    refetchInterval: 5000,
+    refetchInterval: 30000,
   });
 
   let background = theme.palette.background.default;
