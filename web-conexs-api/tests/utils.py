@@ -36,6 +36,7 @@ def build_test_database(session: Session):
 
     simulation_model = {
         "person_id": 1,
+        "chemical_structure_id": 1,
         "working_directory": "/test",
         "completion_date": datetime.min,
         "memory": 1,
@@ -51,12 +52,10 @@ def build_test_database(session: Session):
     # session.add(simulation)
 
     orca_input = OrcaSimulationInput(
-        molecular_structure_id=1,
         basis_set="test",
         calculation_type="xas",
         charge=0,
         functional="test",
-        memory_per_core=4,
         multiplicity=1,
         simulation=simulation,
     )

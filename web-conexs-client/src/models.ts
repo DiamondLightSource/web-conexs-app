@@ -16,6 +16,11 @@ export interface Person {
   accepted_orca_eula: boolean;
 }
 
+export interface HPCCluster {
+  id: number;
+  updated: string | null;
+}
+
 export interface LatticeParameter {
   a: number | null;
   b: number | null;
@@ -85,9 +90,9 @@ export interface SimulationPage {
 }
 
 export interface SimulationInputBase {
-  n_cores: number,
-  chemical_structure_id: number,
-  memory: number,
+  n_cores: number;
+  chemical_structure_id: number;
+  memory: number;
 }
 
 export interface OrcaSimulationInput extends SimulationInputBase {
@@ -107,9 +112,9 @@ export interface OrcaSimulation extends OrcaSimulationInput {
   simulation: Simulation;
 }
 
-export interface QESimulationSubmission extends QESimulationInput, SimulationInputBase {
-
-}
+export interface QESimulationSubmission
+  extends QESimulationInput,
+    SimulationInputBase {}
 
 // export interface OrcaSimulationWithResource extends OrcaSimulationInput {
 //   n_cores: number;
@@ -140,7 +145,6 @@ export interface FDMNESSimulationInput extends SimulationInputBase {
 export interface FDMNESSimulation extends FDMNESSimulationInput {
   simulation: Simulation;
 }
-
 
 export const fdmnesDefaultValues: FDMNESSimulationInput = {
   memory: 1024,

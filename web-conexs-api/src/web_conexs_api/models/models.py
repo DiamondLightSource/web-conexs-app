@@ -135,8 +135,8 @@ class CrystalStructureInput(MolecularStructureInput):
 
 
 class SimulationInputBase(SQLModel):
-    n_cores: int = 4
-    memory: int = 32
+    n_cores: int
+    memory: int
     chemical_structure_id: int
 
 
@@ -149,8 +149,8 @@ class SimulationBase(SQLModel):
     chemical_structure_id: Optional[int] = Field(
         foreign_key="chemical_structure.id", default=None
     )
-    n_cores: Optional[int] = 4
-    memory: Optional[int] = 32
+    n_cores: int
+    memory: int
     message: Optional[str] = None
     job_id: Optional[int] = None
     request_date: Optional[datetime.datetime]
@@ -358,3 +358,11 @@ class FDMNESSimulationSubmission(FdmnesSimulationInput, SimulationInputBase):
 
 class OrcaSimulationSubmission(OrcaSimulationInput, SimulationInputBase):
     pass
+
+
+class Cluster(SQLModel, table=True):
+    __tablename__: str = "cluster"
+    id: int = Field(
+        primary_key=True,
+    )
+    updated: Optional[datetime.datetime]

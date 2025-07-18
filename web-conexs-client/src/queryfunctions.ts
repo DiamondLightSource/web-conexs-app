@@ -4,6 +4,7 @@ import {
   CrystalInput,
   FDMNESSimulation,
   FDMNESSimulationInput,
+  HPCCluster,
   Molecule,
   MoleculeInput,
   OrcaSimulation,
@@ -16,6 +17,7 @@ import {
   StructureWithMetadata,
   XASData,
 } from "./models";
+import { Cluster } from "cluster";
 
 const simulationUrl = "/api/simulations";
 const orcaUrl = "/api/orca";
@@ -24,12 +26,13 @@ const qeUrl = "/api/qe";
 const structureUrl = "/api/structures";
 const userUrl = "/api/user";
 const matprojUrl = "/api/matproj";
+const clusterUrl = "/api/cluster/status";
 
 export const getSimulationPage = async (
   cursor: string | null,
   size: number
 ) => {
-  let url = simulationUrl + "?size=" + size;
+  let url = simulationUrl + "/?size=" + size;
 
   if (cursor != null) {
     url = url + "&cursor=" + cursor;
@@ -244,6 +247,17 @@ export const getMatProjStructure = async (id: string) => {
 
   if (response.status != 200) {
     throw new Error("Failed to submit job");
+  }
+  return response.data;
+};
+
+export const getClusterStatus = async () => {
+  const response = await axios.get<HPCCluster, AxiosResponse<HPCCluster>>(
+    clusterUrl
+  );
+
+  if (response.status != 200) {
+    throw new Error("Failed to read cluster status");
   }
   return response.data;
 };

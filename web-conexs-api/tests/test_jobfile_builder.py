@@ -22,11 +22,10 @@ from web_conexs_api.models.models import (
 
 
 def test_orca_xas_filebuilder():
-    test_simulation = Simulation(n_cores=1)
+    test_simulation = Simulation(n_cores=1, memory=1)
 
     test_model = OrcaSimulation(
         basis_set="test",
-        memory_per_core=1,
         functional="test",
         multiplicity=1,
         calculation_type=OrcaCalculation.xas,
@@ -34,7 +33,7 @@ def test_orca_xas_filebuilder():
 
     test_model.simulation = test_simulation
 
-    test_structure = MolecularStructure(
+    test_structure = ChemicalStructure(
         label="test",
         person_id=1,
         sites=[ChemicalSite(element_z=1, x=0, y=0, z=0, index=0)],
@@ -54,11 +53,10 @@ def test_orca_xas_filebuilder():
 
 
 def test_orca_opt_filebuilder():
-    test_simulation = Simulation(n_cores=1)
+    test_simulation = Simulation(n_cores=1, memory=1)
 
     test_model = OrcaSimulation(
         basis_set="test",
-        memory_per_core=1,
         functional="test",
         multiplicity=1,
         calculation_type=OrcaCalculation.opt,
@@ -194,7 +192,6 @@ def test_qe_filebuilder():
     assert "nat = 3" in jobfile
     assert "ntyp = 3" in jobfile
 
-    print(jobfile)
     jobfile_array = jobfile.split("\n")
 
     species_line = -1

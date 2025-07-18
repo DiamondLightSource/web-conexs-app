@@ -16,7 +16,7 @@ PMG_MAPI_KEY = os.environ.get("PMG_MAPI_KEY")
 router = APIRouter()
 
 
-@router.get("/api/matproj/{id}")
+@router.get("/{id}")
 def get_fdmnes_simulation_endpoint(
     id: str,
     user_id: str = Depends(get_current_user),

@@ -1,4 +1,4 @@
-import { Typography, useTheme } from "@mui/material";
+import { Stack, Typography, useTheme } from "@mui/material";
 
 import { useContext } from "react";
 import { UserContext } from "../UserContext";
@@ -7,6 +7,7 @@ import {
   Navbar,
   User,
 } from "@diamondlightsource/sci-react-ui";
+import ClusterBadge from "./ClusterBadge";
 
 export default function Header() {
   const user = useContext(UserContext);
@@ -20,9 +21,9 @@ export default function Header() {
     <Navbar
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
       logo="theme"
-      // leftSlot={<SideDrawer />}
       rightSlot={
-        <>
+        <Stack direction="row" alignItems="center">
+          <ClusterBadge></ClusterBadge>
           <User
             color="white"
             onLogin={handleLogin}
@@ -34,7 +35,7 @@ export default function Header() {
             }
           />
           <ColourSchemeButton />
-        </>
+        </Stack>
       }
       containerWidth={false}
     >

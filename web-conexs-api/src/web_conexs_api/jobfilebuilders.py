@@ -1,4 +1,5 @@
 import io
+from pathlib import Path
 from typing import List
 
 import numpy as np
@@ -109,7 +110,7 @@ def build_orca_input_file(
     jobfile += "\n"
 
     memory_per_core = int(
-        (orca_simulation.simulation.memory * 0.7) / orca_simulation.simulation.n_cores
+        ((orca_simulation.simulation.memory) / 1.3) / orca_simulation.simulation.n_cores
     )
 
     jobfile += "%maxcore " + str(memory_per_core) + "\n\n"
@@ -245,19 +246,13 @@ def build_qe_inputfile(
     jobfile += "/ \n\n"
 
     jobfile += "ATOMIC_SPECIES \n"
-    jobfile += (
-        abs_el
-        + "* "
-        + str(elements[abs_el]["mass"])
-        + " "
-        + elements[abs_el]["pseudopotential"]
-        + "\n"
-    )
 
-    pp_abs = elements[abs_el]["pseudopotential"]
+    pp_abs = str(Path(elements[abs_el]["pseudopotential"]))
+    jobfile += abs_el + "* " + str(elements[abs_el]["mass"]) + " " + pp_abs + "\n"
 
     pp = []
     for el in element_set:
+        pp.append(elements[el]["pseudopotential"])
         if el == abs_el and abs_el_count == 1:
             continue
 
@@ -269,7 +264,6 @@ def build_qe_inputfile(
             + elements[el]["pseudopotential"]
             + "\n"
         )
-        pp.append(elements[el]["pseudopotential"])
 
     jobfile += "\n\n"
 

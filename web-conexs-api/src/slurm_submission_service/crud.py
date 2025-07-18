@@ -1,6 +1,9 @@
+import datetime
+import logging
+from datetime import timezone
 from typing import List
 
-from sqlmodel import or_, select
+from sqlmodel import and_, or_, select
 
 from web_conexs_api.jobfilebuilders import (
     build_fdmnes_inputfile,
@@ -9,14 +12,16 @@ from web_conexs_api.jobfilebuilders import (
     fdmnes_molecule_to_crystal,
 )
 from web_conexs_api.models.models import (
-    CrystalStructure,
+    ChemicalStructure,
+    Cluster,
     FdmnesSimulation,
-    MolecularStructure,
     OrcaSimulation,
     QESimulation,
     Simulation,
     SimulationStatus,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def get_orca_jobfile(session, id):
@@ -24,7 +29,11 @@ def get_orca_jobfile(session, id):
 
 
 def get_molecular_structure(session, id):
-    structure = session.get(MolecularStructure, id)
+    statement = select(ChemicalStructure).where(
+        and_(ChemicalStructure.lattice_id.is_(None), ChemicalStructure.id == id),
+    )
+
+    structure = session.exec(statement).first()
 
     if structure:
         return structure
@@ -43,7 +52,9 @@ def get_orca_simulation(session, id) -> OrcaSimulation:
 
 def get_orca_jobfile_with_technique(session, id):
     orca_simulation = get_orca_simulation(session, id)
-    structure = get_molecular_structure(session, orca_simulation.molecular_structure_id)
+    structure = get_molecular_structure(
+        session, orca_simulation.simulation.chemical_structure_id
+    )
 
     jobfile = build_orca_input_file(orca_simulation, structure)
 
@@ -70,7 +81,11 @@ def get_fdmnes_simulation(session, id) -> FdmnesSimulation:
 
 
 def get_crystal_structure(session, id):
-    structure = session.get(CrystalStructure, id)
+    statement = select(ChemicalStructure).where(
+        and_(ChemicalStructure.lattice_id.is_not(None), ChemicalStructure.id == id),
+    )
+
+    structure = session.exec(statement).first()
 
     if structure:
         return structure
@@ -78,22 +93,29 @@ def get_crystal_structure(session, id):
         raise RuntimeError("Crystal Structure not found")
 
 
+def get_chemical_structure(session, id) -> ChemicalStructure:
+    statement = select(ChemicalStructure).where(ChemicalStructure.id == id)
+
+    structure = session.exec(statement).first()
+
+    if structure:
+        return structure
+    else:
+        raise RuntimeError("Chemical Structure not found")
+
+
 def get_fdmnes_jobfile(session, id):
     fdmnes_simulation = get_fdmnes_simulation(session, id)
 
-    if fdmnes_simulation.crystal_structure_id is not None:
-        structure = get_crystal_structure(
-            session, fdmnes_simulation.crystal_structure_id
-        )
+    structure = get_chemical_structure(
+        session, fdmnes_simulation.simulation.chemical_structure_id
+    )
+
+    if structure.lattice is not None:
         crystalIsMolecule = False
     else:
-        molecule = get_molecular_structure(
-            session, fdmnes_simulation.molecular_structure_id
-        )
-        structure = fdmnes_molecule_to_crystal(molecule)
+        structure = fdmnes_molecule_to_crystal(structure)
         crystalIsMolecule = True
-
-    print(structure.structure)
 
     return build_fdmnes_inputfile(fdmnes_simulation, structure, crystalIsMolecule)
 
@@ -130,6 +152,25 @@ def get_qe_simulation(session, id) -> QESimulation:
 
 def get_qe_jobfile(session, id):
     qe_simulation = get_qe_simulation(session, id)
-    structure = get_crystal_structure(session, qe_simulation.crystal_structure_id)
+    structure = get_crystal_structure(
+        session, qe_simulation.simulation.chemical_structure_id
+    )
 
     return build_qe_inputfile(qe_simulation, structure)
+
+
+def update_cluster(session):
+    statement = select(Cluster)
+    results = session.exec(statement)
+
+    cluster = results.first()
+
+    if cluster is None:
+        logger.error("Cluster not found in database!")
+        return
+
+    cluster.updated = datetime.datetime.now(timezone.utc).isoformat()
+
+    session.add(cluster)
+    session.commit()
+    session.refresh(cluster)
