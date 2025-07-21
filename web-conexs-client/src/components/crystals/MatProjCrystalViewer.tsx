@@ -5,6 +5,7 @@ import React3dMol from "../React3dMol";
 import XYZCrystalFileViewer from "./XYZCrystalFileViewer";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import XYZCrystalViewer from "./XYZCrystalViewer";
 
 function MatProjCrystalViewer(props: { mpid: string }) {
   const mpid = props.mpid;
@@ -48,7 +49,7 @@ function MatProjCrystalViewer(props: { mpid: string }) {
         flex={1}
         spacing={"5px"}
       >
-        <XYZCrystalFileViewer crystal={query.data}></XYZCrystalFileViewer>
+        <XYZCrystalViewer crystal={query.data}></XYZCrystalViewer>
         <React3dMol
           moleculedata={query.data}
           color="#3465A4"
