@@ -10,6 +10,7 @@ from .models.models import (
     ChemicalStructure,
     ConductivityType,
     CrystalStructure,
+    CrystalStructureInput,
     FdmnesSimulation,
     MolecularStructure,
     OrcaCalculation,
@@ -387,20 +388,22 @@ def fdmnes_molecule_to_crystal(
 
 
 def pymatstruct_to_crystal(structure: Structure, label="materials project structure"):
-    structure_string = ""
+    site_list: List[ChemicalSite] = []
 
-    for site in structure.sites:
-        structure_string += f"{site.species_string} {site.a} {site.b} {site.c}\n"
-
-        crystal: CrystalStructure = CrystalStructure(
-            label=label,
-            a=structure.lattice.a,
-            b=structure.lattice.b,
-            c=structure.lattice.c,
-            alpha=structure.lattice.alpha,
-            beta=structure.lattice.beta,
-            gamma=structure.lattice.gamma,
-            structure=structure_string,
+    for i, site in enumerate(structure.sites):
+        site_list.append(
+            ChemicalSite(element_z=site.specie.Z, x=site.a, y=site.b, z=site.c, index=i)
         )
 
-    return crystal
+    lattice: CrystalLattice = CrystalLattice(
+        a=structure.lattice.a,
+        b=structure.lattice.b,
+        c=structure.lattice.c,
+        alpha=structure.lattice.alpha,
+        beta=structure.lattice.beta,
+        gamma=structure.lattice.gamma,
+    )
+
+    s = CrystalStructureInput(label=label, sites=site_list, lattice=lattice)
+
+    return s
