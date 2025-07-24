@@ -33,11 +33,16 @@ export default function ClusterBadge() {
 
   return (
     <Chip
-      sx={{ backgroundColor: background }}
+      sx={{
+        backgroundColor: background,
+        color: theme.palette.primary.contrastText,
+      }}
       size="large"
       variant="outlined"
       label="HPC"
-      icon={<StorageIcon></StorageIcon>}
+      icon={
+        <StorageIcon color={theme.palette.primary.contrastText}></StorageIcon>
+      }
     ></Chip>
   );
 }

@@ -1,6 +1,5 @@
 import { Typography, Stack, Toolbar, useTheme } from "@mui/material";
 
-import MoleculeTable from "../molecules/MoleculeTable";
 import XYZCrystalFileViewer from "./XYZCrystalFileViewer";
 import { getCrystals } from "../../queryfunctions";
 import { useQuery } from "@tanstack/react-query";
@@ -11,6 +10,7 @@ import QEIcon from "../icons/QEIcon";
 import NavButton from "../NavButton";
 import GrainPlusIcon from "../icons/GrainPlusIcon";
 import StructureViewer from "../StructureViewer";
+import StructureTable from "../StructureTable";
 
 export default function CrystalPage() {
   const query = useQuery({
@@ -47,18 +47,15 @@ export default function CrystalPage() {
           </Typography>
         </Toolbar>
         <Stack direction={"row"} spacing={3}>
-          <MoleculeTable
-            molecules={query.data ? query.data : []}
-            selectedMolecule={undefined}
-            setSelectedMolecule={(data) => {
+          <StructureTable
+            structures={query.data ? query.data : []}
+            selectedStructure={undefined}
+            setSelectedStructure={(data) => {
               if (data) {
-                console.log(data.structure.id);
                 setSelectedCrystalId(data.structure.id);
               }
             }}
-            setCurrent={() => {}}
-            prevNext={null}
-          ></MoleculeTable>
+          ></StructureTable>
 
           <XYZCrystalFileViewer id={finalCrystal?.structure.id} />
           <StructureViewer id={finalCrystal?.structure.id}></StructureViewer>

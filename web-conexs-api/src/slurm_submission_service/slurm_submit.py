@@ -19,6 +19,7 @@ from .filetransfer import transfer_results
 logger = logging.getLogger(__name__)
 
 ROOT_DIR = os.environ.get("CONEXS_ROOT_DIR")
+CLUSTER_ROOT_DIR = os.environ.get("CONEXS_CLUSTER_ROOT_DIR")
 STORAGE_DIR = os.environ.get("CONEXS_STORAGE_DIR")
 
 SLURM_TOKEN = os.environ.get("SLURM_TOKEN")
@@ -102,7 +103,7 @@ def build_job_and_run(script, job_name, cpus, memory, cluster_dir, as_tasks):
 
 
 def submit_simulation(script, job_name, sim, user, session, as_tasks):
-    cluster_dir = Path(ROOT_DIR) / Path(user) / Path(job_name)
+    cluster_dir = Path(CLUSTER_ROOT_DIR) / Path(user) / Path(job_name)
 
     try:
         job_id = build_job_and_run(

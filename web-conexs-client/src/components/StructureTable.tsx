@@ -6,8 +6,6 @@ import {
   Table,
   Paper,
   TableBody,
-  Stack,
-  Button,
   Box,
 } from "@mui/material";
 
@@ -16,10 +14,8 @@ import { tableCellClasses } from "@mui/material/TableCell";
 import { styled } from "@mui/material/styles";
 import { useState } from "react";
 
-import { StructureWithMetadata } from "../../models";
-import { periodic_table } from "../../periodictable";
-
-const nResults = 7;
+import { StructureWithMetadata } from "../models";
+import { periodic_table } from "../periodictable";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,18 +38,18 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-function MoleculeMetadata(props: {
+function StructureMetadata(props: {
   key: number;
-  molecule: StructureWithMetadata | null;
+  structure: StructureWithMetadata | null;
   selected: StructureWithMetadata | undefined;
   selectedRow: number;
-  clickMolecule: (molecule: StructureWithMetadata | null) => void;
+  clickStructure: (molecule: StructureWithMetadata | null) => void;
   setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
 }): JSX.Element {
-  const className = props.molecule === props.selected ? "activeclicked" : "";
+  const className = props.structure === props.selected ? "activeclicked" : "";
 
-  const elementString: string = props.molecule
-    ? props.molecule.elements
+  const elementString: string = props.structure
+    ? props.structure.elements
         .map((e) => {
           return periodic_table[e - 1].symbol;
         })
@@ -65,7 +61,7 @@ function MoleculeMetadata(props: {
       onClick={() => {
         console.log("click");
         props.setSelectedRow(props.key);
-        props.clickMolecule(props.molecule);
+        props.clickStructure(props.structure);
       }}
       key={props.key}
       className={className}
@@ -74,43 +70,33 @@ function MoleculeMetadata(props: {
       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
     >
       <StyledTableCell align="left">
-        {props.molecule?.structure.id ?? "\xa0"}
+        {props.structure?.structure.id ?? "\xa0"}
       </StyledTableCell>
       <StyledTableCell align="center">
-        {props.molecule?.structure.label ?? ""}
+        {props.structure?.structure.label ?? ""}
       </StyledTableCell>
       <StyledTableCell align="center">
-        {props.molecule?.atom_count ?? ""}
+        {props.structure?.atom_count ?? ""}
       </StyledTableCell>
       <StyledTableCell align="center">{elementString}</StyledTableCell>
     </StyledTableRow>
   );
 }
 
-export default function MoleculeTable(props: {
-  molecules: StructureWithMetadata[];
-  selectedMolecule: StructureWithMetadata | undefined;
-  setSelectedMolecule: (x: StructureWithMetadata | null) => void;
-  setCurrent: (cursor: string | null) => void;
-  prevNext: string[] | null;
+export default function StructureTable(props: {
+  structures: StructureWithMetadata[];
+  selectedStructure: StructureWithMetadata | undefined;
+  setSelectedStructure: (x: StructureWithMetadata | null) => void;
 }) {
-  const [selectedRow, setSelectedRow] = useState(-1);
+  const [selectedRow, setSelectedRow] = useState(0);
 
-  const clickMolecule = (molecule: StructureWithMetadata | null) => {
-    props.setSelectedMolecule(molecule);
+  const clickStructure = (molecule: StructureWithMetadata | null) => {
+    props.setSelectedStructure(molecule);
   };
-
-  const moleculesList: (StructureWithMetadata | null)[] = [...props.molecules];
-
-  if (props.molecules.length < nResults) {
-    while (moleculesList.length < nResults) {
-      moleculesList.push(null);
-    }
-  }
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ height: "34em" }}>
         <Table sx={{ minWidth: 350 }} size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
@@ -121,13 +107,13 @@ export default function MoleculeTable(props: {
             </TableRow>
           </TableHead>
           <TableBody>
-            {moleculesList.map((molecule, key) =>
-              MoleculeMetadata({
+            {props.structures.map((molecule, key) =>
+              StructureMetadata({
                 key: key,
-                molecule: molecule,
-                selected: props.selectedMolecule,
+                structure: molecule,
+                selected: props.selectedStructure,
                 selectedRow: selectedRow,
-                clickMolecule: clickMolecule,
+                clickStructure: clickStructure,
                 setSelectedRow: setSelectedRow,
               })
             )}
