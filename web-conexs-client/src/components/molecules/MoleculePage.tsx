@@ -1,5 +1,4 @@
 import { Typography, Stack, Toolbar, useTheme } from "@mui/material";
-import MoleculeTable from "./MoleculeTable";
 import { useState } from "react";
 import XYZFileViewer from "./XYZFileViewer";
 import { useQuery } from "@tanstack/react-query";
@@ -10,6 +9,7 @@ import MoleculePlusIcon from "../icons/MoleculePlusIcon";
 import OrcaIcon from "../icons/OrcaIcon";
 import FDMNESIcon from "../icons/FDMNESIcon";
 import StructureViewer from "../StructureViewer";
+import StructureTable from "../StructureTable";
 
 export default function MoleculePage() {
   const query = useQuery({
@@ -47,16 +47,13 @@ export default function MoleculePage() {
           </Typography>
         </Toolbar>
         <Stack direction={"row"} spacing={3}>
-          <MoleculeTable
-            molecules={query.data ? query.data : []}
-            selectedMolecule={undefined}
-            setSelectedMolecule={(data) => {
-              console.log(data?.structure.id);
+          <StructureTable
+            structures={query.data ? query.data : []}
+            selectedStructure={undefined}
+            setSelectedStructure={(data) => {
               setSelectedMoleculeId(data?.structure.id);
             }}
-            setCurrent={() => {}}
-            prevNext={null}
-          ></MoleculeTable>
+          ></StructureTable>
           <Stack spacing={"2px"}>
             <XYZFileViewer id={finalMolecule?.structure.id} />
           </Stack>

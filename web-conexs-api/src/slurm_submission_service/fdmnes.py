@@ -12,8 +12,6 @@ from .slurm_submit import submit_simulation
 logger = logging.getLogger(__name__)
 
 ROOT_DIR = os.environ.get("CONEXS_ROOT_DIR")
-CLUSTER_ROOT_DIR = os.environ.get("CONEXS_CLUSTER_ROOT_DIR")
-
 FDMNES_IMAGE = os.environ.get("FDMNES_IMAGE")
 CONTAINER_IMAGE_DIR = os.environ.get("CONTAINER_IMAGE_DIR")
 

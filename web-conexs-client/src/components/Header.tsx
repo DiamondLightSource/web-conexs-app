@@ -7,7 +7,9 @@ import {
   Navbar,
   User,
 } from "@diamondlightsource/sci-react-ui";
+
 import ClusterBadge from "./ClusterBadge";
+import { Margin } from "@mui/icons-material";
 
 export default function Header() {
   const user = useContext(UserContext);
@@ -19,7 +21,9 @@ export default function Header() {
 
   return (
     <Navbar
-      sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      sx={{
+        zIndex: (theme) => theme.zIndex.drawer + 1,
+      }}
       logo="theme"
       rightSlot={
         <Stack direction="row" alignItems="center">
@@ -39,7 +43,13 @@ export default function Header() {
       }
       containerWidth={false}
     >
-      <Typography variant="h4" color={theme.palette.primary.contrastText}>
+      <Typography
+        variant="h4"
+        color={theme.palette.primary.contrastText}
+        sx={{ padding: "10px 0px 2px 0px" }}
+        s
+        height="100%"
+      >
         Web-CONEXS
       </Typography>
     </Navbar>
