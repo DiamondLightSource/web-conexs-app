@@ -50,14 +50,14 @@ def transfer_results(simulation_type_id, result_dir, storage_dir):
 
     if simulation_type_id == 1:
         # orca
-        ignore_files = ["*.tmp", "*.gbw", "*.prop", "*.cis"]
+        ignore_files = ["*.tmp*", "*.gbw", "*.prop", "*.cis"]
         ignore_pattern = shutil.ignore_patterns(*ignore_files)
     elif simulation_type_id == 3:
         # qe
         ignore_files = ["*.UPF", "*.wfc", "xanes.sav"]
         ignore_pattern = shutil.ignore_patterns(*ignore_files)
 
-    parent = Path("/cake")
+    parent = Path(storage_dir).parent
 
     if not parent.exists:
         parent.mkdir()
