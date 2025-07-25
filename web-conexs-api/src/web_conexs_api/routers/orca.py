@@ -39,7 +39,7 @@ def get_orca_output_endpoint(
     return PlainTextResponse(get_orca_output(session, id, user_id))
 
 
-@router.get("{id}/xyz")
+@router.get("/{id}/xyz")
 def get_orca_xyz_output(
     id: int,
     session: Session = Depends(get_session),
