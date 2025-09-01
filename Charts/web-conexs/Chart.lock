@@ -1,0 +1,9 @@
+dependencies:
+- name: postgresql
+  repository: https://charts.bitnami.com/bitnami
+  version: 12.4.1
+- name: oauth2-proxy
+  repository: https://oauth2-proxy.github.io/manifests/
+  version: 7.5.1
+digest: sha256:edfe90fd4cbfb521123b798b9dfbb2edf43eb7f3c1493150482a9ce6d20554f8
+generated: "2025-08-29T09:21:49.022387356+01:00"

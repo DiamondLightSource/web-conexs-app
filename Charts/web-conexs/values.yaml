@@ -1,0 +1,182 @@
+# Default values for xas-standards-db.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  name: web-conexs
+  client:
+    port: 8081
+  api:
+    port: 8080
+
+api:
+  service:
+    type: ClusterIP
+    targetPort: 5000
+  deployment:
+    replicas: 1
+    image:
+      repository: ghcr.io/diamondlightsource/web-conexs-app-web-conexs-api
+      tag: latest
+    resources:
+      limits:
+        cpu: "1"
+        memory: 300M
+
+client:
+  service:
+    type: ClusterIP
+  deployment:
+    replicas: 1
+    image:
+      repository: ghcr.io/diamondlightsource/web-conexs-app-web-conexs-client
+      tag: latest
+    resources:
+      limits:
+        cpu: "1"
+        memory: 300M
+
+submitter:
+  deployment:
+    image:
+      repository: ghcr.io/diamondlightsource/web-conexs-app-web-conexs-api
+      tag: latest
+  singularity:
+      directory: ""
+      pseudopotentialDir: ""
+      coreDir: ""
+      orca: ""
+      fdmnes: ""
+      quantumEspresso: ""
+  slurm:
+      api: ""
+      partition: ""
+      user: ""
+      timelimit: ""
+      responseKey: ""
+      tokenFile: ""
+  extraVolumes: []
+  extraVolumeMounts: []
+
+database:
+  username: webconexsadmin
+  dbname: webconexsdb
+  protocol: "postgresql+psycopg2"
+
+auth:
+  userInfoEndpoint: ""
+  idKey: ""
+
+data:
+  location: /conexs_data/
+  mountPath: /conexs_data
+  storage: 10Gi
+  rootDir: ""
+  clusterRootDir: ""
+  # extraVolumes:
+  #   - name: data-pv-volume
+  #     persistentVolumeClaim:
+  #       claimName: data-pv-claim
+  # extraVolumeMounts:
+  #   - mountPath: {{ .Values.data.mountPath}}
+  #     name: data-pv-volume
+
+
+security:
+  securityContext:
+    runAsUser: 0
+    runAsGroup: 0
+    supplementalGroups: []
+  
+
+postgresql:
+  image:
+    debug: true
+  auth:
+    existingSecret: postgres-passwords
+    secretKeys:
+      adminPasswordKey: password
+  primary:
+    service:
+      type: LoadBalancer
+    podAntiAffinityPreset: hard
+    resources:
+      requests:
+        cpu: 500m
+        memory: 512Mi
+      limits:
+        cpu: 2
+        memory: 2Gi
+    initdb:
+      scriptsSecret: postgres-init-script
+    extraVolumeMounts:
+      - name: custom-init-scripts-volume
+        mountPath: /docker-entrypoint-initdb.d/tables
+    extraVolumes:
+      - name: custom-init-scripts-volume
+        configMap:
+          name: dbtables-configmap
+    persistence:
+      storageClass: db-nvme-storage
+      size: 8Gi
+
+# alpha
+oauth2-proxy:
+  extraVolumeMounts:
+    - name: proxy-secret
+      mountPath: "/etc/alpha"
+      readOnly: true
+  extraVolumes:
+    - name: proxy-secret
+      secret:
+        secretName: oidc-secrets
+        items:
+          - key: client-secret
+            path: client-secret
+  config:
+    configFile: |-
+      email_domains = [ "*" ]
+      skip_auth_routes = ["GET=^/$","GET=^/assets"]
+      api_routes = ["^/api"]
+      skip_provider_button = true
+      cookie_refresh="1m"
+      cookie_expire="30m"
+  ingress:
+    enabled: true
+    pathType: Prefix
+    hostname: ""
+    hosts: []
+    path: /
+    annotations:
+      nginx.ingress.kubernetes.io/proxy-buffer-size: "8k"
+  alphaConfig:
+    enabled: true
+    configFile: |
+      upstreamConfig:
+        proxyRawPath: true
+        upstreams:
+          - id: api
+            path: /api/
+            uri: http://{{ include "web-conexs.fullname" . }}-api-svc:{{.Values.global.api.port}}
+          - id: client
+            path: /
+            uri: http://{{ include "web-conexs.fullname" . }}-client-svc:{{.Values.global.client.port}}
+    configData:
+      providers: []
+      injectRequestHeaders:
+        - name: Authorization
+          values:
+            - claim: access_token
+              prefix: "Bearer "
+        - name: x-forwarded-user
+          values:
+            - claim: user
+        - name: x-auth-request-user
+          values:
+            - claim: user
+      injectResponseHeaders:
+        - name: Identity
+          values:
+            - claim: id_token
+  redis:
+    enabled: false

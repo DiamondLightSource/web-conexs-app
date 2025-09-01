@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dbtables-configmap
+data:
+  tables.sql: |-
+{{ .Files.Get "tables.sql" | indent 4 }}
