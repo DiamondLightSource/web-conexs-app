@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "web-conexs.fullname" . }}-client-svc
+spec:
+  ports:
+  - name: http
+    port: {{ .Values.global.client.port }}
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: {{ include "web-conexs.fullname" . }}-client
+  type: {{ .Values.client.service.type }}

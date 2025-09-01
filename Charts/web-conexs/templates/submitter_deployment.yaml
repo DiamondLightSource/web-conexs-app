@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "web-conexs.fullname" . }}-submitter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "web-conexs.fullname" . }}-submitter
+  template:
+    metadata:
+      labels:
+        app: {{ include "web-conexs.fullname" . }}-submitter
+    spec:
+      securityContext:
+        {{- toYaml .Values.security.securityContext | nindent 8 }}
+      volumes:
+          - name: slurm-token-file
+            secret:
+              secretName: slurm-token
+          - name: data-pv-volume
+            persistentVolumeClaim:
+              claimName: data-pv-claim
+          {{- toYaml .Values.submitter.extraVolumes | nindent 10 }}
+      containers:
+          - name: {{ include "web-conexs.fullname" . }}-submitter
+            image: "{{ .Values.api.deployment.image.repository }}:{{ .Values.api.deployment.image.tag | default .Chart.AppVersion }}"
+            args: ["-m", "slurm_submission_service"]
+            resources:
+              limits:
+                cpu: "1"
+                memory: 300M
+            volumeMounts:
+              - name: data-pv-volume
+                mountPath: "/conexs_data"
+              - name: slurm-token-file
+                mountPath: /var/conexs-token
+              {{- toYaml .Values.submitter.extraVolumeMounts | nindent 14 }}
+            env:
+              - name: POSTGRESS_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: application-passwords
+                    key: passwords
+              - name: POSTGRESURL
+                value: {{ .Values.database.protocol }}://{{ .Values.database.username }}:$(POSTGRESS_PASSWORD)@{{.Release.Name}}-postgresql.{{.Release.Namespace}}.svc.cluster.local/{{ .Values.database.dbname }}
+              - name: OIDC_USER_INFO_ENDPOINT
+                value: {{ .Values.auth.userInfoEndpoint}}
+              - name: OIDC_ID_KEY
+                value: {{ .Values.auth.idKey}}
+              - name: ORCA_IMAGE
+                value: {{ .Values.submitter.singularity.orca }}
+              - name: FDMNES_IMAGE
+                value: {{ .Values.submitter.singularity.fdmnes }}
+              - name: QE_IMAGE
+                value: {{ .Values.submitter.singularity.quantumEspresso }}
+              - name: CONTAINER_IMAGE_DIR
+                value: {{ .Values.submitter.singularity.directory }}
+              - name: SLURM_API
+                value: {{ .Values.submitter.slurm.api }}
+              - name: SLURM_PARTITION
+                value: {{ .Values.submitter.slurm.partition }}
+              - name: SLURM_USER
+                value: {{ .Values.submitter.slurm.user }}
+              - name: CONEXS_ROOT_DIR
+                value: {{ .Values.data.rootDir}}
+              - name: CONEXS_CLUSTER_ROOT_DIR
+                value: {{ .Values.data.clusterRootDir}}
+              - name: SLURM_TOKEN_FILE
+                value: {{ .Values.submitter.slurm.tokenFile }}
+              - name: SLURM_RESPONSE_KEY
+                value: {{ .Values.submitter.slurm.responseKey }}
+              - name: PP_DIR
+                value: {{ .Values.submitter.singularity.pseudopotentialDir }}
+              - name: WFC_DIR
+                value: {{ .Values.submitter.singularity.coreDir }}
+              - name: CONEXS_STORAGE_DIR
+                value: {{ .Values.data.location}}
+              - name: SLURM_TIME_LIMIT
+                value: {{quote .Values.submitter.slurm.timelimit }}

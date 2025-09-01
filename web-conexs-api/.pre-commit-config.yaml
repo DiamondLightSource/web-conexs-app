@@ -4,7 +4,7 @@ repos:
     hooks:
       - id: check-added-large-files
       - id: check-yaml
-        exclude: ^helm/web-conexs/templates/
+        exclude: ^Charts/web-conexs/templates/
         args: [--allow-multiple-documents]
       - id: check-merge-conflict
       - id: end-of-file-fixer
