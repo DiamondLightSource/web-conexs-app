@@ -90,7 +90,14 @@ export default function QEForm(props: {
             </Button>
           </Stack>
           <Stack flex={1}>
-            <StructureViewer id={props.data.chemical_structure_id} />
+            <StructureViewer
+              id={props.data.chemical_structure_id}
+              labelledAtomIndex={
+                props.data.absorbing_atom
+                  ? props.data.absorbing_atom - 1
+                  : undefined
+              }
+            />
           </Stack>
           <Paper
             flex={1}
