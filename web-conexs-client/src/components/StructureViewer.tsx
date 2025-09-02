@@ -3,7 +3,10 @@ import { skipToken, useQuery } from "@tanstack/react-query";
 import { getStructure } from "../queryfunctions";
 import React3dMol from "./React3dMol";
 
-export default function StructureViewer(props: { id: number | undefined }) {
+export default function StructureViewer(props: {
+  id: number | undefined;
+  labelledAtomIndex?: number | undefined;
+}) {
   const id = props.id;
   const query = useQuery({
     queryKey: ["structure", id],
@@ -17,6 +20,7 @@ export default function StructureViewer(props: { id: number | undefined }) {
         color="#3465A4"
         style="Stick"
         orbital={null}
+        labelledAtom={props.labelledAtomIndex}
       ></React3dMol>
     </Box>
   );

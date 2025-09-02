@@ -59,7 +59,6 @@ function StructureMetadata(props: {
   return (
     <StyledTableRow
       onClick={() => {
-        console.log("click");
         props.setSelectedRow(props.key);
         props.clickStructure(props.structure);
       }}

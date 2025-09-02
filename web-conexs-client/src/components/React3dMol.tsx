@@ -8,6 +8,7 @@ interface Molecule3DProps {
   moleculedata: MoleculeInput | CrystalInput | null;
   style: string;
   orbital: Orbital | null;
+  labelledAtom: number | undefined;
 }
 
 interface Orbital {
@@ -92,6 +93,16 @@ export default function React3dMol(props: Molecule3DProps) {
           blabel: "Y",
           clabel: "Z",
         });
+
+        if (props.labelledAtom != undefined) {
+          viewer.addLabel(
+            "*",
+            { backgroundOpacity: 0, fontSize: 28 },
+            { index: props.labelledAtom }
+          );
+
+          
+        }
       } else if (props.moleculedata) {
         const xyz = moleculeInputToXYZ(props.moleculedata);
 
@@ -109,8 +120,6 @@ export default function React3dMol(props: Molecule3DProps) {
           viewer.setStyle({}, { sphere: { color: "spectrum", radius: 1 } });
         }
       }
-
-      // viewer.addLabel("*", {}, { index: 3 });
 
       viewer.zoomTo();
       viewer.render();

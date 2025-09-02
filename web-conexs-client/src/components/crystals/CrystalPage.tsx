@@ -30,7 +30,6 @@ export default function CrystalPage() {
     }
   }
 
-  console.log(finalCrystal);
   return (
     <MainPanel>
       <Stack spacing={"10px"}>
