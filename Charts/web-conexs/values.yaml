@@ -37,6 +37,7 @@ client:
         memory: 300M
 
 submitter:
+  enabled: true
   deployment:
     image:
       repository: ghcr.io/diamondlightsource/web-conexs-app-web-conexs-api

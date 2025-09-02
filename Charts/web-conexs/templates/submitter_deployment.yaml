@@ -1,3 +1,5 @@
+{{- if .Values.submitter.enabled -}}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -78,3 +80,5 @@ spec:
                 value: {{ .Values.data.location}}
               - name: SLURM_TIME_LIMIT
                 value: {{quote .Values.submitter.slurm.timelimit }}
+
+{{- end }}
