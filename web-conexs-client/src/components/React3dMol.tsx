@@ -40,6 +40,7 @@ export default function React3dMol(props: Molecule3DProps) {
 
       const viewer = mol3d.createViewer(moleculeViewer.current, {
         backgroundColor: props.color,
+        defaultcolors: mol3d.elementColors.Jmol,
       });
 
       if (props.orbital) {
@@ -97,11 +98,16 @@ export default function React3dMol(props: Molecule3DProps) {
         if (props.labelledAtom != undefined) {
           viewer.addLabel(
             "*",
-            { backgroundOpacity: 0, fontSize: 28 },
+            { backgroundOpacity: 0, fontSize: 18 },
             { index: props.labelledAtom }
           );
-
-          
+          const invertColor = function (atom) {
+            return (0xffffff - atom.color) | 0xff000000;
+          };
+          viewer.setStyle(
+            { index: props.labelledAtom },
+            { sphere: { colorfunc: invertColor, radius: 0.6 } }
+          );
         }
       } else if (props.moleculedata) {
         const xyz = moleculeInputToXYZ(props.moleculedata);
