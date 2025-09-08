@@ -1,7 +1,7 @@
 {{- if .Values.submitter.enabled -}}
 
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: {{ include "web-conexs.fullname" . }}-submitter
 spec:
