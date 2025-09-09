@@ -46,7 +46,7 @@ export interface Structure {
   label: string;
   person_id: number;
   id: number;
-  lattice_id: number;
+  lattice_id: number | null;
 }
 
 export interface StructureWithMetadata {
