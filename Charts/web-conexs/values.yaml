@@ -92,6 +92,10 @@ security:
 
 postgresql:
   image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: 15.0.0-debian-11-r0
+    pullPolicy: IfNotPresent
     debug: true
   auth:
     existingSecret: postgres-passwords
