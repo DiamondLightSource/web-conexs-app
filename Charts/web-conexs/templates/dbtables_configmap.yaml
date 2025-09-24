@@ -1,3 +1,4 @@
+{{- if .Values.database.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -5,3 +6,4 @@ metadata:
 data:
   tables.sql: |-
 {{ .Files.Get "tables.sql" | indent 4 }}
+{{- end }}
