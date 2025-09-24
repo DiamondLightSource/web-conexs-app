@@ -1,3 +1,4 @@
+{{- if .Values.platform.enabled}}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -32,7 +33,7 @@ spec:
             - name: POSTGRESS_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: application-passwords
+                  name: {{.Values.database.passwordSecretName}}
                   key: passwords
             - name: POSTGRESURL
               value: {{ .Values.database.protocol }}://{{ .Values.database.username }}:$(POSTGRESS_PASSWORD)@{{.Release.Name}}-postgresql.{{.Release.Namespace}}.svc.cluster.local/{{ .Values.database.dbname }}
@@ -50,3 +51,4 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "web-conexs.fullname" . }}-dbenv-configmap
+{{- end }}

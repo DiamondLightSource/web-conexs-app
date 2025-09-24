@@ -9,6 +9,9 @@ global:
   api:
     port: 8080
 
+platform:
+  enabled: true
+
 api:
   service:
     type: ClusterIP
@@ -60,9 +63,11 @@ submitter:
   extraVolumeMounts: []
 
 database:
+  enabled: true
   username: webconexsadmin
   dbname: webconexsdb
   protocol: "postgresql+psycopg2"
+  passwordSecretName: application-passwords
 
 auth:
   userInfoEndpoint: ""

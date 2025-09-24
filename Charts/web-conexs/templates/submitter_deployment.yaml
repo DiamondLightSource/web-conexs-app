@@ -1,4 +1,4 @@
-{{- if .Values.submitter.enabled -}}
+{{- if and .Values.submitter.enabled .Values.platform.enabled}}
 
 apiVersion: apps/v1
 kind: StatefulSet
@@ -42,14 +42,10 @@ spec:
               - name: POSTGRESS_PASSWORD
                 valueFrom:
                   secretKeyRef:
-                    name: application-passwords
+                    name: {{.Values.database.passwordSecretName}}
                     key: passwords
               - name: POSTGRESURL
                 value: {{ .Values.database.protocol }}://{{ .Values.database.username }}:$(POSTGRESS_PASSWORD)@{{.Release.Name}}-postgresql.{{.Release.Namespace}}.svc.cluster.local/{{ .Values.database.dbname }}
-              - name: OIDC_USER_INFO_ENDPOINT
-                value: {{ .Values.auth.userInfoEndpoint}}
-              - name: OIDC_ID_KEY
-                value: {{ .Values.auth.idKey}}
               - name: ORCA_IMAGE
                 value: {{ .Values.submitter.singularity.orca }}
               - name: FDMNES_IMAGE
