@@ -129,10 +129,6 @@ export default function React3dMol(props: Molecule3DProps) {
 
       viewer.zoomTo();
       viewer.render();
-      return () => {
-        // @ts-expect-error without clearing the private scene, render may be called on disposed canvas
-        viewer.scene = null;
-      };
     }
 
     return () => {
