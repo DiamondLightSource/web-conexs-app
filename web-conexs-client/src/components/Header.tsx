@@ -9,7 +9,6 @@ import {
 } from "@diamondlightsource/sci-react-ui";
 
 import ClusterBadge from "./ClusterBadge";
-import { Margin } from "@mui/icons-material";
 
 export default function Header() {
   const user = useContext(UserContext);
@@ -33,9 +32,9 @@ export default function Header() {
             onLogin={handleLogin}
             onLogout={handleLogout}
             user={
-              user == null || user == undefined
+              user.person == null || user.person == undefined
                 ? null
-                : { fedid: user.identifier }
+                : { fedid: user.person.identifier }
             }
           />
           <ColourSchemeButton />

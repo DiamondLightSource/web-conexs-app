@@ -1,10 +1,8 @@
-import { http, HttpResponse, delay } from "msw";
+import { http, HttpResponse } from "msw";
 import {
   Crystal,
-  CrystalInput,
   HPCCluster,
   Molecule,
-  MoleculeInput,
   OrcaSimulation,
   OrcaSimulationInput,
   Person,
@@ -14,7 +12,6 @@ import {
   StructureWithMetadata,
   XASData,
 } from "../models";
-import { Cluster } from "cluster";
 
 const orcaMockOutput = "********\n**ORCA RESULT**\n********";
 const orcaMockJobfile = "********\n**ORCA JOBFILE**\n********";
@@ -146,9 +143,7 @@ export const handlers = [
     }
   }),
 
-  http.get("/api/orca/:id", ({ params }) => {
-    const { id } = params;
-
+  http.get("/api/orca/:id", () => {
     return HttpResponse.json(mockOrcaSimulation);
   }),
 

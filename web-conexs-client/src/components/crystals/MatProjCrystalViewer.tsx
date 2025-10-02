@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMatProjStructure, postCrystal } from "../../queryfunctions";
 import { Button, Stack, Typography } from "@mui/material";
 import React3dMol from "../React3dMol";
-import XYZCrystalFileViewer from "./XYZCrystalFileViewer";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import XYZCrystalViewer from "./XYZCrystalViewer";
@@ -55,6 +54,7 @@ function MatProjCrystalViewer(props: { mpid: string }) {
           color="#3465A4"
           style="Stick"
           orbital={null}
+          labelledAtom={undefined}
         ></React3dMol>
       </Stack>
       <Button

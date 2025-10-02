@@ -6,6 +6,7 @@ FROM python:${PYTHON_VERSION} AS developer
 # Add any system dependencies for the developer/build environment here
 RUN apt-get update && apt-get install -y --no-install-recommends \
     graphviz \
+    libldap2-dev libsasl2-dev slapd ldap-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up a virtual environment and put it in PATH
@@ -24,7 +25,7 @@ FROM python:${PYTHON_VERSION}-slim AS runtime
 COPY --from=build /venv/ /venv/
 ENV PATH=/venv/bin:$PATH
 
-RUN apt-get update && apt-get install libpq5 -y
+RUN apt-get update && apt-get install libpq5 libldap2-dev libsasl2-dev slapd ldap-utils -y
 
 # change this entrypoint if it is not the same as the repo
 ENTRYPOINT ["python"]

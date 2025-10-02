@@ -29,7 +29,7 @@ export default function CrystalEditor(props: {
 }) {
   const [label, setLabel] = useState(templateCrystal.label);
   const [labelError, setLabelError] = useState("");
-  const [lattice, setLattice] = useState<LatticeParameter | null>({
+  const [lattice, setLattice] = useState<LatticeParameter>({
     ...templateCrystal.lattice,
   });
   const [structure, setStructure] = useState<string | null>(

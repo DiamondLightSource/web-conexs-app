@@ -20,7 +20,7 @@ import GridOnIcon from "@mui/icons-material/GridOn";
 
 import Paper from "@mui/material/Paper";
 
-import { useTheme } from "@mui/material";
+import { Theme, useTheme } from "@mui/material";
 import { ReactElement, useState } from "react";
 
 import ndarray from "ndarray";
@@ -39,19 +39,19 @@ function CurveOption(props: { option: CurveType }) {
 }
 
 function XASChart(props: { xas: XASData }) {
-  const curveOptions: CurveType[] = Object.values(
-    CurveType
-  ) as Array<CurveType>;
+  // const curveOptions: CurveType[] = Object.values(
+  //   CurveType
+  // ) as Array<CurveType>;
 
   const [useGrid, setUseGrid] = useState(true);
-  const [curveOption, setCurveOption] = useState(curveOptions[0]);
+  // const [curveOption, setCurveOption] = useState(curveOptions[0]);
 
-  const theme = useTheme();
+  const theme: Theme = useTheme();
 
-  let xdata: ndarray.NdArray<number[]> = ndarray(props.xas.energy, [
+  const xdata: ndarray.NdArray<number[]> = ndarray(props.xas.energy, [
     props.xas.energy.length,
   ]);
-  let ydata: ndarray.NdArray<number[]> = ndarray(props.xas.xas, [
+  const ydata: ndarray.NdArray<number[]> = ndarray(props.xas.xas, [
     props.xas.energy.length,
   ]);
 
@@ -102,8 +102,8 @@ function XASChart(props: { xas: XASData }) {
         height: "100%",
         display: "flex",
         flexDirection: "column",
-        backgroundColor: (theme) => theme.palette.background.default,
-        fontFamily: (theme) => theme.typography.fontFamily,
+        backgroundColor: (theme: Theme) => theme.palette.background.default,
+        fontFamily: (theme: Theme) => theme.typography.fontFamily,
       }}
     >
       <Box style={toolbarstyle}>

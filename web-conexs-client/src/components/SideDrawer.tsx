@@ -151,7 +151,7 @@ export default function SideDrawer() {
           reloadDocument={false}
         ></ListItemStyled>
 
-        {user && (
+        {user.person && (
           <>
             <Divider />
             <ListItemStyled
