@@ -122,18 +122,6 @@ class CrystalStructureInput(MolecularStructureInput):
     lattice: Lattice
 
 
-# class CrystalStructure(CrystalStructureInput, table=True):
-#     __tablename__: str = "crystal_structure"
-#     id: int | None = Field(primary_key=True, default=None)
-#     person_id: int = Field(foreign_key="person.id", default=None)
-
-
-# class MolecularStructure(MolecularStructureInput, table=True):
-#     __tablename__: str = "molecular_structure"
-#     id: int | None = Field(primary_key=True, default=None)
-#     person_id: int = Field(foreign_key="person.id", default=None)
-
-
 class SimulationInputBase(SQLModel):
     chemical_structure_id: int
 

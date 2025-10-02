@@ -19,7 +19,8 @@ dependencies = [
     "psycopg2",
     "numpy",
     "requests",
-    "pymatgen"
+    "pymatgen",
+    "python-ldap"
 ] # Add project dependencies here, e.g. ["click", "numpy"]
 dynamic = ["version"]
 license.file = "LICENSE"

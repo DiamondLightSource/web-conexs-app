@@ -16,6 +16,11 @@ export interface Person {
   accepted_orca_eula: boolean;
 }
 
+export interface PersonResult {
+  person: Person | null | undefined;
+  person_status: "PENDING" | "UNAUTHORIZED" | "FORBIDDEN" | "OK" | "ERROR";
+}
+
 export interface HPCCluster {
   id: number;
   updated: string | null;

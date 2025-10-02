@@ -3,23 +3,45 @@ import { UserContext } from "../UserContext";
 import { Navigate } from "react-router-dom";
 import MainPanel from "./MainPanel";
 import { Typography } from "@mui/material";
+import Forbidden from "./Forbidden";
 
 export default function RequireAuth(props: {
   children: React.ReactNode;
   requireOrcaEULA: boolean;
 }) {
-  const user = useContext(UserContext);
+  const user_result = useContext(UserContext);
 
-  if (user == undefined) {
+  if (user_result.person_status == "ERROR") {
+    return (
+      <MainPanel>
+        <Typography>Internal Error!</Typography>
+      </MainPanel>
+    );
+  }
+
+  if (user_result.person_status == "FORBIDDEN") {
+    return (
+      <MainPanel>
+        <Forbidden></Forbidden>
+      </MainPanel>
+    );
+  }
+
+  if (
+    user_result.person_status == "UNAUTHORIZED" &&
+    user_result.person == null
+  ) {
+    return <Navigate to={"/"} replace />;
+  }
+
+  const user = user_result.person;
+
+  if (user_result.person_status == "PENDING" || user == null) {
     return (
       <MainPanel>
         <Typography>Loading...</Typography>
       </MainPanel>
     );
-  }
-
-  if (user == null) {
-    return <Navigate to={"/"} replace />;
   }
 
   if (!user.accepted_orca_eula && props.requireOrcaEULA) {

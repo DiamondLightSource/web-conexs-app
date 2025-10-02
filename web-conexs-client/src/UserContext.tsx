@@ -1,18 +1,22 @@
 import { createContext } from "react";
-import { Person } from "./models";
+import { PersonResult } from "./models";
 import { useQuery } from "@tanstack/react-query";
 import { getUser } from "./queryfunctions";
+import { AxiosError } from "axios";
 
-const UserContext = createContext<Person | null | undefined>(null);
+const UserContext = createContext<PersonResult>({
+  person: null,
+  person_status: "PENDING",
+});
 
 function UserProvider(props: { children: React.ReactNode }) {
   const { children } = props;
   const query = useQuery({
     queryKey: ["user"],
     queryFn: getUser,
-    retry: (failureCount, error) => {
-      if ("status" in error && error.status == 401) {
-        //dont retry 401
+    retry: (failureCount, error: AxiosError) => {
+      if ("status" in error && (error.status == 401 || error.status == 403)) {
+        //dont retry 401/403
         return false;
       }
 
@@ -21,12 +25,30 @@ function UserProvider(props: { children: React.ReactNode }) {
   });
 
   //undefined if pending
-  let response = undefined;
+  let response: PersonResult = {
+    person: null,
+    person_status: "PENDING",
+  };
 
   if (query.isError) {
-    response = null;
+    if (query.error.status == 401) {
+      response = {
+        person: null,
+        person_status: "UNAUTHORIZED",
+      };
+    } else if (query.error.status == 403) {
+      response = {
+        person: null,
+        person_status: "FORBIDDEN",
+      };
+    } else {
+      response = {
+        person: null,
+        person_status: "ERROR",
+      };
+    }
   } else {
-    response = query.data;
+    response = { person: query.data, person_status: "OK" };
   }
 
   return (

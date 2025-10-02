@@ -76,6 +76,7 @@ export default function CreateMoleculePage() {
             color="#3465A4"
             style="Stick"
             orbital={null}
+            labelledAtom={undefined}
           ></React3dMol>
         </Stack>
         <Button

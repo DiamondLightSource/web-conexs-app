@@ -31,7 +31,7 @@ export default function OrcaEulaPage() {
     },
   });
 
-  const submitHandler = (e) => {
+  const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     mutation.mutate();
   };

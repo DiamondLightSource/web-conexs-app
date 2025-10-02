@@ -29,7 +29,7 @@ function NumberNoSpinner(props: {
 
 export default function LatticeEditor(props: {
   lattice: LatticeParameter;
-  setLattice: (l: LatticeParameter | null) => void;
+  setLattice: (l: LatticeParameter) => void;
 }) {
   const firstRowKeys: string[] = ["a", "b", "c"];
   const secondRowKeys: string[] = ["alpha", "beta", "gamma"];
