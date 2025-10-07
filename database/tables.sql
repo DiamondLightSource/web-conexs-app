@@ -182,7 +182,6 @@ CREATE TABLE chemical_structure (
 
 COMMENT ON TABLE chemical_structure IS 'Table describing a structure, linking  multiple chemical sites';
 
-
 CREATE TABLE simulation (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     simulation_type_id INTEGER NOT NULL,
@@ -204,19 +203,6 @@ CREATE TABLE simulation (
 );
 
 COMMENT ON TABLE simulation IS 'Base table for simulations';
-
---CREATE OR REPLACE FUNCTION notify_new_simulation() RETURNS trigger AS $$
---BEGIN
---  PERFORM pg_notify('simulation_notification', NEW.id::text);
---  RETURN NEW;
---END;
---$$ LANGUAGE plpgsql;
-
---CREATE TRIGGER simulation_notify_trigger
---AFTER INSERT ON simulation
---FOR EACH ROW EXECUTE PROCEDURE notify_new_simulation();
-
-
 
 CREATE TABLE chemical_site (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -284,31 +270,3 @@ CREATE TABLE qe_simulation (
 );
 
 COMMENT ON TABLE qe_simulation IS 'Specific information for a Quantum ESPRESSO simulation';
-
-INSERT INTO person(identifier) VALUES('test_user');
-
-INSERT INTO lattice(id, a, b, c, alpha, beta, gamma) VALUES(DEFAULT,4.44,4.44,4.44,60,60,60);
-
-INSERT INTO chemical_structure(label, person_id, lattice_id) VALUES('Water', 1, NULL), ('KCl', 1, 1);;
-
-
--- INSERT INTO chemical_structure(id, label, person_id, lattice_id) VALUES(DEFAULT, 'KCl', 1, 1);
-
-INSERT INTO chemical_site(chemical_structure_id, element_z, x, y, z, index) VALUES(1,1,0.7493682,0.0000000,0.4424329,1), (1,8,0.0000000,0.0000000,-0.1653507,2), (1,1,-0.7493682,0.0000000,0.4424329,3);
--- INSERT INTO chemical_site(chemical_structure_id, element_z, x, y, z, index) VALUES(1,8,0.0000000,0.0000000,-0.1653507,2);
--- INSERT INTO chemical_site(chemical_structure_id, element_z, x, y, z, index) VALUES(1,1,-0.7493682,0.0000000,0.4424329,3);
-
-
--- INSERT INTO crystal_structure(label, person_id,a,b,c,alpha,beta,gamma,structure) VALUES('Silver',1,4.1043564,4.1043564,4.1043564,90,90,90,'Ag 0.0 0.0 0.0
--- Ag 0.5 0.5 0.0
--- Ag 0.5 0.0 0.5
--- Ag 0.0 0.5 0.5');
-
-
-
-INSERT INTO chemical_site (chemical_structure_id, element_z, x, y, z, index) VALUES(2, 19, 0.0, 0.0, 0.0, 1);
-INSERT INTO chemical_site (chemical_structure_id, element_z, x, y, z, index) VALUES(2, 17, 0.5, 0.5, 0.5, 2);
-
-
--- INSERT INTO crystal_structure(label, person_id,a,b,c,alpha,beta,gamma,structure) VALUES('KCl',1,4.44,4.44,4.44,60,60,60,'K 0.0 0.0 0.0
--- Cl 0.5 0.5 0.5');

@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 from pathlib import Path
 from typing import List
@@ -434,6 +435,44 @@ def get_orca_output(session, id, user_id):
     result_file = wd + "/orca_result.txt"
 
     with open(result_file) as fh:
+        file = fh.read()
+
+        return file
+
+
+def get_orca_cube_info(session, id, user_id):
+    orca_simulation = get_orca_simulation(session, id, user_id)
+
+    wd = get_working_directory(orca_simulation.simulation)
+
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    result_file = wd + "/cube.json"
+
+    if not os.path.isfile(result_file):
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    with open(result_file) as fh:
+        info = json.load(fh)
+
+        return info
+
+
+def get_orca_cube_file(session, id, cube_id, user_id):
+    orca_simulation = get_orca_simulation(session, id, user_id)
+
+    wd = get_working_directory(orca_simulation.simulation)
+
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    result_file = wd + f"/job.cisdp{cube_id:02}.cube.gz"
+
+    if not os.path.isfile(result_file):
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    with open(result_file, "rb") as fh:
         file = fh.read()
 
         return file

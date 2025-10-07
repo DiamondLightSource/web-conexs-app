@@ -27,6 +27,7 @@ SLURM_TOKEN_FILE = os.environ.get("SLURM_TOKEN_FILE")
 SLURM_USER = os.environ.get("SLURM_USER")
 SLURM_API = os.environ.get("SLURM_API")
 SLURM_PARTITION = os.environ.get("SLURM_PARTITION")
+
 SLURM_RESPONSE_KEY = os.environ.get("SLURM_RESPONSE_KEY", "account")
 SLURM_TIME_LIMIT = os.environ.get("SLURM_TIME_LIMIT", "30")
 

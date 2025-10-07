@@ -227,6 +227,12 @@ class OrcaSpectrum(enum.Enum):
     xesq = "xesq"
 
 
+class OrcaCubeInfo(SQLModel):
+    index: int
+    energy: float
+    intensity: float
+
+
 class OrcaSpectrumInput(SQLModel):
     simulation_id: int
     spectrum_type: OrcaSpectrum
