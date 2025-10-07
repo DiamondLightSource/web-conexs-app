@@ -32,7 +32,7 @@ def submit_orca(session, sim: Simulation):
 
     orca_sif = os.path.join(CONTAINER_IMAGE_DIR, ORCA_IMAGE)
 
-    if keyword == OrcaCalculation.opt or keyword == OrcaCalculation.scf:
+    if keyword == OrcaCalculation.opt:
         script = (
             "#!/bin/bash\n"
             + "set -e\n"
