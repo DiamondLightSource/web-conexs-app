@@ -37,18 +37,6 @@ JOB_FAILED = "FAILED"
 JOB_PENDING = "PENDING"
 JOB_TIMEOUT = "TIMEOUT"
 
-if not CLUSTER_ROOT_DIR:
-    raise RuntimeError("Cluster root dir not configured!")
-
-if not ROOT_DIR:
-    raise RuntimeError("Root dir not configured!")
-
-if not STORAGE_DIR:
-    raise RuntimeError("Storage dir not configured!")
-
-if not SLURM_USER:
-    raise RuntimeError("Slurm User not configured!")
-
 
 def get_token():
     if SLURM_TOKEN is not None:
