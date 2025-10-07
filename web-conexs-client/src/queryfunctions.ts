@@ -7,6 +7,7 @@ import {
   HPCCluster,
   Molecule,
   MoleculeInput,
+  OrcaCubeInfo,
   OrcaSimulation,
   OrcaSimulationInput,
   Person,
@@ -46,7 +47,7 @@ export const getSimulationPage = async (
 
 export const getSimulation = async (id: number) => {
   const { data } = await axios.get<Simulation, AxiosResponse<Simulation>>(
-    simulationUrl  + id
+    simulationUrl + id
   );
   return data;
 };
@@ -146,6 +147,21 @@ export const getOrcaLog = async (id: number) => {
 export const getOrcaXyz = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
     orcaUrl + id + "/xyz"
+  );
+  return data;
+};
+
+export const getOrcaCubeInfo = async (id: number) => {
+  const { data } = await axios.get<
+    OrcaCubeInfo[],
+    AxiosResponse<OrcaCubeInfo[]>
+  >(orcaUrl + id + "/cube");
+  return data;
+};
+
+export const getOrcaCube = async (id: number, cube_id: number) => {
+  const { data } = await axios.get<string, AxiosResponse<string>>(
+    orcaUrl + id + "/cube/" + cube_id
   );
   return data;
 };

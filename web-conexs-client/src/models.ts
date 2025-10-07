@@ -156,6 +156,12 @@ export interface QESimulationInput {
   conductivity: string;
 }
 
+export interface OrcaCubeInfo {
+  index: number;
+  energy: number;
+  intensity: number;
+}
+
 export interface QESimulation extends QESimulationInput {
   simulation: Simulation;
 }

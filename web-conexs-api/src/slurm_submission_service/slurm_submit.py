@@ -27,6 +27,7 @@ SLURM_TOKEN_FILE = os.environ.get("SLURM_TOKEN_FILE")
 SLURM_USER = os.environ.get("SLURM_USER")
 SLURM_API = os.environ.get("SLURM_API")
 SLURM_PARTITION = os.environ.get("SLURM_PARTITION")
+
 SLURM_RESPONSE_KEY = os.environ.get("SLURM_RESPONSE_KEY", "account")
 SLURM_TIME_LIMIT = os.environ.get("SLURM_TIME_LIMIT", "30")
 
@@ -35,6 +36,18 @@ JOB_COMPLETED = "COMPLETED"
 JOB_FAILED = "FAILED"
 JOB_PENDING = "PENDING"
 JOB_TIMEOUT = "TIMEOUT"
+
+if not CLUSTER_ROOT_DIR:
+    raise RuntimeError("Cluster root dir not configured!")
+
+if not ROOT_DIR:
+    raise RuntimeError("Root dir not configured!")
+
+if not STORAGE_DIR:
+    raise RuntimeError("Storage dir not configured!")
+
+if not SLURM_USER:
+    raise RuntimeError("Slurm User not configured!")
 
 
 def get_token():

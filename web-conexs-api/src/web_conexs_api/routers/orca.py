@@ -1,9 +1,13 @@
+from typing import List
+
 from fastapi import APIRouter, Depends
 from fastapi.responses import PlainTextResponse
 from sqlmodel import Session
 
 from ..auth import get_current_user
 from ..crud import (
+    get_orca_cube_file,
+    get_orca_cube_info,
     get_orca_jobfile,
     get_orca_output,
     get_orca_simulation,
@@ -13,6 +17,7 @@ from ..crud import (
 )
 from ..database import get_session
 from ..models.models import (
+    OrcaCubeInfo,
     OrcaSimulation,
     OrcaSimulationResponse,
     OrcaSimulationSubmission,
@@ -64,6 +69,28 @@ def get_orca_xas_endpoint(
     user_id: str = Depends(get_current_user),
 ):
     return get_orca_xas(session, id, user_id)
+
+
+@router.get("/{id}/cube")
+def get_orca_cube_endpoint(
+    id: int,
+    session: Session = Depends(get_session),
+    user_id: str = Depends(get_current_user),
+) -> List[OrcaCubeInfo]:
+    return get_orca_cube_info(session, id, user_id)
+
+
+@router.get("/{id}/cube/{cube_id}")
+def get_orca_cube_file_endpoint(
+    id: int,
+    cube_id: int,
+    session: Session = Depends(get_session),
+    user_id: str = Depends(get_current_user),
+):
+    cube_file = get_orca_cube_file(session, id, cube_id, user_id)
+    response = PlainTextResponse(cube_file)
+    response.headers.append(key="Content-Encoding", value="gzip")
+    return response
 
 
 @router.post("/")

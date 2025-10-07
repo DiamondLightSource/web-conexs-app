@@ -5,6 +5,7 @@ import OrcaChart from "./OrcaChart";
 import OrcaLogViewer from "./OrcaLogViewer";
 import OrcaXYZViewer from "./OrcaXYZViewer";
 import OrcaJobFileViewer from "./OrcaJobFileViewer";
+import OrcaOrbitalView from "./OrcaOrbitalView";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -62,6 +63,7 @@ export default function OrcaResultsTabs(props: {
           )}
           <Tab label="Results Log" {...a11yProps(1)} />
           <Tab label="Input Job File" {...a11yProps(2)} />
+          <Tab label="Orbital Viewer" {...a11yProps(3)} />
         </Tabs>
       </Box>
 
@@ -80,6 +82,9 @@ export default function OrcaResultsTabs(props: {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         <OrcaJobFileViewer id={props.orcaSimulationId} />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={3}>
+        <OrcaOrbitalView id={props.orcaSimulationId} />
       </CustomTabPanel>
     </Box>
   );
