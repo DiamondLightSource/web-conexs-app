@@ -43,6 +43,16 @@ spec:
               value: {{ .Values.auth.idKey}}
             - name: CONEXS_STORAGE_DIR
               value: {{ .Values.data.location}}
+            - name: AUTHZ_CHECK
+              value: {{ .Values.api.authz.type}}
+            - name: LDAP_URL
+              value: {{ .Values.api.authz.url}}
+            - name: LDAP_BASE
+              value: {{ .Values.api.authz.base}}
+            - name: LDAP_ATTR_KEY
+              value: {{ .Values.api.authz.key}}
+            - name: LDAP_ATTR_VALUE
+              value: {{ .Values.api.authz.value}}
             - name: PMG_MAPI_KEY
               valueFrom:
                 secretKeyRef:

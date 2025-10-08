@@ -25,6 +25,14 @@ api:
       limits:
         cpu: "1"
         memory: 300M
+  authz:
+    type: ""
+    url : ""
+    base: ""
+    attrKey: ""
+    attrValue: ""
+
+
 
 client:
   service:
