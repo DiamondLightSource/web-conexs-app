@@ -26,7 +26,6 @@ if __name__ == "__main__":
                     test = test.split()
 
                     if test[0].isdigit():
-                        print(line)
                         index = 1 if not xes else 4
                         val = float(test[index])
                         if not xes:

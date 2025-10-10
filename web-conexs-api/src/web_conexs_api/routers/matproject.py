@@ -28,12 +28,9 @@ def get_fdmnes_simulation_endpoint(
             status_code=500, detail="Server not configured for Materials Project"
         )
 
-    print("Key present")
-
     with MPRester(None) as m:
         try:
             structure = m.get_structure_by_material_id(id, conventional_unit_cell=False)
-            print("Got structure")
             return pymatstruct_to_crystal(structure, id)
         except Exception as e:
             print(e)

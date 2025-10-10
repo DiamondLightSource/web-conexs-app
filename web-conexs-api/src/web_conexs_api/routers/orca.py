@@ -110,18 +110,4 @@ def submit_orca(
     session: Session = Depends(get_session),
     user_id: str = Depends(get_current_user),
 ) -> OrcaSimulation:
-    print(orca_input)
     return submit_orca_simulation(orca_input, session, user_id)
-
-
-# TODO further orca endpoints
-# mapspc
-# @app.get("/api/orca/{id}/spectra")
-# @app.get("/api/orca/{id}/spectra/{spectrum_id}")
-# request new mapspc call
-# @app.post("/api/orca/{id}/spectra/")
-# orbital cube files
-# @app.get("/api/orca/{id}/orbitals")
-# @app.get("/api/orca/{id}/orbitals/{orbital_calculation_id}")
-# request new mapspc call
-# @app.post("/api/orca/{id}/orbitals/")

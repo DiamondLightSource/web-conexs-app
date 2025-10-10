@@ -238,8 +238,6 @@ def upload_structure(
 ) -> MolecularStructure | CrystalStructure:
     person = get_or_create_person(session, user_id)
 
-    print(structure)
-
     chem_struct = ChemicalStructure.model_validate(structure)
 
     chem_struct.person_id = person.id
