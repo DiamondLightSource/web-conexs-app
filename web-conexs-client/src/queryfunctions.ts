@@ -7,6 +7,7 @@ import {
   HPCCluster,
   Molecule,
   MoleculeInput,
+  OrcaCoreOrbitalInfo,
   OrcaCubeInfo,
   OrcaSimulation,
   OrcaSimulationInput,
@@ -156,6 +157,14 @@ export const getOrcaCubeInfo = async (id: number) => {
     OrcaCubeInfo[],
     AxiosResponse<OrcaCubeInfo[]>
   >(orcaUrl + id + "/cube");
+  return data;
+};
+
+export const getOrcaCoreOrbitalInfo = async (id: number) => {
+  const { data } = await axios.get<
+    OrcaCoreOrbitalInfo[],
+    AxiosResponse<OrcaCoreOrbitalInfo[]>
+  >(orcaUrl + id + "/coreorbital");
   return data;
 };
 

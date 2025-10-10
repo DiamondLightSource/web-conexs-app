@@ -157,7 +157,7 @@ INSERT INTO "simulation_type" VALUES(2,'FDMNES');
 INSERT INTO "simulation_type" VALUES(3,'Quantum ESPRESSO');
 
 
-CREATE TYPE simulation_status_enum AS ENUM('requested', 'submitted', 'running', 'completed', 'failed', 'error', 'request_cancel', 'cancelled');
+CREATE TYPE simulation_status_enum AS ENUM('requested', 'submitted', 'running', 'completed', 'failed', 'error', 'request_cancel', 'cancelled', 'deleted');
 
 CREATE TABLE lattice (
     id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -219,7 +219,7 @@ CREATE TABLE chemical_site (
 
 COMMENT ON TABLE chemical_site IS 'Table to hold location of an element';
 
-CREATE TYPE orca_calculation_enum AS ENUM('xas', 'xes', 'opt');
+CREATE TYPE orca_calculation_enum AS ENUM('xas', 'xes', 'opt', 'scf');
 
 CREATE TYPE orca_solvent_enum AS ENUM('Water','Acetone', 'Acetonitrile',  'Ammonia', 'Benzene', 'CCl4', 'CH2Cl2', 'Chloroform', 'Cyclohexane', 'DMF', 'DMSO', 'Ethanol', 'Hexane', 'Methanol', 'Octanol', 'Pyridine', 'THF','Toluene');
 

@@ -110,6 +110,10 @@ def build_orca_input_file(
 
     jobfile += "\n"
 
+    if calc_type == OrcaCalculation.scf:
+        jobfile += "!ReducedPop UNO\n"
+        jobfile += "%output\nPrint[P_ReducedOrbPopMO_L] 1\nend\n"
+
     memory_per_core = int(
         ((orca_simulation.simulation.memory) / 1.3) / orca_simulation.simulation.n_cores
     )

@@ -31,7 +31,7 @@ export default function OrcaResults(props: { orcaSimulationId: number }) {
       </Stack>
       <OrcaResultsTabs
         orcaSimulationId={props.orcaSimulationId}
-        isOpt={query.data.calculation_type == "opt"}
+        calcType={query.data.calculation_type}
       />
     </Stack>
   );

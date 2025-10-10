@@ -6,6 +6,7 @@ import OrcaLogViewer from "./OrcaLogViewer";
 import OrcaXYZViewer from "./OrcaXYZViewer";
 import OrcaJobFileViewer from "./OrcaJobFileViewer";
 import OrcaOrbitalView from "./OrcaOrbitalView";
+import OrcaCoreOrbitals from "./OrcaCoreOrbitals";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -36,15 +37,81 @@ function a11yProps(index: number) {
   };
 }
 
+function getTabs(calcType: string, id: number, value: number) {
+  const tabs = [];
+  const panels = [];
+  let index = 0;
+
+  if (calcType == "opt") {
+    tabs.push(<Tab label="Results XYZ" {...a11yProps(index)} />);
+    panels.push(
+      <CustomTabPanel value={value} index={index++}>
+        <OrcaXYZViewer id={id} />
+      </CustomTabPanel>
+    );
+  }
+
+  if (calcType == "xas") {
+    tabs.push(<Tab label="XAS Plot" {...a11yProps(index)} />);
+    panels.push(
+      <CustomTabPanel value={value} index={index++}>
+        <OrcaChart id={id}></OrcaChart>
+      </CustomTabPanel>
+    );
+    tabs.push(<Tab label="Orbital Viewer" {...a11yProps(index)} />);
+    panels.push(
+      <CustomTabPanel value={value} index={index++}>
+        <OrcaOrbitalView id={id} />
+      </CustomTabPanel>
+    );
+  }
+
+  if (calcType == "xes") {
+    tabs.push(<Tab label="XES Plot" {...a11yProps(index)} />);
+    panels.push(
+      <CustomTabPanel value={value} index={index++}>
+        <OrcaChart id={id}></OrcaChart>
+      </CustomTabPanel>
+    );
+  }
+
+  if (calcType == "scf") {
+    tabs.push(<Tab label="Core Orbitals" {...a11yProps(index)} />);
+    panels.push(
+      <CustomTabPanel value={value} index={index++}>
+        <OrcaCoreOrbitals id={id} />
+      </CustomTabPanel>
+    );
+  }
+
+  tabs.push(<Tab label="Results Log" {...a11yProps(index)} />);
+  panels.push(
+    <CustomTabPanel value={value} index={index++}>
+      <OrcaLogViewer id={id} />
+    </CustomTabPanel>
+  );
+
+  tabs.push(<Tab label="Input Job File" {...a11yProps(index)} />);
+  panels.push(
+    <CustomTabPanel value={value} index={index++}>
+      <OrcaJobFileViewer id={id} />
+    </CustomTabPanel>
+  );
+
+  return [tabs, panels];
+}
+
 export default function OrcaResultsTabs(props: {
   orcaSimulationId: number;
-  isOpt: boolean;
+  calcType: string;
 }) {
   const [value, setValue] = useState(0);
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  const [tabs, panels] = getTabs(props.calcType, props.orcaSimulationId, value);
 
   return (
     <Box
@@ -56,36 +123,10 @@ export default function OrcaResultsTabs(props: {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          {props.isOpt ? (
-            <Tab label="Results XYZ" {...a11yProps(0)} />
-          ) : (
-            <Tab label="XAS Plot" {...a11yProps(0)} />
-          )}
-          <Tab label="Results Log" {...a11yProps(1)} />
-          <Tab label="Input Job File" {...a11yProps(2)} />
-          <Tab label="Orbital Viewer" {...a11yProps(3)} />
+          {tabs}
         </Tabs>
       </Box>
-
-      {props.isOpt ? (
-        <CustomTabPanel value={value} index={0}>
-          <OrcaXYZViewer id={props.orcaSimulationId} />
-        </CustomTabPanel>
-      ) : (
-        <CustomTabPanel value={value} index={0}>
-          <OrcaChart id={props.orcaSimulationId}></OrcaChart>
-        </CustomTabPanel>
-      )}
-
-      <CustomTabPanel value={value} index={1}>
-        <OrcaLogViewer id={props.orcaSimulationId} />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={2}>
-        <OrcaJobFileViewer id={props.orcaSimulationId} />
-      </CustomTabPanel>
-      <CustomTabPanel value={value} index={3}>
-        <OrcaOrbitalView id={props.orcaSimulationId} />
-      </CustomTabPanel>
+      {panels}
     </Box>
   );
 }

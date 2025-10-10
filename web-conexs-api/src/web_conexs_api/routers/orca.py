@@ -10,6 +10,7 @@ from ..crud import (
     get_orca_cube_info,
     get_orca_jobfile,
     get_orca_output,
+    get_orca_population_info,
     get_orca_simulation,
     get_orca_xas,
     get_orca_xyz,
@@ -17,6 +18,7 @@ from ..crud import (
 )
 from ..database import get_session
 from ..models.models import (
+    OrcaCoreOrbitalInfo,
     OrcaCubeInfo,
     OrcaSimulation,
     OrcaSimulationResponse,
@@ -93,24 +95,19 @@ def get_orca_cube_file_endpoint(
     return response
 
 
+@router.get("/{id}/coreorbital")
+def get_orca_orbital_population_endpoint(
+    id: int,
+    session: Session = Depends(get_session),
+    user_id: str = Depends(get_current_user),
+) -> List[OrcaCoreOrbitalInfo]:
+    return get_orca_population_info(session, id, user_id)
+
+
 @router.post("/")
 def submit_orca(
     orca_input: OrcaSimulationSubmission,
     session: Session = Depends(get_session),
     user_id: str = Depends(get_current_user),
 ) -> OrcaSimulation:
-    print(orca_input)
     return submit_orca_simulation(orca_input, session, user_id)
-
-
-# TODO further orca endpoints
-# mapspc
-# @app.get("/api/orca/{id}/spectra")
-# @app.get("/api/orca/{id}/spectra/{spectrum_id}")
-# request new mapspc call
-# @app.post("/api/orca/{id}/spectra/")
-# orbital cube files
-# @app.get("/api/orca/{id}/orbitals")
-# @app.get("/api/orca/{id}/orbitals/{orbital_calculation_id}")
-# request new mapspc call
-# @app.post("/api/orca/{id}/orbitals/")
