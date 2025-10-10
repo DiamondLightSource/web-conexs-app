@@ -25,7 +25,7 @@ const schemaTemplate = {
     },
     calculation_type: {
       title: "Technique",
-      enum: ["xas", "xes", "opt"],
+      enum: ["xas", "xes", "opt", "scf"],
       default: "xas",
     },
     functional: {

@@ -12,7 +12,14 @@ def create_results_zip(working_directory: str, simulation_type_id: int):
 
     if simulation_type_id == 1:
         # orca
-        include_files = ["orca_result*", "job.inp", "*.out", "*.xyz"]
+        include_files = [
+            "orca_result*",
+            "job.inp",
+            "*.out",
+            "*.xyz",
+            "*.gzip",
+            "*.json",
+        ]
     elif simulation_type_id == 2:
         # fdmnes
         include_files = ["*.txt", "*.out"]

@@ -26,6 +26,7 @@ from .models.models import (
     FDMNESSimulationSubmission,
     MolecularStructure,
     MolecularStructureInput,
+    OrcaCalculation,
     OrcaSimulation,
     OrcaSimulationSubmission,
     Person,
@@ -459,6 +460,25 @@ def get_orca_cube_info(session, id, user_id):
         return info
 
 
+def get_orca_population_info(session, id, user_id):
+    orca_simulation = get_orca_simulation(session, id, user_id)
+
+    wd = get_working_directory(orca_simulation.simulation)
+
+    if wd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    result_file = wd + "/orbitals.json"
+
+    if not os.path.isfile(result_file):
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    with open(result_file) as fh:
+        info = json.load(fh)
+
+        return info
+
+
 def get_orca_cube_file(session, id, cube_id, user_id):
     orca_simulation = get_orca_simulation(session, id, user_id)
 
@@ -522,9 +542,11 @@ def get_orca_xas(session, id, user_id):
     if wd is None:
         raise HTTPException(status_code=404, detail="Item not found")
 
-    result_file = wd + "/orca_result.txt.absq.dat"
+    keywd = "absq" if orca_simulation.calculation_type == OrcaCalculation.xas else "xes"
 
-    result_stk = wd + "/orca_result.txt.absq.stk"
+    result_file = wd + f"/orca_result.txt.{keywd}.dat"
+
+    result_stk = wd + f"/orca_result.txt.{keywd}.stk"
 
     if not os.path.isfile(result_file):
         raise HTTPException(status_code=404, detail="Item not found")

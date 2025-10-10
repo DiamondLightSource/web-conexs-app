@@ -12,7 +12,7 @@ export default function OrcaOrbitalView(props: { id: number }) {
   });
 
   const [selectedCubeId, setSelectedCubeID] = useState(0);
-  const [isoValue, setIsoValue] = useState(0.001);
+  const [isoValue, setIsoValue] = useState(0.0005);
 
   return (
     <Stack direction="row" margin={"5px"}>

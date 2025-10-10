@@ -21,6 +21,33 @@ from web_conexs_api.models.models import (
 )
 
 
+def test_orca_scf_filebuilder():
+    test_simulation = Simulation(n_cores=1, memory=1)
+
+    test_model = OrcaSimulation(
+        basis_set="test",
+        functional="test",
+        multiplicity=1,
+        calculation_type=OrcaCalculation.scf,
+    )
+
+    test_model.simulation = test_simulation
+
+    test_structure = ChemicalStructure(
+        label="test",
+        person_id=1,
+        sites=[ChemicalSite(element_z=1, x=0, y=0, z=0, index=0)],
+        id=1,
+    )
+
+    jobfile = build_orca_input_file(test_model, test_structure)
+
+    print(jobfile)
+
+    assert "P_ReducedOrbPopMO_L" in jobfile
+    assert "!ReducedPop UNO" in jobfile
+
+
 def test_orca_xas_filebuilder():
     test_simulation = Simulation(n_cores=1, memory=1)
 

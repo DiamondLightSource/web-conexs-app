@@ -111,6 +111,7 @@ class SimulationStatus(enum.Enum):
     error = "error"
     request_cancel = "request_cancel"
     cancelled = "cancelled"
+    deleted = "deleted"
 
 
 class MolecularStructureInput(SQLModel):
@@ -168,6 +169,7 @@ class OrcaCalculation(enum.Enum):
     xas = "xas"
     xes = "xes"
     opt = "opt"
+    scf = "scf"
 
 
 class OrcaSolvent(enum.Enum):
@@ -231,6 +233,16 @@ class OrcaCubeInfo(SQLModel):
     index: int
     energy: float
     intensity: float
+
+
+class OrcaCoreOrbitalInfo(SQLModel):
+    el: str
+    idx: int
+    orb_1s: Optional[int] = None
+    orb_2s: Optional[int] = None
+    orb_2px: Optional[int] = None
+    orb_2py: Optional[int] = None
+    orb_2pz: Optional[int] = None
 
 
 class OrcaSpectrumInput(SQLModel):

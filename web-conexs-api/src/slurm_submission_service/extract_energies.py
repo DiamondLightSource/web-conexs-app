@@ -2,11 +2,14 @@ if __name__ == "__main__":
     try:
         with open("orca_result.txt", "r") as fh:
             found = False
+            xes = False
             energies = []
 
             for line in fh.readlines():
                 if "COMBINED ELECTRIC DIPOLE" in line:
                     found = True
+                if "EMISSION" in line:
+                    xes = True
 
                 if found:
                     test = line.strip()
@@ -23,7 +26,12 @@ if __name__ == "__main__":
                     test = test.split()
 
                     if test[0].isdigit():
-                        energies.append(float(test[1]) / 8065.544)
+                        print(line)
+                        index = 1 if not xes else 4
+                        val = float(test[index])
+                        if not xes:
+                            val = val / 8065.544
+                        energies.append(val)
 
     except Exception as e:
         print("Energy range file generation failed")
