@@ -4,14 +4,14 @@ import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { getSimulationPage } from "../queryfunctions";
-import { SimulationInformation } from "./SimulationInformation";
 import MainPanel from "./MainPanel";
+import { useNavigate } from "react-router-dom";
 
 export default function SimulationReviewPage() {
-  const [simId, setSimId] = useState<number | undefined>();
   const [cursor, setCursor] = useState<string | null>(null);
   const [next, setNext] = useState<string | null>(null);
   const [previous, setPrevious] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const query = useQuery({
     queryKey: ["simulations", cursor],
@@ -32,61 +32,44 @@ export default function SimulationReviewPage() {
 
   return (
     <MainPanel>
-      {!simId ? (
-        <Stack overflow="auto" justifyContent="space-between" width={"100%"}>
-          <Toolbar
-            sx={{
-              justifyContent: "space-between",
-              alignItems: "center",
-              backgroundColor: theme.palette.action.disabled,
-              borderRadius: "4px 4px 0px 0px",
-            }}
-          >
-            <Typography variant="h5" component="div">
-              Simulation Results
-            </Typography>
-            <Stack direction="row" spacing={2}>
-              <Button
-                variant="contained"
-                disabled={previous == null}
-                onClick={() => setCursor(previous)}
-              >
-                &lt;
-              </Button>
-              <Button
-                variant="contained"
-                disabled={next == null}
-                onClick={() => setCursor(next)}
-              >
-                &gt;
-              </Button>
-            </Stack>
-          </Toolbar>
-          <SimulationTable
-            simulations={query.data ? query.data.items : []}
-            selectedSimulation={simId}
-            setSelectedSimulation={(simulation) => {
-              setSimId(simulation?.id);
-            }}
-          ></SimulationTable>
-        </Stack>
-      ) : (
-        <Stack overflow="auto" justifyContent="space-between" width={"100%"}>
-          <Toolbar
-            sx={{
-              justifyContent: "space-between",
-              alignItems: "center",
-              backgroundColor: theme.palette.action.disabled,
-              borderRadius: "4px 4px 0px 0px",
-            }}
-          >
-            <Button variant="contained" onClick={() => setSimId(undefined)}>
-              Back
+      <Stack overflow="auto" justifyContent="space-between" width={"100%"}>
+        <Toolbar
+          sx={{
+            justifyContent: "space-between",
+            alignItems: "center",
+            backgroundColor: theme.palette.action.disabled,
+            borderRadius: "4px 4px 0px 0px",
+          }}
+        >
+          <Typography variant="h5" component="div">
+            Simulation Results
+          </Typography>
+          <Stack direction="row" spacing={2}>
+            <Button
+              variant="contained"
+              disabled={previous == null}
+              onClick={() => setCursor(previous)}
+            >
+              &lt;
             </Button>
-          </Toolbar>
-          <SimulationInformation simId={simId}></SimulationInformation>
-        </Stack>
-      )}
+            <Button
+              variant="contained"
+              disabled={next == null}
+              onClick={() => setCursor(next)}
+            >
+              &gt;
+            </Button>
+          </Stack>
+        </Toolbar>
+        <SimulationTable
+          simulations={query.data ? query.data.items : []}
+          setSelectedSimulation={(simulation) => {
+            if (simulation != null && simulation.id) {
+              navigate("/simulations/" + simulation.id);
+            }
+          }}
+        ></SimulationTable>
+      </Stack>
     </MainPanel>
   );
 }

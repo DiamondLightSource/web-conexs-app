@@ -23,6 +23,7 @@ import RequireAuth from "./components/RequireAuth";
 import SideDrawer from "./components/SideDrawer";
 import LoginPage from "./components/LoginPage";
 import MatProjPage from "./components/crystals/MatProjPage";
+import SimulationView from "./components/SimulationView";
 
 const queryClient = new QueryClient();
 
@@ -75,6 +76,14 @@ function App() {
                 element={
                   <RequireAuth requireOrcaEULA={false}>
                     <SimulationReviewPage />
+                  </RequireAuth>
+                }
+              />
+              <Route
+                path="/simulations/:id"
+                element={
+                  <RequireAuth requireOrcaEULA={false}>
+                    <SimulationView />
                   </RequireAuth>
                 }
               />

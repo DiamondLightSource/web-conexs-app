@@ -45,15 +45,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 function SimulationMetadata(props: {
   key: number;
   simulation: Simulation | null;
-  selected: number | undefined;
   selectedRow: number;
   clickSimulation: (simulation: Simulation | null) => void;
   setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
   cancellationMutation: (id: number) => void;
 }): JSX.Element {
-  const className =
-    props.simulation?.id === props.selected ? "activeclicked" : "";
-
   const theme = useTheme();
 
   let color = theme.palette.text.primary;
@@ -95,7 +91,6 @@ function SimulationMetadata(props: {
   return (
     <StyledTableRow
       key={props.key}
-      className={className}
       hover={true}
       selected={props.selectedRow === props.key}
       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -137,7 +132,6 @@ function SimulationMetadata(props: {
 
 export default function SimulationTable(props: {
   simulations: Simulation[];
-  selectedSimulation: number | undefined;
   setSelectedSimulation: (x: Simulation | null) => void;
 }) {
   const [selectedRow, setSelectedRow] = useState(-1);
@@ -178,7 +172,6 @@ export default function SimulationTable(props: {
               SimulationMetadata({
                 key: key,
                 simulation: simulation,
-                selected: props.selectedSimulation,
                 selectedRow: selectedRow,
                 clickSimulation: props.setSelectedSimulation,
                 setSelectedRow: setSelectedRow,
