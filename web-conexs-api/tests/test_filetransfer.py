@@ -2,6 +2,7 @@ from pathlib import Path
 
 from slurm_submission_service.filetransfer import (
     check_filesystem,
+    clean_up,
     copy_directory,
     copy_multiple_files,
     make_directory,
@@ -123,3 +124,24 @@ def test_multiple_files(tmp_path: Path):
     assert output.exists()
 
     assert output.read_text() == job_text
+
+
+def test_clean_dir(tmp_path: Path):
+    filename = "job.inp"
+    filename_tmp = "job.tmp"
+    s = tmp_path / "source"
+    filename_opt = "job.opt"
+    s.mkdir()
+    p = s / filename
+    p.write_text("job")
+    p_tmp = s / filename_tmp
+    p_tmp.write_text("tmp")
+
+    p_opt = s / filename_opt
+    p_opt.write_text("tmp")
+
+    clean_up(str(s))
+
+    assert p.exists()
+    assert not p_tmp.exists()
+    assert not p_opt.exists()
