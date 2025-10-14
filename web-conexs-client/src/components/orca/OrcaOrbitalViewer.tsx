@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getOrcaCube } from "../../queryfunctions";
 import { Box } from "@mui/material";
 import React3dMolOrbital from "../React3dMolOrbital";
+import { MolStarOrbitalWrapper } from "../MolstarOrbitalViewer";
 
 export default function OrcaOrbitalViewer(props: {
   id: number;
@@ -25,12 +26,13 @@ export default function OrcaOrbitalViewer(props: {
 
   return (
     <Box height="100%" width="100%">
-      <React3dMolOrbital
+      <MolStarOrbitalWrapper cube={query.data}></MolStarOrbitalWrapper>
+      {/* <React3dMolOrbital
         orbital={{
           transferfn: trans,
           cubeData: query.data ? query.data : null,
         }}
-      />
+      /> */}
     </Box>
   );
 }
