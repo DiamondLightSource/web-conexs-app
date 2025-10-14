@@ -14,7 +14,7 @@ from .crud import (
     get_request_cancelled_simulations,
     update_simulation,
 )
-from .filetransfer import transfer_results
+from .filetransfer import clean_up, transfer_results
 
 logger = logging.getLogger(__name__)
 
@@ -152,6 +152,7 @@ def clean_request_cancelled(session):
             iris_dir = Path(ROOT_DIR) / calc_dir
             storage_dir = Path(STORAGE_DIR) / calc_dir
             transfer_results(sim.simulation_type_id, str(iris_dir), storage_dir)
+            clean_up(str(iris_dir))
 
 
 def update_active_simulations(session):
@@ -206,14 +207,17 @@ def update_active_simulations(session):
                 a.status = SimulationStatus.completed
                 transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
                 update_simulation(session, a)
+                clean_up(str(iris_dir))
             elif state == JOB_FAILED and a.status != SimulationStatus.failed:
                 a.status = SimulationStatus.failed
                 transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
                 update_simulation(session, a)
+                clean_up(str(iris_dir))
             elif state == JOB_TIMEOUT and a.status != SimulationStatus.failed:
                 a.status = SimulationStatus.failed
                 transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
                 update_simulation(session, a)
+                clean_up(str(iris_dir))
 
         else:
             # TODO Slurm API query on job id?
@@ -221,3 +225,4 @@ def update_active_simulations(session):
             transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
             a.status = SimulationStatus.failed
             update_simulation(session, a)
+            clean_up(str(iris_dir))

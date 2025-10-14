@@ -1,4 +1,6 @@
+import glob
 import logging
+import os
 import shutil
 import tempfile
 from pathlib import Path
@@ -72,3 +74,28 @@ def transfer_results(simulation_type_id, result_dir, storage_dir):
         parent.mkdir()
 
     shutil.copytree(result_dir, storage_dir, ignore=ignore_pattern, dirs_exist_ok=True)
+
+
+def clean_up(directory):
+    remove = [
+        "*.tmp",
+        "*.cube",
+        "*.UPF",
+        "*.wfc",
+        "job.gbw",
+        "job.scfp",
+        "result_bav.txt",
+        "job.opt",
+        "orca_result.full_log",
+    ]
+
+    p = Path(directory)
+
+    for r in remove:
+        for filepath in glob.glob(str(p / r)):
+            try:
+                # Attempt to delete the file
+                os.remove(filepath)
+            except Exception as e:
+                # Handle any errors that occur during deletion
+                logger.exception(f"Not unlinked {filepath}: {e}")
