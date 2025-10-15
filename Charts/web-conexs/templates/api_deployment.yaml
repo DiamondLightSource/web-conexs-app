@@ -58,7 +58,4 @@ spec:
                 secretKeyRef:
                   name: matproj-api-key
                   key: key
-          envFrom:
-            - configMapRef:
-                name: {{ include "web-conexs.fullname" . }}-dbenv-configmap
 {{- end }}
