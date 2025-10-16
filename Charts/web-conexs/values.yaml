@@ -137,6 +137,16 @@ postgresql:
     persistence:
       storageClass: db-nvme-storage
       size: 8Gi
+    networkPolicy:
+      enabled: false
+  backup:
+    enabled: true
+    cronjob:
+      schedule: "@daily"
+      networkPolicy:
+        enabled: false
+      storage:
+        resourcePolicy: "keep"
 
 # alpha
 oauth2-proxy:
