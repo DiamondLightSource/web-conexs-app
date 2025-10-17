@@ -23,7 +23,7 @@ export default function Header() {
       sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
-      logo={null}
+      logo="theme"
       rightSlot={
         <Stack direction="row" alignItems="center">
           <ClusterBadge></ClusterBadge>
