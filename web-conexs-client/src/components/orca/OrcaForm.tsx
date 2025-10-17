@@ -69,9 +69,15 @@ export default function OrcaForm() {
       justifyContent="space-between"
       margin="5px"
       spacing="5px"
+      overflow="auto"
     >
       {hasData && data != null ? (
-        <Stack direction="row" flex={1} spacing={"5px"}>
+        <Stack
+          flex={1}
+          spacing={"5px"}
+          direction={{ sm: "column", md: "row" }}
+          align-content={"stretch"}
+        >
           <Stack flex={1}>
             <JsonForms
               schema={schema}
@@ -108,11 +114,12 @@ export default function OrcaForm() {
             sx={{
               margin: "20px",
               flex: 1,
-              minHeight: 0,
+              minHeight: "auto",
               alignItems: "stretch",
               display: "flex",
               flexDirection: "column",
               spacing: "2px",
+              minWidth: "auto",
             }}
             elevation={3}
           >

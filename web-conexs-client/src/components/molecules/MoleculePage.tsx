@@ -46,7 +46,7 @@ export default function MoleculePage() {
             Molecules
           </Typography>
         </Toolbar>
-        <Stack direction={"row"} spacing={3}>
+        <Stack spacing={3} direction={{ sm: "column", md: "row" }}>
           <StructureTable
             structures={query.data ? query.data : []}
             selectedStructure={undefined}

@@ -1,4 +1,4 @@
-import { CssBaseline, Stack } from "@mui/material";
+import { CssBaseline, responsiveFontSizes, Stack } from "@mui/material";
 import Header from "./components/Header";
 import WelcomePage from "./components/WelcomePage";
 import MoleculePage from "./components/molecules/MoleculePage";
@@ -27,9 +27,11 @@ import SimulationView from "./components/SimulationView";
 
 const queryClient = new QueryClient();
 
+const theme = responsiveFontSizes(DiamondTheme);
+
 function App() {
   return (
-    <ThemeProvider theme={DiamondTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
       <QueryClientProvider client={queryClient}>
         <UserProvider>

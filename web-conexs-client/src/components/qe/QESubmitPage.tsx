@@ -7,7 +7,7 @@ export default function QeSubmitPage() {
   const theme = useTheme();
   return (
     <MainPanel>
-      <Stack flex={1}>
+      <Stack flex={1} overflow="hidden">
         <Toolbar
           sx={{
             justifyContent: "space-between",

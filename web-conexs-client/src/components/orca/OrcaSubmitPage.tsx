@@ -6,7 +6,7 @@ export default function OrcaSubmitPage() {
   const theme = useTheme();
   return (
     <MainPanel>
-      <Stack flex={1} overflow="auto">
+      <Stack flex={1} overflow="hidden">
         <Toolbar
           sx={{
             justifyContent: "space-between",

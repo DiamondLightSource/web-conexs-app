@@ -6,7 +6,7 @@ export default function FdmnesSubmitPage(props: { isCrystal: boolean }) {
   const theme = useTheme();
   return (
     <MainPanel>
-      <Stack flex={1}>
+      <Stack flex={1} overflow="hidden">
         <Toolbar
           sx={{
             justifyContent: "space-between",
