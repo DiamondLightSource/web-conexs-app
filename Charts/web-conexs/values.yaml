@@ -114,9 +114,16 @@ postgresql:
     existingSecret: postgres-passwords
     secretKeys:
       adminPasswordKey: password
+  tls:
+    enabled: false
+    certificatesSecret: ""
+    certFilename: ""
+    certKeyFilename: ""
   primary:
+    sidecars: []
     service:
       type: LoadBalancer
+      loadBalancerIP: ""
     podAntiAffinityPreset: hard
     resources:
       requests:
