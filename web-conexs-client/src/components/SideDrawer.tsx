@@ -64,7 +64,7 @@ function ListItemStyled(props: {
         sx={[
           {
             width: { drawerWidth },
-            minHeight: 48,
+            minHeight: 32,
             px: 2.5,
           },
           open
@@ -252,129 +252,10 @@ export default function SideDrawer() {
     </>
   );
 
-  // return (
-  //   <Drawer2
-  //     variant="permanent"
-  //     open={open}
-  //     onMouseEnter={() => {
-  //       setOpen(true);
-  //     }}
-  //     onMouseLeave={() => {
-  //       setOpen(false);
-  //     }}
-  //   >
-  //     <Divider />
-  //     <List>
-  //       {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-  //         <ListItem key={text} disablePadding sx={{ display: "block" }}>
-  //           <ListItemButton
-  //             sx={[
-  //               {
-  //                 minHeight: 48,
-  //                 px: 2.5,
-  //               },
-  //               open
-  //                 ? {
-  //                     justifyContent: "initial",
-  //                   }
-  //                 : {
-  //                     justifyContent: "center",
-  //                   },
-  //             ]}
-  //           >
-  //             <ListItemIcon
-  //               sx={[
-  //                 {
-  //                   minWidth: 0,
-  //                   justifyContent: "center",
-  //                 },
-  //                 open
-  //                   ? {
-  //                       mr: 3,
-  //                     }
-  //                   : {
-  //                       mr: "auto",
-  //                     },
-  //               ]}
-  //             >
-  //               <MenuIcon />
-  //             </ListItemIcon>
-  //             <ListItemText
-  //               primary={text}
-  //               sx={[
-  //                 open
-  //                   ? {
-  //                       opacity: 1,
-  //                     }
-  //                   : {
-  //                       opacity: 0,
-  //                     },
-  //               ]}
-  //             />
-  //           </ListItemButton>
-  //         </ListItem>
-  //       ))}
-  //     </List>
-  //     <Divider />
-  //     <List>
-  //       {["All mail", "Trash", "Spam"].map((text, index) => (
-  //         <ListItem key={text} disablePadding sx={{ display: "block" }}>
-  //           <ListItemButton
-  //             sx={[
-  //               {
-  //                 minHeight: 48,
-  //                 px: 2.5,
-  //               },
-  //               open
-  //                 ? {
-  //                     justifyContent: "initial",
-  //                   }
-  //                 : {
-  //                     justifyContent: "center",
-  //                   },
-  //             ]}
-  //           >
-  //             <ListItemIcon
-  //               sx={[
-  //                 {
-  //                   minWidth: 0,
-  //                   justifyContent: "center",
-  //                 },
-  //                 open
-  //                   ? {
-  //                       mr: 3,
-  //                     }
-  //                   : {
-  //                       mr: "auto",
-  //                     },
-  //               ]}
-  //             >
-  //               <MenuIcon />
-  //             </ListItemIcon>
-  //             <ListItemText
-  //               primary={text}
-  //               sx={[
-  //                 open
-  //                   ? {
-  //                       opacity: 1,
-  //                     }
-  //                   : {
-  //                       opacity: 0,
-  //                     },
-  //               ]}
-  //             />
-  //           </ListItemButton>
-  //         </ListItem>
-  //       ))}
-  //     </List>
-  //   </Drawer2>
-  // );
-
   return (
     <Drawer2
       variant="permanent"
       open={open}
-      // onClose={toggleDrawer(false)}
       onMouseEnter={() => {
         setOpen(true);
       }}
@@ -385,14 +266,4 @@ export default function SideDrawer() {
       {DrawerList}
     </Drawer2>
   );
-
-  // return DrawerList;
-  // <>
-  //   <IconButton size="large" onClick={toggleDrawer(true)}>
-  //     <MenuIcon color="secondary" fontSize="large" />
-  //   </IconButton>
-  //   <Drawer open={open} onClose={toggleDrawer(false)}>
-  //     {DrawerList}
-  //   </Drawer>
-  // </>
 }

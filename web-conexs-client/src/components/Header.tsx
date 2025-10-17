@@ -23,7 +23,7 @@ export default function Header() {
       sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
-      logo="theme"
+      logo={null}
       rightSlot={
         <Stack direction="row" alignItems="center">
           <ClusterBadge></ClusterBadge>
@@ -45,11 +45,10 @@ export default function Header() {
       <Typography
         variant="h4"
         color={theme.palette.primary.contrastText}
-        sx={{ padding: "10px 0px 2px 0px" }}
-        s
+        sx={{ padding: "10px 5px 2px 5px" }}
         height="100%"
       >
-        Web-CONEXS
+        Web&#8209;CONEXS
       </Typography>
     </Navbar>
   );

@@ -65,9 +65,15 @@ export default function QEForm(props: {
       justifyContent="space-between"
       margin="5px"
       spacing="5px"
+      overflow="auto"
     >
       {props.hasData && props.data != null ? (
-        <Stack direction="row" flex={1} spacing={"5px"}>
+        <Stack
+          direction={{ sm: "column", md: "row" }}
+          flex={1}
+          spacing={"5px"}
+          align-content={"stretch"}
+        >
           <Stack flex={1}>
             <JsonForms
               schema={props.schema}
@@ -104,11 +110,12 @@ export default function QEForm(props: {
             sx={{
               margin: "20px",
               flex: 1,
-              minHeight: 0,
+              minHeight: "auto",
               alignItems: "stretch",
               display: "flex",
               flexDirection: "column",
               spacing: "2px",
+              minWidth: "auto",
             }}
             elevation={3}
           >

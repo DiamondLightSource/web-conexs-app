@@ -20,6 +20,6 @@ describe("App", () => {
   it("renders the App component", () => {
     render(<Header />, { wrapper: themeProvider });
 
-    expect(screen.getByText("Web-CONEXS")).toBeDefined();
+    expect(screen.getByText("Web‑CONEXS")).toBeDefined();
   });
 });
