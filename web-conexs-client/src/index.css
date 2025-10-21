@@ -24,3 +24,7 @@ body {
 .jsonFormsContainer .MuiGrid-item {
   padding-bottom: 7px;
 }
+
+.jsonFormsContainer [class$="MuiAutocomplete-clearIndicator"] {
+  display: none;
+}
