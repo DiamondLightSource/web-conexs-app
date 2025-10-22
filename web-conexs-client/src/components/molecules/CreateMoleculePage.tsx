@@ -1,12 +1,13 @@
 import { Button, Stack, Toolbar, Typography, useTheme } from "@mui/material";
 import { MoleculeInput } from "../../models";
 import { useState } from "react";
-import React3dMol from "../React3dMol";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postMolecule } from "../../queryfunctions";
 import MoleculeEditor from "./MoleculeEditor";
 import MainPanel from "../MainPanel";
+import { MolStarMoleculeWrapper } from "../MolstarMoleculeViewer";
+import { moleculeInputToXYZ } from "../../utils";
 
 const templateMolecule: MoleculeInput = {
   label: "Benzene",
@@ -71,13 +72,9 @@ export default function CreateMoleculePage() {
             molecule={molecule}
             setMolecule={setMolecule}
           ></MoleculeEditor>
-          <React3dMol
-            moleculedata={molecule}
-            color="#3465A4"
-            style="Stick"
-            orbital={null}
-            labelledAtom={undefined}
-          ></React3dMol>
+          <MolStarMoleculeWrapper
+            xyz={molecule == null ? null : moleculeInputToXYZ(molecule)}
+          />
         </Stack>
         <Button
           variant="contained"

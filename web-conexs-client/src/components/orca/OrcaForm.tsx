@@ -5,7 +5,6 @@ import {
 import { JsonForms } from "@jsonforms/react";
 import { Box, Button, Paper, Skeleton, Stack, Typography } from "@mui/material";
 import useOrcaSchema from "../../hooks/useOrcaSchema";
-// import React3dMol from "./React3dMol";
 import { postOrca } from "../../queryfunctions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "react-router-dom";

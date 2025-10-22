@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getOrcaCube } from "../../queryfunctions";
 import { Box } from "@mui/material";
-import React3dMolOrbital from "../React3dMolOrbital";
+import { MolStarOrbitalWrapper } from "../MolstarOrbitalViewer";
 
 export default function OrcaOrbitalViewer(props: {
   id: number;
@@ -13,24 +13,12 @@ export default function OrcaOrbitalViewer(props: {
     queryFn: () => getOrcaCube(props.id, props.cubeID),
   });
 
-  const trans = {
-    positiveColor: "#FF0000",
-    negativeColor: "#0000FF",
-    positiveMin: props.isoValue,
-    positiveMax: 0.1,
-    negativeMin: props.isoValue,
-    negativeMax: 0.1,
-    isosurface: true,
-  };
-
   return (
     <Box height="100%" width="100%">
-      <React3dMolOrbital
-        orbital={{
-          transferfn: trans,
-          cubeData: query.data ? query.data : null,
-        }}
-      />
+      <MolStarOrbitalWrapper
+        cube={query.data}
+        isoValue={props.isoValue}
+      ></MolStarOrbitalWrapper>
     </Box>
   );
 }

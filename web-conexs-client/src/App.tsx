@@ -27,11 +27,9 @@ import SimulationView from "./components/SimulationView";
 
 const queryClient = new QueryClient();
 
-const theme = responsiveFontSizes(DiamondTheme);
-
 function App() {
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={DiamondTheme}>
       <CssBaseline />
       <QueryClientProvider client={queryClient}>
         <UserProvider>

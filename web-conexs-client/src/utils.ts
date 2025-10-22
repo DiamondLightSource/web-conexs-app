@@ -40,6 +40,7 @@ export function moleculeInputToXYZ(input: MoleculeInput) {
 
 export function crystalInputToCIF(input: CrystalInput) {
   let cif = "data_1\n\n";
+  cif = cif + "_symmetry_space_group_name_H-M   P-1\n";
   cif = cif + "_cell_angle_alpha" + " " + input.lattice.alpha + "\n";
   cif = cif + "_cell_angle_beta" + " " + input.lattice.beta + "\n";
   cif = cif + "_cell_angle_gamma" + " " + input.lattice.gamma + "\n";
@@ -49,7 +50,7 @@ export function crystalInputToCIF(input: CrystalInput) {
 
   cif =
     cif +
-    "loop_\n_atom_site_label\n_atom_site_fract_x\n_atom_site_fract_y\n_atom_site_fract_z\n";
+    "loop_\n_atom_site_label\n_atom_site_type_symbol\n_atom_site_fract_x\n_atom_site_fract_y\n_atom_site_fract_z\n";
 
   const sites = sortSites(input.sites);
 
@@ -59,6 +60,8 @@ export function crystalInputToCIF(input: CrystalInput) {
       periodic_table[s.element_z - 1].symbol +
       "_" +
       i +
+      " " +
+      periodic_table[s.element_z - 1].symbol +
       " " +
       s.x +
       " " +
