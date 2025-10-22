@@ -1,7 +1,6 @@
 import { Button, Stack, Toolbar, Typography, useTheme } from "@mui/material";
 import { CrystalInput } from "../../models";
 import { useState } from "react";
-import React3dMol from "../React3dMol";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postCrystal } from "../../queryfunctions";
@@ -71,14 +70,8 @@ export default function CreateCystalPage() {
           <CrystalEditor crystal={crystal} setCrystal={setCrytal} />
           <MolStarCrystalWrapper
             cif={crystal == null ? null : crystalInputToCIF(crystal)}
-            labelledAtomIndex={null}
+            labelledAtomIndex={undefined}
           />
-          {/* <React3dMol
-            moleculedata={crystal}
-            color="#3465A4"
-            style="Stick"
-            orbital={null}
-          ></React3dMol> */}
         </Stack>
         <Button
           variant="contained"

@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMatProjStructure, postCrystal } from "../../queryfunctions";
 import { Button, Stack, Typography } from "@mui/material";
-import React3dMol from "../React3dMol";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import XYZCrystalViewer from "./XYZCrystalViewer";
+import { MolStarCrystalWrapper } from "../MolstarCrystalViewer";
+import { crystalInputToCIF } from "../../utils";
 
 function MatProjCrystalViewer(props: { mpid: string }) {
   const mpid = props.mpid;
@@ -49,13 +50,10 @@ function MatProjCrystalViewer(props: { mpid: string }) {
         spacing={"5px"}
       >
         <XYZCrystalViewer crystal={query.data}></XYZCrystalViewer>
-        <React3dMol
-          moleculedata={query.data}
-          color="#3465A4"
-          style="Stick"
-          orbital={null}
-          labelledAtom={undefined}
-        ></React3dMol>
+        <MolStarCrystalWrapper
+          cif={crystalInputToCIF(query.data)}
+          labelledAtomIndex={undefined}
+        ></MolStarCrystalWrapper>
       </Stack>
       <Button
         variant="contained"

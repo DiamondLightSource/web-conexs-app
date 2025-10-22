@@ -1,12 +1,8 @@
 import { Box } from "@mui/material";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { getStructure } from "../queryfunctions";
-import React3dMol from "./React3dMol";
-import { Q } from "vitest/dist/chunks/reporters.d.DG9VKi4m.js";
 import { crystalInputToCIF, moleculeInputToXYZ } from "../utils";
 import { MolStarMoleculeWrapper } from "./MolstarMoleculeViewer";
-import { MolStarMolecule2Wrapper } from "./MolstarOrbitalViewer";
-import { Quickreply } from "@mui/icons-material";
 import { MolStarCrystalWrapper } from "./MolstarCrystalViewer";
 
 export default function StructureViewer(props: {
@@ -32,7 +28,7 @@ export default function StructureViewer(props: {
   console.log(xyzData);
 
   return (
-    <Box>
+    <Box width={"100%"} height={"100%"}>
       {molecule ? (
         <MolStarMoleculeWrapper xyz={xyzData} />
       ) : (
@@ -41,13 +37,6 @@ export default function StructureViewer(props: {
           labelledAtomIndex={props.labelledAtomIndex}
         />
       )}
-      {/* <React3dMol
-        moleculedata={query.data == undefined ? null : query.data}
-        color="#3465A4"
-        style="Stick"
-        orbital={null}
-        labelledAtom={props.labelledAtomIndex}
-      ></React3dMol> */}
     </Box>
   );
 }

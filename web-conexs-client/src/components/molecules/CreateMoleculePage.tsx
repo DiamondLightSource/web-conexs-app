@@ -1,7 +1,6 @@
 import { Button, Stack, Toolbar, Typography, useTheme } from "@mui/material";
 import { MoleculeInput } from "../../models";
 import { useState } from "react";
-import React3dMol from "../React3dMol";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postMolecule } from "../../queryfunctions";
@@ -76,13 +75,6 @@ export default function CreateMoleculePage() {
           <MolStarMoleculeWrapper
             xyz={molecule == null ? null : moleculeInputToXYZ(molecule)}
           />
-          {/* <React3dMol
-            moleculedata={molecule}
-            color="#3465A4"
-            style="Stick"
-            orbital={null}
-            labelledAtom={undefined}
-          ></React3dMol> */}
         </Stack>
         <Button
           variant="contained"
