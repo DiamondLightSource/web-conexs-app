@@ -26,7 +26,7 @@ export default function OrcaOrbitalViewer(props: {
 
   return (
     <Box height="100%" width="100%">
-      <MolStarOrbitalWrapper cube={query.data}></MolStarOrbitalWrapper>
+      <MolStarOrbitalWrapper cube={query.data} isoValue={props.isoValue}></MolStarOrbitalWrapper>
       {/* <React3dMolOrbital
         orbital={{
           transferfn: trans,

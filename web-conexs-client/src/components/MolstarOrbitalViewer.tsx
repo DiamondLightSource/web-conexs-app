@@ -17,6 +17,7 @@ import {
 
 import { ColorNames } from "molstar/lib/mol-util/color/names";
 import { Color } from "molstar/lib/mol-util/color";
+import { StructureRepresentation3D } from "molstar/lib/mol-plugin-state/transforms/representation";
 
 const Default3DSpec: PluginSpec = {
   ...DefaultPluginSpec(),
@@ -41,7 +42,10 @@ function volumeParams(
   };
 }
 
-export function MolStarOrbitalWrapper(props: { cube: string }) {
+export function MolStarOrbitalWrapper(props: {
+  cube: string;
+  isoValue: number;
+}) {
   const [isRendered, setIsRendered] = useState<boolean | undefined>(false);
   const [volumeData, setVolumeData] = useState<Volume>();
   const [repr, setRepr] = useState<StateObjectSelector>();
@@ -90,12 +94,12 @@ export function MolStarOrbitalWrapper(props: { cube: string }) {
               alpha: 0.85,
               isoValue: {
                 kind: "absolute",
-                absoluteValue: 0.05,
+                absoluteValue: props.isoValue,
               },
-              // xrayShaded: true,
-              tryUseGpu: true,
+              xrayShaded: true,
+              tryUseGpu: false,
               sizeFactor: 0.1,
-              visuals: ["wireframe"],
+              visuals: ["solid"],
             },
             colorParams: { value: ColorNames.blue },
             size: "uniform",
@@ -113,18 +117,40 @@ export function MolStarOrbitalWrapper(props: { cube: string }) {
             typeParams: {
               alpha: 0.85,
               isoValue: {
-                kind: "relative",
-                relativeValue: -1,
+                kind: "absolute",
+                absoluteValue: -1 * props.isoValue,
               },
-              // xrayShaded: true,
-              tryUseGpu: true,
+              xrayShaded: true,
+              tryUseGpu: false,
               sizeFactor: 0.1,
-              visuals: ["wireframe"],
+              visuals: ["solid"],
             },
 
             colorParams: { value: ColorNames.red },
           })
         );
+
+      // const model = await molstar.builders.structure.createModel(trajectory);
+
+      // const s = await molstar.builders.structure.createStructure(model);
+
+      molstar
+        .build()
+        .to(parsed.structure)
+        .apply(StructureRepresentation3D, {
+          type: {
+            name: "ball-and-stick",
+            params: { size: "physical" },
+          },
+          colorTheme: {
+            name: "element-symbol",
+            params: {
+              carbonColor: { name: "element-symbol", params: {} },
+            },
+          },
+          sizeTheme: { name: "physical", params: {} },
+        })
+        .commit();
 
       await molstar.builders.structure.hierarchy.applyPreset(
         parsed.structure,
@@ -172,7 +198,7 @@ export function MolStarOrbitalWrapper(props: { cube: string }) {
       molstar?.dispose();
       molstar = null;
     };
-  }, [viewerDiv, props.cube]);
+  }, [viewerDiv, props.cube, props.isoValue]);
 
   return (
     <Box position="relative" display="flex" flexGrow={5} h="100%" w="100%">

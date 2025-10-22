@@ -7,6 +7,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postCrystal } from "../../queryfunctions";
 import CrystalEditor from "./CrystalEditor";
 import MainPanel from "../MainPanel";
+import { MolStarCrystalWrapper } from "../MolstarCrystalViewer";
+import { crystalInputToCIF } from "../../utils";
 
 const templateCrystal: CrystalInput = {
   lattice: {
@@ -67,12 +69,16 @@ export default function CreateCystalPage() {
         </Toolbar>
         <Stack direction={"row"} spacing="5px" margin="5px">
           <CrystalEditor crystal={crystal} setCrystal={setCrytal} />
-          <React3dMol
+          <MolStarCrystalWrapper
+            cif={crystal == null ? null : crystalInputToCIF(crystal)}
+            labelledAtomIndex={null}
+          />
+          {/* <React3dMol
             moleculedata={crystal}
             color="#3465A4"
             style="Stick"
             orbital={null}
-          ></React3dMol>
+          ></React3dMol> */}
         </Stack>
         <Button
           variant="contained"

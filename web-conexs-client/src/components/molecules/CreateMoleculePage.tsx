@@ -7,6 +7,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postMolecule } from "../../queryfunctions";
 import MoleculeEditor from "./MoleculeEditor";
 import MainPanel from "../MainPanel";
+import { MolStarMoleculeWrapper } from "../MolstarMoleculeViewer";
+import { moleculeInputToXYZ } from "../../utils";
 
 const templateMolecule: MoleculeInput = {
   label: "Benzene",
@@ -71,13 +73,16 @@ export default function CreateMoleculePage() {
             molecule={molecule}
             setMolecule={setMolecule}
           ></MoleculeEditor>
-          <React3dMol
+          <MolStarMoleculeWrapper
+            xyz={molecule == null ? null : moleculeInputToXYZ(molecule)}
+          />
+          {/* <React3dMol
             moleculedata={molecule}
             color="#3465A4"
             style="Stick"
             orbital={null}
             labelledAtom={undefined}
-          ></React3dMol>
+          ></React3dMol> */}
         </Stack>
         <Button
           variant="contained"
