@@ -41,6 +41,9 @@ def parse(fh):
             continue
 
         if in_region:
+            if "SPIN" in line:
+                continue
+
             if line.strip() == "":
                 break
             indices = [int(val) for val in line.strip().split()]
