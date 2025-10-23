@@ -16,44 +16,42 @@ const Default3DSpec: PluginSpec = {
   config: [[PluginConfig.VolumeStreaming.Enabled, false]],
 };
 
-let molstar: PluginContext | null = null;
-
 export function MolStarCrystalWrapper(props: {
   cif: string | null;
   labelledAtomIndex: number | undefined;
 }) {
   const viewerDiv = useRef<HTMLDivElement>(null);
-  console.log("Mount");
-  useEffect(() => {
-    console.log("GO");
-    const init = async (rawData: string) => {
-      molstar = new PluginContext(Default3DSpec);
+  const molstar = useRef<PluginContext | null>(null);
 
-      await molstar.init();
-      await molstar.mountAsync(viewerDiv.current!);
+  useEffect(() => {
+    const init = async (rawData: string) => {
+      molstar.current = new PluginContext(Default3DSpec);
+
+      await molstar.current.init();
+      await molstar.current.mountAsync(viewerDiv.current!);
 
       if (rawData == null) {
         return;
       }
 
-      const data = await molstar.builders.data.rawData(
+      const data = await molstar.current.builders.data.rawData(
         { data: props.cif! },
         { state: { isGhost: true } }
       );
 
-      const trajectory = await molstar.builders.structure.parseTrajectory(
-        data,
-        "cifCore"
+      const trajectory =
+        await molstar.current.builders.structure.parseTrajectory(
+          data,
+          "cifCore"
+        );
+
+      const model = await molstar.current.builders.structure.createModel(
+        trajectory
       );
 
-      const model = await molstar.builders.structure.createModel(trajectory);
+      const s = await molstar.current.builders.structure.createStructure(model);
 
-      const s = await molstar.builders.structure.createStructure(model);
-
-      console.log(model);
-
-      console.log(s);
-      molstar
+      molstar.current
         .build()
         .to(s)
         .apply(StructureRepresentation3D, {
@@ -73,12 +71,13 @@ export function MolStarCrystalWrapper(props: {
         })
         .commit();
 
-      await molstar.builders.structure.tryCreateUnitcell(model);
+      await molstar.current.builders.structure.tryCreateUnitcell(model);
 
-      const hierarchy = await molstar.builders.structure.hierarchy.applyPreset(
-        trajectory,
-        "default"
-      );
+      const hierarchy =
+        await molstar.current.builders.structure.hierarchy.applyPreset(
+          trajectory,
+          "default"
+        );
 
       const struct = hierarchy!.structure.data!;
 
@@ -90,7 +89,7 @@ export function MolStarCrystalWrapper(props: {
         });
         const selection = query(new QueryContext(struct));
         const loci = StructureSelection.toLociWithCurrentUnits(selection);
-        molstar.managers.interactivity.lociSelects.select({ loci });
+        molstar.current.managers.interactivity.lociSelects.select({ loci });
       }
     };
 
@@ -99,8 +98,8 @@ export function MolStarCrystalWrapper(props: {
     }
 
     return () => {
-      molstar?.dispose();
-      molstar = null;
+      molstar.current?.dispose();
+      molstar.current = null;
     };
   }, [viewerDiv, props.cif, props.labelledAtomIndex]);
 

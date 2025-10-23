@@ -10,36 +10,38 @@ const Default3DSpec: PluginSpec = {
   config: [[PluginConfig.VolumeStreaming.Enabled, false]],
 };
 
-let molstar: PluginContext | null = null;
-
-export function MolStarMoleculeWrapper(props: { xyz: string | null }) {
+export function MolStarMoleculeWrapper(props: {
+  xyz: string | null | undefined;
+}) {
   const viewerDiv = useRef<HTMLDivElement>(null);
+  const molstar = useRef<PluginContext | null>(null);
+
   useEffect(() => {
     const init = async (rawData: string) => {
-      molstar = new PluginContext(Default3DSpec);
+      molstar.current = new PluginContext(Default3DSpec);
 
-      await molstar.init();
-      await molstar.mountAsync(viewerDiv.current!);
+      await molstar.current.init();
+      await molstar.current.mountAsync(viewerDiv.current!);
 
       if (rawData == null) {
         return;
       }
 
-      const data = await molstar.builders.data.rawData(
+      const data = await molstar.current.builders.data.rawData(
         { data: rawData! },
         { state: { isGhost: true } }
       );
 
-      const trajectory = await molstar.builders.structure.parseTrajectory(
-        data,
-        "xyz"
+      const trajectory =
+        await molstar.current.builders.structure.parseTrajectory(data, "xyz");
+
+      const model = await molstar.current.builders.structure.createModel(
+        trajectory
       );
 
-      const model = await molstar.builders.structure.createModel(trajectory);
+      const s = await molstar.current.builders.structure.createStructure(model);
 
-      const s = await molstar.builders.structure.createStructure(model);
-
-      molstar
+      molstar.current
         .build()
         .to(s)
         .apply(StructureRepresentation3D, {
@@ -59,7 +61,7 @@ export function MolStarMoleculeWrapper(props: { xyz: string | null }) {
         })
         .commit();
 
-      await molstar.builders.structure.hierarchy.applyPreset(
+      await molstar.current.builders.structure.hierarchy.applyPreset(
         trajectory,
         "default"
       );
@@ -70,8 +72,8 @@ export function MolStarMoleculeWrapper(props: { xyz: string | null }) {
     }
 
     return () => {
-      molstar?.dispose();
-      molstar = null;
+      molstar.current?.dispose();
+      molstar.current = null;
     };
   }, [viewerDiv, props.xyz]);
 
@@ -86,17 +88,5 @@ export function MolStarMoleculeWrapper(props: { xyz: string | null }) {
         minWidth: "100px",
       }}
     />
-    // <Box position="relative" display="flex" flexGrow={5} h="100%" w="100%">
-    //   <Box
-    //     style={{
-    //       width: "300px",
-    //       height: "300px",
-    //       position: "relative",
-    //       minHeight: "100px",
-    //       minWidth: "100px",
-    //     }}
-    //     ref={viewerDiv}
-    //   ></Box>
-    // </Box>
   );
 }
