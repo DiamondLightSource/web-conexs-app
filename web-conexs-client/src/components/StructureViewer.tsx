@@ -25,8 +25,6 @@ export default function StructureViewer(props: {
     xyzData = moleculeInputToXYZ(query.data);
   }
 
-  console.log(xyzData);
-
   return (
     <Box width={"100%"} height={"100%"}>
       {molecule ? (
