@@ -1,4 +1,9 @@
-import { CssBaseline, responsiveFontSizes, Stack } from "@mui/material";
+import {
+  CssBaseline,
+  responsiveFontSizes,
+  Stack,
+  Typography,
+} from "@mui/material";
 import Header from "./components/Header";
 import WelcomePage from "./components/WelcomePage";
 import MoleculePage from "./components/molecules/MoleculePage";
@@ -24,6 +29,7 @@ import SideDrawer from "./components/SideDrawer";
 import LoginPage from "./components/LoginPage";
 import MatProjPage from "./components/crystals/MatProjPage";
 import SimulationView from "./components/SimulationView";
+import AboutPage from "./components/AboutPage";
 
 const queryClient = new QueryClient();
 
@@ -143,13 +149,14 @@ function App() {
                   </RequireAuth>
                 }
               />
+              <Route path="/about" element={<AboutPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
             <Footer
               copyright="Diamond Light Source"
-              logo={null}
+              logo={"null"}
               sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
-            />
+            ></Footer>
           </Stack>
         </UserProvider>
       </QueryClientProvider>

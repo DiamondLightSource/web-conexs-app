@@ -54,7 +54,7 @@ export default function CreateMoleculePage() {
 
   return (
     <MainPanel>
-      <Stack spacing={"10px"} margin={"10px"}>
+      <Stack spacing={"10px"}>
         <Toolbar
           sx={{
             justifyContent: "space-between",
@@ -67,8 +67,8 @@ export default function CreateMoleculePage() {
             Create Molecule
           </Typography>
         </Toolbar>
-        <Stack direction={"row"} spacing="10px" margin="10px">
-          <Stack spacing="10px">
+        <Stack direction={"row"} margin="10px">
+          <Stack spacing="10px" margin="10px">
             <MoleculeEditor
               molecule={molecule}
               setMolecule={setMolecule}

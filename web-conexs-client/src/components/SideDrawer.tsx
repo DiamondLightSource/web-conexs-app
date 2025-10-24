@@ -25,6 +25,7 @@ import MoleculeIcon from "./icons/MoleculeIcon";
 import MoleculePlusIcon from "./icons/MoleculePlusIcon";
 import FDMNESIcon from "./icons/FDMNESIcon";
 import OrcaIcon from "./icons/OrcaIcon";
+import InfoIcon from "@mui/icons-material/Info";
 import { Login } from "@mui/icons-material";
 
 function ListItemStyled(props: {
@@ -148,6 +149,14 @@ export default function SideDrawer() {
           to={"/"}
           label="Home Page"
           icon={<HomeIcon />}
+          reloadDocument={false}
+        ></ListItemStyled>
+        <ListItemStyled
+          theme={theme}
+          open={open}
+          to={"/about"}
+          label="About"
+          icon={<InfoIcon />}
           reloadDocument={false}
         ></ListItemStyled>
 
