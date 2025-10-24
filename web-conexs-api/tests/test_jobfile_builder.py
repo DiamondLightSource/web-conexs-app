@@ -42,8 +42,6 @@ def test_orca_scf_filebuilder():
 
     jobfile = build_orca_input_file(test_model, test_structure)
 
-    print(jobfile)
-
     assert "P_ReducedOrbPopMO_L" in jobfile
     assert "!ReducedPop UNO" in jobfile
 
@@ -174,7 +172,6 @@ def test_qe_filebuilder():
     assert "nat = 2" in jobfile
     assert "ntyp = 2" in jobfile
 
-    print(jobfile)
     jobfile_array = jobfile.split("\n")
 
     species_line = -1

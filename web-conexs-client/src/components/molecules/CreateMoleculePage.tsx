@@ -3,7 +3,7 @@ import { MoleculeInput } from "../../models";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postMolecule } from "../../queryfunctions";
+import { postConvertMolecule, postMolecule } from "../../queryfunctions";
 import MoleculeEditor from "./MoleculeEditor";
 import MainPanel from "../MainPanel";
 import { MolStarMoleculeWrapper } from "../MolstarMoleculeViewer";
@@ -54,7 +54,7 @@ export default function CreateMoleculePage() {
 
   return (
     <MainPanel>
-      <Stack spacing={"10px"}>
+      <Stack spacing={"10px"} margin={"10px"}>
         <Toolbar
           sx={{
             justifyContent: "space-between",
@@ -67,26 +67,29 @@ export default function CreateMoleculePage() {
             Create Molecule
           </Typography>
         </Toolbar>
-        <Stack direction={"row"} spacing="10px">
-          <MoleculeEditor
-            molecule={molecule}
-            setMolecule={setMolecule}
-          ></MoleculeEditor>
+        <Stack direction={"row"} spacing="10px" margin="10px">
+          <Stack spacing="10px">
+            <MoleculeEditor
+              molecule={molecule}
+              setMolecule={setMolecule}
+            ></MoleculeEditor>
+            <Button
+              variant="contained"
+              disabled={molecule == null}
+              onClick={() => {
+                if (molecule != null) {
+                  mutation.mutate(molecule);
+                }
+              }}
+            >
+              Create Molecule
+            </Button>
+          </Stack>
+
           <MolStarMoleculeWrapper
             xyz={molecule == null ? null : moleculeInputToXYZ(molecule)}
           />
         </Stack>
-        <Button
-          variant="contained"
-          disabled={molecule == null}
-          onClick={() => {
-            if (molecule != null) {
-              mutation.mutate(molecule);
-            }
-          }}
-        >
-          Create Molecule
-        </Button>
       </Stack>
     </MainPanel>
   );

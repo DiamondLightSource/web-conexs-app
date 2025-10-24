@@ -4,6 +4,8 @@ import XYZEditor from "../XYZEditor";
 import { useState } from "react";
 import { inputToXYZNoHeader, siteFromString } from "../../utils";
 
+import ConvertMoleculeFromCif from "./ConvertMoleculeFromCif";
+
 const templateMolecule: MoleculeInput = {
   label: "Benzene",
   sites: [
