@@ -1,6 +1,6 @@
 from typing import List
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlmodel import Session
 
 from ..auth import get_current_user
@@ -10,6 +10,7 @@ from ..crud import (
     upload_structure,
 )
 from ..database import get_session
+from ..jobfilebuilders import cif_string_to_crystal, cif_string_to_molecule
 from ..models.models import (
     CrystalStructure,
     CrystalStructureInput,
@@ -49,3 +50,35 @@ def get_structure_list_endpoint(
 ) -> List[StructureWithMetadata]:
     output = get_structures(session, user_id, type)
     return output
+
+
+@router.post("/convert/molecule")
+async def convert_to_molecule(
+    request: Request,
+    user_id: str = Depends(get_current_user),
+) -> MolecularStructureInput:
+    body = await request.body()
+    molecule = cif_string_to_molecule(body.decode())
+
+    if molecule is None:
+        raise HTTPException(
+            status_code=422, detail="Could not extract structure from file"
+        )
+
+    return molecule
+
+
+@router.post("/convert/crystal")
+async def convert_to_crystal(
+    request: Request,
+    user_id: str = Depends(get_current_user),
+) -> CrystalStructureInput:
+    body = await request.body()
+    crystal = cif_string_to_crystal(body.decode())
+
+    if not crystal:
+        raise HTTPException(
+            status_code=422, detail="Could not extract structure from file"
+        )
+
+    return crystal

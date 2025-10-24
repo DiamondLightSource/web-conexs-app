@@ -1,9 +1,13 @@
 import io
+import logging
 from pathlib import Path
 from typing import List
 
 import numpy as np
+from pymatgen.analysis.graphs import StructureGraph
+from pymatgen.analysis.local_env import JmolNN
 from pymatgen.core import Lattice, Structure
+from pymatgen.io.cif import CifParser
 
 from .models.models import (
     ChemicalSite,
@@ -19,6 +23,8 @@ from .models.models import (
 )
 from .models.models import Lattice as CrystalLattice
 from .periodictable import elements, periodic_table_by_z
+
+logger = logging.getLogger(__name__)
 
 
 def sites_to_string(sites: List[ChemicalSite], use_symbol=True, absorbing_index=None):
@@ -411,3 +417,50 @@ def pymatstruct_to_crystal(structure: Structure, label="materials project struct
     s = CrystalStructureInput(label=label, sites=site_list, lattice=lattice)
 
     return s
+
+
+def cif_string_to_molecule(cif_string: str):
+    try:
+        cif_file = io.StringIO(cif_string)
+        parser = CifParser(cif_file)
+        structure = parser.parse_structures(primitive=True)
+        structure = structure[0]
+        sg = StructureGraph.from_local_env_strategy(structure, JmolNN())
+        my_molecules = sg.get_subgraphs_as_molecules()
+
+        if len(my_molecules) == 0 or len(my_molecules[0]) == 0:
+            return None
+
+        new_sites = []
+
+        for i, s in enumerate(my_molecules[0]):
+            new_sites.append(
+                ChemicalSite(
+                    element_z=s.specie.number,
+                    x=s.x,
+                    y=s.y,
+                    z=s.z,
+                    index=i,
+                )
+            )
+
+        molecule: ChemicalStructure = ChemicalStructure(
+            label="Generated from cif",
+            sites=new_sites,
+        )
+        return molecule
+    except Exception as e:
+        logger.exception(f"Could not parse cif to molecule {e}")
+        return None
+
+
+def cif_string_to_crystal(cif_string: str):
+    try:
+        cif_file = io.StringIO(cif_string)
+        parser = CifParser(cif_file)
+        structure = parser.parse_structures(primitive=True)
+        structure = structure[0]
+        print(structure.sites[0].species.elements[0])
+        return pymatstruct_to_crystal(structure, label="Generated from cif")
+    except Exception as e:
+        logger.exception(f"Could not parse cif to crystal {e}")

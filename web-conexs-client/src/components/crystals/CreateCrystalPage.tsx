@@ -66,23 +66,25 @@ export default function CreateCystalPage() {
             Create Crystal
           </Typography>
         </Toolbar>
-        <Stack direction={"row"} spacing="5px" margin="5px">
-          <CrystalEditor crystal={crystal} setCrystal={setCrytal} />
+        <Stack direction={"row"} margin="10px">
+          <Stack spacing="10px" margin="10px">
+            <CrystalEditor crystal={crystal} setCrystal={setCrytal} />
+            <Button
+              variant="contained"
+              onClick={() => {
+                if (crystal != null) {
+                  mutation.mutate(crystal);
+                }
+              }}
+            >
+              Create
+            </Button>
+          </Stack>
           <MolStarCrystalWrapper
             cif={crystal == null ? null : crystalInputToCIF(crystal)}
             labelledAtomIndex={undefined}
           />
         </Stack>
-        <Button
-          variant="contained"
-          onClick={() => {
-            if (crystal != null) {
-              mutation.mutate(crystal);
-            }
-          }}
-        >
-          Create
-        </Button>
       </Stack>
     </MainPanel>
   );

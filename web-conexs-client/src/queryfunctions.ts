@@ -122,6 +122,32 @@ export const getStructure = async (id: number) => {
   return data;
 };
 
+export const postConvertMolecule = async (input: string) => {
+  const response = await axios.post<Molecule, AxiosResponse<Molecule>>(
+    structureUrl + "convert/molecule",
+    input
+  );
+
+  if (response.status != 200) {
+    throw new Error("Failed to convert file to molecule");
+  }
+
+  return response.data;
+};
+
+export const postConvertCrystal = async (input: string) => {
+  const response = await axios.post<Crystal, AxiosResponse<Crystal>>(
+    structureUrl + "convert/crystal",
+    input
+  );
+
+  if (response.status != 200) {
+    throw new Error("Failed to convert file to crystal");
+  }
+
+  return response.data;
+};
+
 export const postCrystal = async (input: CrystalInput) => {
   const response = await axios.post(structureUrl, input);
 

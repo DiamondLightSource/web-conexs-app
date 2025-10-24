@@ -1,6 +1,7 @@
-import { TextField } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 import { useState } from "react";
-import { validateMoleculeData } from "../utils";
+import { inputToXYZNoHeader, validateMoleculeData } from "../utils";
+import ConvertFromCif from "./ConvertFromCif";
 
 export default function XYZEditor(props: {
   structure: string;
@@ -26,22 +27,37 @@ export default function XYZEditor(props: {
   };
 
   return (
-    <TextField
-      error={errorMessage.length != 0}
-      sx={{ width: "100%" }}
-      id="datafilebox"
-      label={
-        props.isFractional
-          ? "Atomic Coordinates (Fractional)"
-          : "Atomic Coordinates (Angstroms)"
-      }
-      rows={12}
-      multiline
-      value={data}
-      helperText={errorMessage}
-      onChange={(e) => {
-        onChange(e.target.value);
-      }}
-    />
+    <Stack spacing="10px">
+      <TextField
+        error={errorMessage.length != 0}
+        sx={{ width: "100%" }}
+        id="datafilebox"
+        label={
+          props.isFractional
+            ? "Atomic Coordinates (Fractional)"
+            : "Atomic Coordinates (Angstroms)"
+        }
+        rows={12}
+        multiline
+        value={data}
+        helperText={errorMessage}
+        onChange={(e) => {
+          onChange(e.target.value);
+        }}
+      />
+
+      <ConvertFromCif
+        setStructure={(structure) => {
+          if (structure == null) {
+            return;
+          }
+          const s = inputToXYZNoHeader(structure);
+          props.setStructure(s);
+          setData(s);
+          setErrorMessage("");
+        }}
+        isFractional={props.isFractional}
+      ></ConvertFromCif>
+    </Stack>
   );
 }

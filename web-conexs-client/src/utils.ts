@@ -19,7 +19,8 @@ function joinSites(sites: Site[], output: string) {
       s.z +
       "\n";
   });
-  return output;
+
+  return output.trimEnd();
 }
 
 export function inputToXYZNoHeader(input: MoleculeInput | CrystalInput) {
@@ -36,6 +37,20 @@ export function moleculeInputToXYZ(input: MoleculeInput) {
   output = joinSites(sites, output);
 
   return output;
+}
+
+export function cleanOrcaXYZ(xyz: string) {
+  const lines = xyz.split("\n");
+
+  const body = lines.slice(2);
+
+  const output = body
+    .map((s) => {
+      return s.trim();
+    })
+    .join("\n");
+
+  return output.trimEnd();
 }
 
 export function crystalInputToCIF(input: CrystalInput) {
