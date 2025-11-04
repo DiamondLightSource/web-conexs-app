@@ -16,7 +16,8 @@ export default function MainPanel(props: { children: React.ReactNode }) {
       <Paper
         flex={1}
         sx={{
-          margin: "10px 10px 10px " + sideGap,
+          margin: "10px 10px 10px 10px",
+          ml: { sm: "10px", md: sideGap },
           flex: 1,
           minHeight: 0,
           alignItems: "stretch",

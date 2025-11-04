@@ -12,7 +12,7 @@
     "tsc": "tsc"
   },
   "dependencies": {
-    "@diamondlightsource/sci-react-ui": "^0.2.0",
+    "@diamondlightsource/sci-react-ui": "^0.3.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@h5web/lib": "^13.0.0",

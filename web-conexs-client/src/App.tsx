@@ -41,6 +41,7 @@ function App() {
         <UserProvider>
           <Stack height="100vh" width="100vw" spacing={1}>
             <Header />
+
             {/* <Stack direction="row" flex={1}> */}
             <SideDrawer />
             <Routes>
@@ -154,8 +155,11 @@ function App() {
             </Routes>
             <Footer
               copyright="Diamond Light Source"
-              logo={"null"}
-              sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+              logo={undefined}
+              sx={{
+                zIndex: (theme) => theme.zIndex.drawer + 1,
+                height: "6rem",
+              }}
             ></Footer>
           </Stack>
         </UserProvider>
