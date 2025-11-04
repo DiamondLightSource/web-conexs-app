@@ -1,34 +1,103 @@
-import { Stack, Typography, useTheme } from "@mui/material";
+import {
+  Box,
+  Drawer,
+  IconButton,
+  Stack,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { UserContext } from "../UserContext";
 import {
   ColourSchemeButton,
   Navbar,
   User,
+  Logo,
 } from "@diamondlightsource/sci-react-ui";
 
 import ClusterBadge from "./ClusterBadge";
+import SideToolbar from "./SideToolbar";
 
 export default function Header() {
   const user = useContext(UserContext);
   const theme = useTheme();
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleDrawerClose = () => {
+    setIsClosing(true);
+    setMobileOpen(false);
+  };
+
+  const handleDrawerTransitionEnd = () => {
+    setIsClosing(false);
+  };
+
+  const handleDrawerToggle = () => {
+    if (!isClosing) {
+      setMobileOpen(!mobileOpen);
+    }
+  };
 
   const handleLogin = () => window.location.assign("/login");
 
   const handleLogout = () => window.location.assign("/oauth2/sign_out");
 
+  const icon = theme.logos?.short;
+
   return (
     <Navbar
       sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
+        height: "4rem",
       }}
-      logo="theme"
+      leftSlot={
+        <Stack direction="row" alignItems="center">
+          <IconButton
+            size="large"
+            onClick={handleDrawerToggle}
+            sx={{
+              color: theme.palette.primary.contrastText,
+              display: { xs: "block", md: "none" },
+            }}
+          >
+            <MenuIcon fontSize="inherit"></MenuIcon>
+          </IconButton>
+          <Drawer
+            variant="temporary"
+            open={mobileOpen}
+            onTransitionEnd={handleDrawerTransitionEnd}
+            onClose={handleDrawerClose}
+            onClick={() => {
+              handleDrawerClose();
+              handleDrawerTransitionEnd();
+            }}
+          >
+            <SideToolbar open={mobileOpen}></SideToolbar>
+          </Drawer>
+          {icon && (
+            <Box
+              maxWidth="2rem"
+              margin="5px"
+              height="100%"
+              sx={{
+                "&:hover": { filter: "brightness(80%);" },
+                marginRight: { xs: "0", md: "50px" },
+              }}
+            >
+              <Logo short={true}></Logo>
+            </Box>
+          )}
+        </Stack>
+      }
+      logo={undefined}
       rightSlot={
         <Stack direction="row" alignItems="center">
           <ClusterBadge></ClusterBadge>
           <User
-            color="white"
+            colour="white"
             onLogin={handleLogin}
             onLogout={handleLogout}
             user={

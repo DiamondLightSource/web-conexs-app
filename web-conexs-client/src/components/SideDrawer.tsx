@@ -27,6 +27,7 @@ import FDMNESIcon from "./icons/FDMNESIcon";
 import OrcaIcon from "./icons/OrcaIcon";
 import InfoIcon from "@mui/icons-material/Info";
 import { Login } from "@mui/icons-material";
+import SideToolbar from "./SideToolbar";
 
 function ListItemStyled(props: {
   theme: Theme;
@@ -135,132 +136,6 @@ const Drawer2 = styled(Drawer, {
 export default function SideDrawer() {
   const [open, setOpen] = useState(false);
 
-  const theme = useTheme();
-
-  const user = useContext(UserContext);
-
-  const DrawerList = (
-    <>
-      <Toolbar />
-      <List>
-        <ListItemStyled
-          theme={theme}
-          open={open}
-          to={"/"}
-          label="Home Page"
-          icon={<HomeIcon />}
-          reloadDocument={false}
-        ></ListItemStyled>
-        <ListItemStyled
-          theme={theme}
-          open={open}
-          to={"/about"}
-          label="About"
-          icon={<InfoIcon />}
-          reloadDocument={false}
-        ></ListItemStyled>
-
-        {user.person && (
-          <>
-            <Divider />
-            <ListItemStyled
-              theme={theme}
-              open={open}
-              to={"/simulations"}
-              label="Simulations"
-              icon={<LabIcon />}
-              reloadDocument={false}
-            ></ListItemStyled>
-            <Divider />
-            <ListItemStyled
-              theme={theme}
-              open={open}
-              to={"/molecules"}
-              label="Molecules"
-              icon={<MoleculeIcon />}
-              reloadDocument={false}
-            ></ListItemStyled>
-            <ListItemStyled
-              theme={theme}
-              open={open}
-              to={"/createmolecule"}
-              label="Create Molecule"
-              icon={<MoleculePlusIcon />}
-              reloadDocument={false}
-            ></ListItemStyled>
-            <ListItemStyled
-              theme={theme}
-              open={open}
-              to={"/orca"}
-              label="Submit Orca"
-              icon={<OrcaIcon />}
-              reloadDocument={false}
-            ></ListItemStyled>
-            <ListItemStyled
-              theme={theme}
-              open={open}
-              to={"/fdmnesmolecule"}
-              label="Submit FDMNES Molecule"
-              icon={<FDMNESIcon />}
-              reloadDocument={false}
-            ></ListItemStyled>
-            <Divider />
-            <ListItemStyled
-              theme={theme}
-              open={open}
-              to={"/crystals"}
-              label="Crystals"
-              icon={<GrainIcon />}
-              reloadDocument={false}
-            ></ListItemStyled>
-            <ListItemStyled
-              theme={theme}
-              open={open}
-              to={"/createcrystal"}
-              label="Create Crystal"
-              icon={<GrainPlusIcon />}
-              reloadDocument={false}
-            ></ListItemStyled>
-            <ListItemStyled
-              theme={theme}
-              open={open}
-              to={"/matprojcrystal"}
-              label="Crystal From Materials Project"
-              icon={<GrainPlusIcon />}
-              reloadDocument={false}
-            ></ListItemStyled>
-            <ListItemStyled
-              theme={theme}
-              open={open}
-              to={"/fdmnescrystal"}
-              label="Submit FDMNES Crystal"
-              icon={<FDMNESIcon />}
-              reloadDocument={false}
-            ></ListItemStyled>
-            <ListItemStyled
-              theme={theme}
-              open={open}
-              to={"/qe"}
-              label="Submit QE"
-              icon={<QEIcon />}
-              reloadDocument={false}
-            ></ListItemStyled>
-          </>
-        )}
-        {user == null && (
-          <ListItemStyled
-            theme={theme}
-            open={open}
-            to={"/login"}
-            label="Login"
-            icon={<Login />}
-            reloadDocument={true}
-          ></ListItemStyled>
-        )}
-      </List>
-    </>
-  );
-
   return (
     <Drawer2
       variant="permanent"
@@ -271,8 +146,12 @@ export default function SideDrawer() {
       onMouseLeave={() => {
         setOpen(false);
       }}
+      onClick={() => {
+        setOpen(false);
+      }}
+      sx={{ display: { xs: "none", md: "block" } }}
     >
-      {DrawerList}
+      <SideToolbar open={open} />
     </Drawer2>
   );
 }
