@@ -3,6 +3,7 @@ import {
   Drawer,
   IconButton,
   Stack,
+  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -51,10 +52,13 @@ export default function Header() {
     <Navbar
       sx={{
         zIndex: (theme) => theme.zIndex.drawer + 1,
-        height: "4rem",
+        height: "70px",
       }}
       leftSlot={
-        <Stack direction="row" alignItems="center">
+        <Stack
+          direction="row"
+          sx={{ alignItems: "center", justifyConent: "center" }}
+        >
           <IconButton
             size="large"
             onClick={handleDrawerToggle}
@@ -95,7 +99,11 @@ export default function Header() {
       logo={undefined}
       rightSlot={
         <Stack direction="row" alignItems="center">
-          <ClusterBadge></ClusterBadge>
+          <Tooltip title="Status of High Performance Compute cluster on which the CONEXS simulations run.">
+            <Box>
+              <ClusterBadge />
+            </Box>
+          </Tooltip>
           <User
             colour="white"
             onLogin={handleLogin}

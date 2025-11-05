@@ -14,6 +14,7 @@ import CompactGroupRenderer, {
 import StructureViewer from "../StructureViewer";
 import { QESimulationSubmission } from "../../models";
 import { JsonSchema, UISchemaElement } from "@jsonforms/core";
+import QEGuide from "./QEGuide";
 
 const renderers = [
   ...materialRenderers,
@@ -63,7 +64,7 @@ export default function QEForm(props: {
       className="jsonFormsContainer"
       direction="row"
       justifyContent="space-between"
-      margin="5px"
+      margin="10px"
       spacing="5px"
       overflow="auto"
     >
@@ -73,29 +74,32 @@ export default function QEForm(props: {
           flex={1}
           spacing={"5px"}
           align-content={"stretch"}
+          margin={"10px"}
         >
-          <Stack flex={1}>
-            <JsonForms
-              schema={props.schema}
-              data={props.data}
-              renderers={renderers}
-              uischema={props.uischema}
-              cells={materialCells}
-              onChange={({ data }) => {
-                props.setData(data);
-              }}
-            />
-            <Button
-              variant="contained"
-              onClick={() => {
-                const localData = { ...props.data };
-                mutation.mutate(localData);
-              }}
-            >
-              Submit Simulation
-            </Button>
-          </Stack>
-          <Stack flex={1}>
+          <Stack flex={1} margin={"10px"} spacing="10px">
+            <Paper margin={"10px"} spacing="10px" elevation={16}>
+              <Stack flex={1} margin={"10px"} spacing="10px">
+                <JsonForms
+                  schema={props.schema}
+                  data={props.data}
+                  renderers={renderers}
+                  uischema={props.uischema}
+                  cells={materialCells}
+                  onChange={({ data }) => {
+                    props.setData(data);
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    const localData = { ...props.data };
+                    mutation.mutate(localData);
+                  }}
+                >
+                  Submit Simulation
+                </Button>
+              </Stack>
+            </Paper>{" "}
             <StructureViewer
               id={props.data.chemical_structure_id}
               labelledAtomIndex={
@@ -105,54 +109,8 @@ export default function QEForm(props: {
               }
             />
           </Stack>
-          <Paper
-            flex={1}
-            sx={{
-              margin: "20px",
-              flex: 1,
-              minHeight: "auto",
-              alignItems: "stretch",
-              display: "flex",
-              flexDirection: "column",
-              spacing: "2px",
-              minWidth: "auto",
-            }}
-            elevation={3}
-          >
-            <Stack flex={1} spacing={"2px"} margin={"3px"}>
-              <Typography>
-                Quantum ESPRESSO (Quantum opEn-Source Package for Research in
-                Electronic Structure, Simulation, and Optimisation) is a suite
-                of applications for ab-initio electronic structure calculations
-                using plane waves and pseudopotentials.
-              </Typography>
-              <Typography variant="body2">
-                Additional information can be found here:
-              </Typography>
-              <Link to="https://www.quantum-espresso.org" target="_blank">
-                Quantum Espresso Webpage
-              </Link>
-              <Typography variant="body2">
-                If you publish calculation results performed with QE code please
-                cite the original papers:
-              </Typography>
-              <Typography sx={{ fontStyle: "italic" }} variant="body2">
-                Journal of Physics: Condensed Matter 21, 395502 (2009).
-              </Typography>
-              <Typography sx={{ fontStyle: "italic" }} variant="body2">
-                Phys. Rev. B 80, 075102 (2009)
-              </Typography>
-              <Typography sx={{ fontStyle: "italic" }} variant="body2">
-                Phys. Rev. B 87, 205105 (2013)
-              </Typography>
-              <Typography sx={{ fontStyle: "italic" }} variant="body2">
-                Journal of Physics: Condensed Matter 29, 465901 (2017).
-              </Typography>
-              <Typography sx={{ fontStyle: "italic" }} variant="body2">
-                The Journal of Chemical Physics 152, 154105 (2020).
-              </Typography>
-            </Stack>
-          </Paper>
+
+          <QEGuide />
         </Stack>
       ) : (
         getPlacemarker(props.hasData && props.data == null)

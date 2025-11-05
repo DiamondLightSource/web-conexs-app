@@ -53,43 +53,36 @@ export default function CreateMoleculePage() {
   });
 
   return (
-    <MainPanel>
-      <Stack spacing={"10px"}>
-        <Toolbar
-          sx={{
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: theme.palette.action.disabled,
-            borderRadius: "4px 4px 0px 0px",
-          }}
-        >
-          <Typography variant="h5" component="div">
+    <MainPanel
+      toolbarElements={<Typography variant="h5">Create Molecule</Typography>}
+    >
+      <Stack
+        direction={{ sm: "column", md: "row" }}
+        spacing={"10px"}
+        margin={"20px"}
+        overflow="auto"
+      >
+        <Stack spacing="10px" margin="10px">
+          <MoleculeEditor
+            molecule={molecule}
+            setMolecule={setMolecule}
+          ></MoleculeEditor>
+          <Button
+            variant="contained"
+            disabled={molecule == null}
+            onClick={() => {
+              if (molecule != null) {
+                mutation.mutate(molecule);
+              }
+            }}
+          >
             Create Molecule
-          </Typography>
-        </Toolbar>
-        <Stack direction={"row"} margin="10px">
-          <Stack spacing="10px" margin="10px">
-            <MoleculeEditor
-              molecule={molecule}
-              setMolecule={setMolecule}
-            ></MoleculeEditor>
-            <Button
-              variant="contained"
-              disabled={molecule == null}
-              onClick={() => {
-                if (molecule != null) {
-                  mutation.mutate(molecule);
-                }
-              }}
-            >
-              Create Molecule
-            </Button>
-          </Stack>
-
-          <MolStarMoleculeWrapper
-            xyz={molecule == null ? null : moleculeInputToXYZ(molecule)}
-          />
+          </Button>
         </Stack>
+
+        <MolStarMoleculeWrapper
+          xyz={molecule == null ? null : moleculeInputToXYZ(molecule)}
+        />
       </Stack>
     </MainPanel>
   );

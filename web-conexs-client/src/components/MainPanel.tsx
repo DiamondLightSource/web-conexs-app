@@ -1,6 +1,17 @@
-import { Box, Paper, useTheme } from "@mui/material";
+import {
+  Box,
+  Paper,
+  Stack,
+  Toolbar,
+  Typography,
+  useTheme,
+} from "@mui/material";
+import React from "react";
 
-export default function MainPanel(props: { children: React.ReactNode }) {
+export default function MainPanel(props: {
+  children: React.ReactNode;
+  toolbarElements: React.ReactNode;
+}) {
   const theme = useTheme();
 
   const sideGap = theme.spacing(10);
@@ -26,7 +37,19 @@ export default function MainPanel(props: { children: React.ReactNode }) {
         }}
         elevation={12}
       >
-        {props.children}
+        <Stack flex={1} overflow="hidden">
+          <Toolbar
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: theme.palette.action.disabled,
+              borderRadius: "4px 4px 0px 0px",
+            }}
+          >
+            {props.toolbarElements}
+          </Toolbar>
+          {props.children}
+        </Stack>
       </Paper>
     </Box>
   );

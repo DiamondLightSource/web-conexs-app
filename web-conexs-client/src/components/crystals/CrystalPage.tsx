@@ -19,7 +19,6 @@ export default function CrystalPage() {
   });
 
   const [selectedCrystalId, setSelectedCrystalId] = useState<number | null>();
-  const theme = useTheme();
 
   let finalCrystal = null;
 
@@ -31,54 +30,47 @@ export default function CrystalPage() {
   }
 
   return (
-    <MainPanel>
-      <Stack spacing={"10px"}>
-        <Toolbar
-          sx={{
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: theme.palette.action.disabled,
-            borderRadius: "4px 4px 0px 0px",
+    <MainPanel toolbarElements={<Typography variant="h5">Crystals</Typography>}>
+      <Stack
+        direction={{ sm: "column", md: "row" }}
+        spacing={"10px"}
+        margin={"20px"}
+        overflow="auto"
+      >
+        <StructureTable
+          structures={query.data ? query.data : []}
+          selectedStructure={undefined}
+          setSelectedStructure={(data) => {
+            if (data) {
+              setSelectedCrystalId(data.structure.id);
+            }
           }}
-        >
-          <Typography variant="h5" component="div">
-            Crystals
-          </Typography>
-        </Toolbar>
-        <Stack direction={"row"} spacing={3}>
-          <StructureTable
-            structures={query.data ? query.data : []}
-            selectedStructure={undefined}
-            setSelectedStructure={(data) => {
-              if (data) {
-                setSelectedCrystalId(data.structure.id);
-              }
-            }}
-          ></StructureTable>
+        ></StructureTable>
 
-          <XYZCrystalFileViewer id={finalCrystal?.structure.id} />
+        <XYZCrystalFileViewer id={finalCrystal?.structure.id} />
+        <Stack>
           <StructureViewer id={finalCrystal?.structure.id}></StructureViewer>
+          <Stack direction="row" padding={"2em"} spacing={"2em"}>
+            <NavButton
+              label="Create Crystal"
+              path={"/createcrystal"}
+              icon={<GrainPlusIcon sx={{ width: "4em", height: "4em" }} />}
+              reload={false}
+            ></NavButton>
+            <NavButton
+              label="Submit FDMNES"
+              path={"/fdmnescrystal"}
+              icon={<FDMNESIcon sx={{ width: "4em", height: "4em" }} />}
+              reload={false}
+            ></NavButton>
+            <NavButton
+              label="Submit Quantum Espresso"
+              path={"/qe"}
+              icon={<QEIcon sx={{ width: "4em", height: "4em" }} />}
+              reload={false}
+            ></NavButton>
+          </Stack>
         </Stack>
-      </Stack>
-      <Stack direction="row" padding={"2em"} spacing={"2em"}>
-        <NavButton
-          label="Create Crystal"
-          path={"/createcrystal"}
-          icon={<GrainPlusIcon sx={{ width: "5em", height: "5em" }} />}
-          reload={false}
-        ></NavButton>
-        <NavButton
-          label="Submit FDMNES"
-          path={"/fdmnescrystal"}
-          icon={<FDMNESIcon sx={{ width: "5em", height: "5em" }} />}
-          reload={false}
-        ></NavButton>
-        <NavButton
-          label="Submit Quantum Espresso"
-          path={"/qe"}
-          icon={<QEIcon sx={{ width: "5em", height: "5em" }} />}
-          reload={false}
-        ></NavButton>
       </Stack>
     </MainPanel>
   );

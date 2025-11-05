@@ -8,6 +8,7 @@ import {
   Stack,
   Theme,
   Toolbar,
+  Tooltip,
   useTheme,
 } from "@mui/material";
 import { useContext, useState } from "react";
@@ -25,6 +26,7 @@ import FDMNESIcon from "./icons/FDMNESIcon";
 import OrcaIcon from "./icons/OrcaIcon";
 import InfoIcon from "@mui/icons-material/Info";
 import { Login } from "@mui/icons-material";
+import MatProjPlus from "./icons/MatProjPlus";
 
 const drawerWidth = 320;
 
@@ -176,7 +178,7 @@ export default function SideToolbar(props: { open: boolean }) {
               open={props.open}
               to={"/matprojcrystal"}
               label="Crystal From Materials Project"
-              icon={<GrainPlusIcon />}
+              icon={<MatProjPlus />}
               reloadDocument={false}
             ></ListItemStyled>
             <ListItemStyled

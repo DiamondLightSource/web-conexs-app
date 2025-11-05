@@ -1,7 +1,10 @@
 import {
   Box,
   Button,
+  Card,
+  CardContent,
   Checkbox,
+  Container,
   FormControlLabel,
   Stack,
   Toolbar,
@@ -36,47 +39,46 @@ export default function OrcaEulaPage() {
     mutation.mutate();
   };
   return (
-    <MainPanel>
-      <Stack flex={1}>
-        <Toolbar
-          sx={{
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: theme.palette.action.disabled,
-            borderRadius: "4px 4px 0px 0px",
-          }}
-        >
-          <Typography variant="h5" component="div">
-            Orca End-User Licence Agreement
-          </Typography>
-        </Toolbar>
-        <Stack>
-          <Typography>ORCA is free for Academic use.</Typography>
-          <Typography>
-            To use ORCA through the CONEXS platform you must agree to the terms
-            of the ORCA End User Licence Agreement.
-          </Typography>
-
-          <Link
-            to="https://orcaforum.kofo.mpg.de/app.php/privacypolicy/policy"
-            target="_blank"
-          >
-            <Stack direction="row">
-              <Typography>ORCA EULA</Typography>
-              <OpenInNewIcon></OpenInNewIcon>
-            </Stack>
-          </Link>
-          <Box component="form" onSubmit={submitHandler}>
-            <FormControlLabel
-              required
-              control={<Checkbox />}
-              label="I have read the ORCA EULA and confirm that my use falls within the terms defined within"
-            />
-            <Button variant="contained" type="submit">
-              Submit
-            </Button>
-          </Box>
-        </Stack>
+    <MainPanel
+      toolbarElements={
+        <Typography variant="h5">Orca End-User Licence Agreement</Typography>
+      }
+    >
+      <Stack margin="20px">
+        <Container>
+          <Card>
+            <CardContent>
+              <Typography variant="h6" margin="10px">
+                ORCA is free for Academic use only.
+              </Typography>
+              <Typography gutterBottom margin="10px">
+                To use ORCA through the CONEXS platform you must agree to the
+                terms of the ORCA End User Licence Agreement.
+              </Typography>
+              <Box margin="10px">
+                <Link
+                  to="https://orcaforum.kofo.mpg.de/app.php/privacypolicy/policy"
+                  target="_blank"
+                >
+                  <Stack direction="row">
+                    <Typography>ORCA EULA</Typography>
+                    <OpenInNewIcon></OpenInNewIcon>
+                  </Stack>
+                </Link>
+              </Box>
+              <Box component="form" onSubmit={submitHandler} margin="10px">
+                <FormControlLabel
+                  required
+                  control={<Checkbox />}
+                  label="I have read the ORCA EULA and confirm that my use falls within the terms defined within"
+                />
+              </Box>
+              <Button variant="contained" type="submit">
+                Submit
+              </Button>
+            </CardContent>
+          </Card>
+        </Container>
       </Stack>
     </MainPanel>
   );

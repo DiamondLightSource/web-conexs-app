@@ -1,4 +1,11 @@
-import { Paper, Stack, Typography } from "@mui/material";
+import {
+  Paper,
+  Stack,
+  Toolbar,
+  Tooltip,
+  Typography,
+  useTheme,
+} from "@mui/material";
 import MainPanel from "./MainPanel";
 
 import LoginIcon from "@mui/icons-material/Login";
@@ -21,7 +28,15 @@ export default function WelcomePage() {
   const user = useContext(UserContext);
 
   return (
-    <MainPanel>
+    <MainPanel
+      toolbarElements={
+        <Stack flex={1} sx={{ justifyContent: "center", alignItems: "center" }}>
+          <Typography variant="h3" padding="16px" component={"div"}>
+            Web-CONEXS
+          </Typography>
+        </Stack>
+      }
+    >
       {user.person_status == "FORBIDDEN" ? (
         <Forbidden></Forbidden>
       ) : (
@@ -37,9 +52,6 @@ export default function WelcomePage() {
             alignItems: "center",
           }}
         >
-          <Typography variant="h2" padding="16px">
-            Web-CONEXS
-          </Typography>
           <Typography variant="h6" padding="16px" fontStyle="italic">
             A platform for your first steps in theoretical x-ray spectroscopy.
           </Typography>
