@@ -113,10 +113,11 @@ def submit_simulation(script, job_name, sim, user, session, as_tasks):
         sim.job_id = job_id
         sim.working_directory = job_name
         sim.submission_date = datetime.datetime.now()
-        sim.status = SimulationStatus.submitted
+        sim.status = SimulationStatus.requested
         update_simulation(session, sim)
     except Exception:
         sim.status = SimulationStatus.failed
+        sim.completion_date = datetime.datetime.now()
         update_simulation(session, sim)
         logger.exception("Error submitting " + job_name)
 
@@ -128,6 +129,7 @@ def clean_request_cancelled(session):
         if sim.job_id is None:
             # No job id, hasn't been submitted, so just flag as cancelled
             sim.status = SimulationStatus.cancelled
+            sim.completion_date = datetime.datetime.now()
             update_simulation(session, sim)
         else:
             url = SLURM_API + "/job/" + str(sim.job_id)
@@ -146,6 +148,7 @@ def clean_request_cancelled(session):
                 continue
 
             sim.status = SimulationStatus.cancelled
+            sim.completion_date = datetime.datetime.now()
             update_simulation(session, sim)
             user = sim.person.identifier
             calc_dir = Path(user) / Path(sim.working_directory)
@@ -196,7 +199,6 @@ def update_active_simulations(session):
 
             if state == JOB_RUNNING:
                 transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
-
             if state == JOB_RUNNING and a.status != SimulationStatus.running:
                 a.status = SimulationStatus.running
                 update_simulation(session, a)
@@ -205,16 +207,19 @@ def update_active_simulations(session):
                 update_simulation(session, a)
             elif state == JOB_COMPLETED and a.status != SimulationStatus.completed:
                 a.status = SimulationStatus.completed
+                a.completion_date = datetime.datetime.now()
                 transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
                 update_simulation(session, a)
                 clean_up(str(iris_dir))
             elif state == JOB_FAILED and a.status != SimulationStatus.failed:
                 a.status = SimulationStatus.failed
+                a.completion_date = datetime.datetime.now()
                 transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
                 update_simulation(session, a)
                 clean_up(str(iris_dir))
             elif state == JOB_TIMEOUT and a.status != SimulationStatus.failed:
                 a.status = SimulationStatus.failed
+                a.completion_date = datetime.datetime.now()
                 transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
                 update_simulation(session, a)
                 clean_up(str(iris_dir))
@@ -224,5 +229,6 @@ def update_active_simulations(session):
             logger.error(f"Active job with id {a.job_id} not in job_map")
             transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
             a.status = SimulationStatus.failed
+            a.completion_date = datetime.datetime.now()
             update_simulation(session, a)
             clean_up(str(iris_dir))
