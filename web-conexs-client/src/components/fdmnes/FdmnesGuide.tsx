@@ -84,10 +84,15 @@ export default function FdmnesGuide() {
         <Link
           to="https://cloud.neel.cnrs.fr/index.php/s/nL2c6kH2PLwcB5r"
           target="_blank"
+          rel="noopener noreferrer"
         >
           FDMNES manual
         </Link>
-        <Link to="https://fdmnes.neel.cnrs.fr/" target="_blank">
+        <Link
+          to="https://fdmnes.neel.cnrs.fr/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           FDMNES webpage
         </Link>
       </Stack>

@@ -97,7 +97,11 @@ export default function QEGuide() {
         <Typography variant="body2">
           Additional information can be found here:
         </Typography>
-        <Link to="https://www.quantum-espresso.org" target="_blank">
+        <Link
+          to="https://www.quantum-espresso.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Quantum Espresso Webpage
         </Link>
       </Stack>

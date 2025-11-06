@@ -2,8 +2,8 @@ import {
   Box,
   Drawer,
   IconButton,
+  Link,
   Stack,
-  Tooltip,
   Typography,
   useTheme,
 } from "@mui/material";
@@ -82,17 +82,19 @@ export default function Header() {
             <SideToolbar open={mobileOpen}></SideToolbar>
           </Drawer>
           {icon && (
-            <Box
-              maxWidth="2rem"
-              margin="5px"
-              height="100%"
-              sx={{
-                "&:hover": { filter: "brightness(80%);" },
-                marginRight: { xs: "0", md: "50px" },
-              }}
-            >
-              <Logo short={true}></Logo>
-            </Box>
+            <Link href="/">
+              <Box
+                maxWidth="2rem"
+                margin="5px"
+                height="100%"
+                sx={{
+                  "&:hover": { filter: "brightness(80%);" },
+                  marginRight: { xs: "0", md: "50px" },
+                }}
+              >
+                <Logo short={true}></Logo>
+              </Box>
+            </Link>
           )}
         </Stack>
       }
@@ -100,7 +102,6 @@ export default function Header() {
       rightSlot={
         <Stack direction="row" alignItems="center">
           <ClusterBadge />
-
           <User
             colour="white"
             onLogin={handleLogin}
