@@ -129,18 +129,21 @@ export default function OrcaGuide() {
         <Link
           to="https://www.kofo.mpg.de/en/research/services/orca"
           target="_blank"
-        >
-          ORCA manual
-        </Link>
-        <Link
-          to="https://www.kofo.mpg.de/412442/orca_manual-opt.pdf"
-          target="_blank"
+          rel="noopener noreferrer"
         >
           ORCA webpage at Max-Planck-Institut
         </Link>
         <Link
+          to="https://www.kofo.mpg.de/412442/orca_manual-opt.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          ORCA manual
+        </Link>
+        <Link
           to="https://sites.google.com/site/orcainputlibrary/home"
           target="_blank"
+          rel="noopener noreferrer"
         >
           ORCA input library website
         </Link>

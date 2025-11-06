@@ -59,6 +59,7 @@ export default function OrcaEulaPage() {
                 <Link
                   to="https://orcaforum.kofo.mpg.de/app.php/privacypolicy/policy"
                   target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <Stack direction="row">
                     <Typography>ORCA EULA</Typography>

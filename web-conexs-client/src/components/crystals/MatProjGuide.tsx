@@ -23,6 +23,7 @@ export default function MatProjGuide() {
             <Link
               to="https://next-gen.materialsproject.org/about/cite"
               target="_blank"
+              rel="noopener noreferrer"
             >
               About Materials Project
             </Link>
