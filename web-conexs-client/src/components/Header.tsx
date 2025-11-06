@@ -42,7 +42,7 @@ export default function Header() {
     }
   };
 
-  const handleLogin = () => window.location.assign("/login");
+  const handleLogin = () => window.location.assign("/oauth2/sign_in");
 
   const handleLogout = () => window.location.assign("/oauth2/sign_out");
 

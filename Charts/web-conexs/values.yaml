@@ -171,7 +171,7 @@ oauth2-proxy:
   config:
     configFile: |-
       email_domains = [ "*" ]
-      skip_auth_routes = ["GET=^/$","GET=^/assets"]
+      skip_auth_routes = ["GET=^/$","GET=^/assets","GET=^/conexs.svg$",]
       api_routes = ["^/api"]
       skip_provider_button = true
       cookie_refresh="1m"

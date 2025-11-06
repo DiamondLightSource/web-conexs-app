@@ -70,7 +70,7 @@ export default function WelcomePage() {
           {!user.person ? (
             <NavButton
               label="Login"
-              path={"/login"}
+              path={"/oauth2/sign_in"}
               icon={<LoginIcon sx={{ width: "3em", height: "3em" }} />}
               reload={true}
             ></NavButton>
