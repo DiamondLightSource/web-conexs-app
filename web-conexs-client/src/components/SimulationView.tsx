@@ -11,26 +11,18 @@ export default function SimulationView() {
   const intId = parseInt(id ? id : "");
 
   return (
-    <MainPanel>
-      <Stack overflow="auto" justifyContent="space-between" width={"100%"}>
-        <Toolbar
-          sx={{
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: theme.palette.action.disabled,
-            borderRadius: "4px 4px 0px 0px",
-          }}
-        >
-          <Button variant="contained" onClick={() => navigate("/simulations")}>
-            Back
-          </Button>
-        </Toolbar>
-        {isNaN(intId) ? (
-          <Typography>Invalid Simulation Id</Typography>
-        ) : (
-          <SimulationInformation simId={intId}></SimulationInformation>
-        )}
-      </Stack>
+    <MainPanel
+      toolbarElements={
+        <Button variant="contained" onClick={() => navigate("/simulations")}>
+          Back
+        </Button>
+      }
+    >
+      {isNaN(intId) ? (
+        <Typography>Invalid Simulation Id</Typography>
+      ) : (
+        <SimulationInformation simId={intId}></SimulationInformation>
+      )}
     </MainPanel>
   );
 }

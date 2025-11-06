@@ -3,8 +3,10 @@ import MainPanel from "./MainPanel";
 
 export default function LoginPage() {
   return (
-    <MainPanel>
-      <Typography>Successfully logged in</Typography>
+    <MainPanel
+      toolbarElements={<Typography variant="h5">Logged In</Typography>}
+    >
+      <Typography>Successfully Logged In!</Typography>
     </MainPanel>
   );
 }

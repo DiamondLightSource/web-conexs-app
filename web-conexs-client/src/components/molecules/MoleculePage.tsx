@@ -18,7 +18,6 @@ export default function MoleculePage() {
   });
 
   const [selectedMoleculeId, setSelectedMoleculeId] = useState<number | null>();
-  const theme = useTheme();
 
   let finalMolecule = null;
 
@@ -32,53 +31,48 @@ export default function MoleculePage() {
   }
 
   return (
-    <MainPanel>
-      <Stack spacing={"10px"}>
-        <Toolbar
-          sx={{
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: theme.palette.action.disabled,
-            borderRadius: "4px 4px 0px 0px",
+    <MainPanel
+      toolbarElements={<Typography variant="h5">Molecules</Typography>}
+    >
+      <Stack
+        direction={{ sm: "column", md: "row" }}
+        spacing={"10px"}
+        margin={"20px"}
+        overflow="auto"
+      >
+        <StructureTable
+          structures={query.data ? query.data : []}
+          selectedStructure={undefined}
+          setSelectedStructure={(data) => {
+            setSelectedMoleculeId(data?.structure.id);
           }}
-        >
-          <Typography variant="h5" component="div">
-            Molecules
-          </Typography>
-        </Toolbar>
-        <Stack spacing={3} direction={{ sm: "column", md: "row" }}>
-          <StructureTable
-            structures={query.data ? query.data : []}
-            selectedStructure={undefined}
-            setSelectedStructure={(data) => {
-              setSelectedMoleculeId(data?.structure.id);
-            }}
-          ></StructureTable>
-          <Stack spacing={"2px"}>
-            <XYZFileViewer id={finalMolecule?.structure.id} />
-          </Stack>
-          <StructureViewer id={finalMolecule?.structure.id}></StructureViewer>
+        ></StructureTable>
+        <Stack spacing={"2px"}>
+          <XYZFileViewer id={finalMolecule?.structure.id} />
         </Stack>
-      </Stack>
-      <Stack direction="row" padding={"2em"} spacing={"2em"}>
-        <NavButton
-          label="Create Molecule"
-          path={"/createmolecule"}
-          icon={<MoleculePlusIcon sx={{ width: "5em", height: "5em" }} />}
-          reload={false}
-        ></NavButton>
-        <NavButton
-          label="Submit ORCA"
-          path={"/orca"}
-          icon={<OrcaIcon sx={{ width: "5em", height: "5em" }} />}
-          reload={false}
-        ></NavButton>
-        <NavButton
-          label="Submit FDMNES"
-          path={"/fdmnesmolecule"}
-          icon={<FDMNESIcon sx={{ width: "5em", height: "5em" }} />}
-          reload={false}
-        ></NavButton>
+        <Stack>
+          <StructureViewer id={finalMolecule?.structure.id}></StructureViewer>
+          <Stack direction="row" padding={"2em"} spacing={"2em"}>
+            <NavButton
+              label="Create Molecule"
+              path={"/createmolecule"}
+              icon={<MoleculePlusIcon sx={{ width: "5em", height: "5em" }} />}
+              reload={false}
+            ></NavButton>
+            <NavButton
+              label="Submit ORCA"
+              path={"/orca"}
+              icon={<OrcaIcon sx={{ width: "5em", height: "5em" }} />}
+              reload={false}
+            ></NavButton>
+            <NavButton
+              label="Submit FDMNES"
+              path={"/fdmnesmolecule"}
+              icon={<FDMNESIcon sx={{ width: "5em", height: "5em" }} />}
+              reload={false}
+            ></NavButton>
+          </Stack>
+        </Stack>
       </Stack>
     </MainPanel>
   );

@@ -47,49 +47,55 @@ function MatProjCrystalViewer(props: { mpid: string }) {
   }
 
   return (
-    <Stack height="100%" width="100%" flex={1} spacing={"5px"}>
+    <Stack flex={1} spacing={"5px"} margin={"10px"}>
       <Stack
-        direction="row"
+        direction={{ sm: "column", md: "row" }}
         height="100%"
         width="100%"
         flex={1}
         spacing={"5px"}
       >
         <XYZCrystalViewer crystal={query.data}></XYZCrystalViewer>
-        <MolStarCrystalWrapper
-          cif={crystalInputToCIF(query.data)}
-          labelledAtomIndex={undefined}
-        ></MolStarCrystalWrapper>
-      </Stack>
-      <Stack direction="row" alignItems="center">
-        <Checkbox checked={checked} onChange={handleChange}></Checkbox>
-        <Typography>Round Lattice Parameters to 4 Decimal Places</Typography>
-      </Stack>
-      <Button
-        variant="contained"
-        onClick={() => {
-          const structure = query.data;
+        <Stack>
+          <MolStarCrystalWrapper
+            cif={crystalInputToCIF(query.data)}
+            labelledAtomIndex={undefined}
+          ></MolStarCrystalWrapper>
+          <Stack>
+            <Stack direction="row" alignItems="center">
+              <Checkbox checked={checked} onChange={handleChange}></Checkbox>
+              <Typography>
+                Round Lattice Parameters to 4 Decimal Places
+              </Typography>
+            </Stack>
+            <Button
+              variant="contained"
+              onClick={() => {
+                const structure = query.data;
 
-          if (checked) {
-            structure.lattice.a =
-              Math.round(structure.lattice.a * 10000.0) / 10000.0;
-            structure.lattice.b =
-              Math.round(structure.lattice.b * 10000.0) / 10000.0;
-            structure.lattice.c =
-              Math.round(structure.lattice.c * 10000.0) / 10000.0;
-            structure.lattice.alpha =
-              Math.round(structure.lattice.alpha * 10000.0) / 10000.0;
-            structure.lattice.beta =
-              Math.round(structure.lattice.beta * 10000.0) / 10000.0;
-            structure.lattice.gamma =
-              Math.round(structure.lattice.gamma * 10000.0) / 10000.0;
-          }
+                if (checked) {
+                  structure.lattice.a =
+                    Math.round(structure.lattice.a * 10000.0) / 10000.0;
+                  structure.lattice.b =
+                    Math.round(structure.lattice.b * 10000.0) / 10000.0;
+                  structure.lattice.c =
+                    Math.round(structure.lattice.c * 10000.0) / 10000.0;
+                  structure.lattice.alpha =
+                    Math.round(structure.lattice.alpha * 10000.0) / 10000.0;
+                  structure.lattice.beta =
+                    Math.round(structure.lattice.beta * 10000.0) / 10000.0;
+                  structure.lattice.gamma =
+                    Math.round(structure.lattice.gamma * 10000.0) / 10000.0;
+                }
 
-          mutation.mutate(structure);
-        }}
-      >
-        Create Crystal
-      </Button>
+                mutation.mutate(structure);
+              }}
+            >
+              Create Crystal
+            </Button>
+          </Stack>
+        </Stack>
+      </Stack>
     </Stack>
   );
 }

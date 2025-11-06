@@ -15,6 +15,7 @@ import CompactGroupRenderer, {
 import StructureViewer from "../StructureViewer";
 import { FDMNESSimulationInput } from "../../models";
 import { JsonSchema, UISchemaElement } from "@jsonforms/core";
+import FdmnesGuide from "./FdmnesGuide";
 
 const renderers = [
   ...materialRenderers,
@@ -74,77 +75,36 @@ export default function FdmnesForm(props: {
           flex={1}
           spacing={"5px"}
           align-content={"stretch"}
+          margin={"10px"}
         >
-          <Stack flex={1}>
-            <JsonForms
-              schema={props.schema}
-              data={props.data}
-              renderers={renderers}
-              uischema={props.uischema}
-              cells={materialCells}
-              onChange={({ data }) => {
-                props.setData(data);
-              }}
-            />
-            <Button
-              variant="contained"
-              onClick={() => {
-                const localData = { ...props.data };
-                mutation.mutate(localData);
-              }}
-            >
-              Submit Simulation
-            </Button>
-          </Stack>
-          <Stack flex={1}>
+          <Stack flex={1} margin={"10px"} spacing="10px">
+            <Paper margin={"10px"} spacing="10px" elevation={16}>
+              <Stack flex={1} margin={"10px"} spacing="10px">
+                <JsonForms
+                  schema={props.schema}
+                  data={props.data}
+                  renderers={renderers}
+                  uischema={props.uischema}
+                  cells={materialCells}
+                  onChange={({ data }) => {
+                    props.setData(data);
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    const localData = { ...props.data };
+                    mutation.mutate(localData);
+                  }}
+                >
+                  Submit Simulation
+                </Button>
+              </Stack>
+            </Paper>
             <StructureViewer id={props.data.chemical_structure_id} />
           </Stack>
-          <Paper
-            flex={1}
-            sx={{
-              margin: "20px",
-              flex: 1,
-              minHeight: "auto",
-              alignItems: "stretch",
-              display: "flex",
-              flexDirection: "column",
-              spacing: "2px",
-              minWidth: "auto",
-            }}
-            elevation={3}
-          >
-            <Stack flex={1} spacing={"2px"} margin={"3px"}>
-              <Typography>
-                The FDMNES project is developed in the SIN team, Institut Néel,
-                CNRS, Grenoble, France
-              </Typography>
-              <Typography variant="body2">
-                Additional information can be found here:
-              </Typography>
-              <Link
-                to="https://cloud.neel.cnrs.fr/index.php/s/nL2c6kH2PLwcB5r"
-                target="_blank"
-              >
-                FDMNES manual
-              </Link>
-              <Link to="https://fdmnes.neel.cnrs.fr/" target="_blank">
-                FDMNES webpage
-              </Link>
-              <Typography variant="body2">
-                If you publish calculation results performed with FDMNES code
-                please cite the original papers:
-              </Typography>
-              <Typography sx={{ fontStyle: "italic" }} variant="body2">
-                J. Phys.: Condens. Matter 21, 345501 (2009).
-              </Typography>
-              <Typography sx={{ fontStyle: "italic" }} variant="body2">
-                J. Chem. Theory Comput. 11, 4512-4521 (2015).
-              </Typography>
-              <Typography sx={{ fontStyle: "italic" }} variant="body2">
-                J. Synchrotron Rad. 23, 551-559 (2016).
-              </Typography>
-            </Stack>
-          </Paper>
+
+          <FdmnesGuide />
         </Stack>
       ) : (
         getPlacemarker(props.hasData && props.data == null)

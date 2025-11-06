@@ -52,39 +52,32 @@ export default function CreateCystalPage() {
   const [crystal, setCrytal] = useState<CrystalInput | null>(templateCrystal);
 
   return (
-    <MainPanel>
-      <Stack spacing={"10px"}>
-        <Toolbar
-          sx={{
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: theme.palette.action.disabled,
-            borderRadius: "4px 4px 0px 0px",
-          }}
-        >
-          <Typography variant="h5" component="div">
-            Create Crystal
-          </Typography>
-        </Toolbar>
-        <Stack direction={"row"} margin="10px">
-          <Stack spacing="10px" margin="10px">
-            <CrystalEditor crystal={crystal} setCrystal={setCrytal} />
-            <Button
-              variant="contained"
-              onClick={() => {
-                if (crystal != null) {
-                  mutation.mutate(crystal);
-                }
-              }}
-            >
-              Create
-            </Button>
-          </Stack>
-          <MolStarCrystalWrapper
-            cif={crystal == null ? null : crystalInputToCIF(crystal)}
-            labelledAtomIndex={undefined}
-          />
+    <MainPanel
+      toolbarElements={<Typography variant="h5">Create Crystal</Typography>}
+    >
+      <Stack
+        direction={{ sm: "column", md: "row" }}
+        spacing={"10px"}
+        margin={"20px"}
+        overflow="auto"
+      >
+        <Stack spacing="10px" margin="10px">
+          <CrystalEditor crystal={crystal} setCrystal={setCrytal} />
+          <Button
+            variant="contained"
+            onClick={() => {
+              if (crystal != null) {
+                mutation.mutate(crystal);
+              }
+            }}
+          >
+            Create
+          </Button>
         </Stack>
+        <MolStarCrystalWrapper
+          cif={crystal == null ? null : crystalInputToCIF(crystal)}
+          labelledAtomIndex={undefined}
+        />
       </Stack>
     </MainPanel>
   );

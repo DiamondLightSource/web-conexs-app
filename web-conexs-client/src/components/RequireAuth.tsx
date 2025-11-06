@@ -13,7 +13,9 @@ export default function RequireAuth(props: {
 
   if (user_result.person_status == "ERROR") {
     return (
-      <MainPanel>
+      <MainPanel
+        toolbarElements={<Typography variant="h5">Internal Error!</Typography>}
+      >
         <Typography>Internal Error!</Typography>
       </MainPanel>
     );
@@ -21,7 +23,9 @@ export default function RequireAuth(props: {
 
   if (user_result.person_status == "FORBIDDEN") {
     return (
-      <MainPanel>
+      <MainPanel
+        toolbarElements={<Typography variant="h5">Access Forbidden</Typography>}
+      >
         <Forbidden></Forbidden>
       </MainPanel>
     );
@@ -38,7 +42,9 @@ export default function RequireAuth(props: {
 
   if (user_result.person_status == "PENDING" || user == null) {
     return (
-      <MainPanel>
+      <MainPanel
+        toolbarElements={<Typography variant="h5">Loading...</Typography>}
+      >
         <Typography>Loading...</Typography>
       </MainPanel>
     );

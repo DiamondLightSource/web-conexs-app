@@ -41,8 +41,6 @@ function App() {
         <UserProvider>
           <Stack height="100vh" width="100vw" spacing={1}>
             <Header />
-
-            {/* <Stack direction="row" flex={1}> */}
             <SideDrawer />
             <Routes>
               <Route path="/" element={<WelcomePage />} />
@@ -158,7 +156,7 @@ function App() {
               logo={undefined}
               sx={{
                 zIndex: (theme) => theme.zIndex.drawer + 1,
-                height: "6rem",
+                height: "4rem",
               }}
             ></Footer>
           </Stack>

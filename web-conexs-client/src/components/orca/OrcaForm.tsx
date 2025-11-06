@@ -14,6 +14,7 @@ import CompactGroupRenderer, {
   CompactGroupTester,
 } from "../renderers/CompactGroup";
 import StructureViewer from "../StructureViewer";
+import OrcaGuide from "./OrcaGuide";
 
 const renderers = [
   ...materialRenderers,
@@ -66,7 +67,7 @@ export default function OrcaForm() {
       className="jsonFormsContainer"
       direction="row"
       justifyContent="space-between"
-      margin="5px"
+      margin="10px"
       spacing="5px"
       overflow="auto"
     >
@@ -76,93 +77,43 @@ export default function OrcaForm() {
           spacing={"5px"}
           direction={{ sm: "column", md: "row" }}
           align-content={"stretch"}
+          margin={"10px"}
         >
-          <Stack flex={1}>
-            <JsonForms
-              schema={schema}
-              data={data}
-              renderers={renderers}
-              uischema={uischema}
-              cells={materialCells}
-              onChange={({ data }) => {
-                setData(data);
-                setSelectedMoleculeId(data.molecular_structure_id);
-              }}
-            />
-            <Button
-              variant="contained"
-              onClick={() => {
-                const localData = { ...data };
-                if (localData.solvent == "None") {
-                  localData.solvent = null;
-                }
+          <Stack flex={1} margin={"10px"} spacing="10px">
+            <Paper margin={"10px"} spacing="10px" elevation={16}>
+              <Stack flex={1} margin={"10px"} spacing="10px">
+                <JsonForms
+                  schema={schema}
+                  data={data}
+                  renderers={renderers}
+                  uischema={uischema}
+                  cells={materialCells}
+                  onChange={({ data }) => {
+                    setData(data);
+                    setSelectedMoleculeId(data.molecular_structure_id);
+                  }}
+                />
+                <Button
+                  variant="contained"
+                  onClick={() => {
+                    const localData = { ...data };
+                    if (localData.solvent == "None") {
+                      localData.solvent = null;
+                    }
 
-                mutation.mutate(localData);
-              }}
-            >
-              Submit Simulation
-            </Button>
-          </Stack>
-          <Stack flex={1}>
+                    mutation.mutate(localData);
+                  }}
+                >
+                  Submit Simulation
+                </Button>
+              </Stack>
+            </Paper>
+
             {selectedMoleculeID != null && (
               <StructureViewer id={selectedMoleculeID} />
             )}
           </Stack>
-          <Paper
-            flex={1}
-            sx={{
-              margin: "20px",
-              flex: 1,
-              minHeight: "auto",
-              alignItems: "stretch",
-              display: "flex",
-              flexDirection: "column",
-              spacing: "2px",
-              minWidth: "auto",
-            }}
-            elevation={3}
-          >
-            <Stack flex={1} spacing={"2px"} margin={"3px"}>
-              <Typography>
-                ORCA is an ab initio, DFT, and semi-empirical SCF-MO package
-                developed by Frank Neese et al. at the Max Planck Institut für
-                Kohlenforschung.
-              </Typography>
-              <Typography variant="body2">
-                Additional information can be found here:
-              </Typography>
-              <Link
-                to="https://www.kofo.mpg.de/en/research/services/orca"
-                target="_blank"
-              >
-                ORCA manual
-              </Link>
-              <Link
-                to="https://www.kofo.mpg.de/412442/orca_manual-opt.pdf"
-                target="_blank"
-              >
-                ORCA webpage at Max-Planck-Institut
-              </Link>
-              <Link
-                to="https://sites.google.com/site/orcainputlibrary/home"
-                target="_blank"
-              >
-                ORCA input library website
-              </Link>
-              <Typography variant="body2">
-                If you publish calculation results performed with ORCA code
-                please cite the original papers:
-              </Typography>
-              <Typography sx={{ fontStyle: "italic" }} variant="body2">
-                F. Neese, Wiley Interdisciplinary Reviews: Computational
-                Molecular Science 2, 73 (2012).
-              </Typography>
-              <Typography sx={{ fontStyle: "italic" }} variant="body2">
-                F. Neese, Wiley Interdisciplinary Reviews: Computational
-                Molecular Science 8, e1327 (2018).
-              </Typography>
-            </Stack>
-          </Paper>
+          <OrcaGuide></OrcaGuide>
         </Stack>
       ) : (
         getPlacemarker(hasData && data == null)

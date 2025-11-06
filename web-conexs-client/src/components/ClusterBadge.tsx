@@ -1,4 +1,4 @@
-import { Chip, useTheme } from "@mui/material";
+import { Box, Chip, Tooltip, useTheme } from "@mui/material";
 import StorageIcon from "@mui/icons-material/Storage";
 import { useQuery } from "@tanstack/react-query";
 import { getClusterStatus } from "../queryfunctions";
@@ -12,6 +12,8 @@ export default function ClusterBadge() {
   });
 
   let background = theme.palette.background.default;
+  let status =
+    "CONEXS HPC cluster is currently offline, simulations can be requested, but will not be submitted until the cluser is operational";
 
   if (!(query.data == undefined)) {
     background = theme.palette.error.dark;
@@ -26,23 +28,31 @@ export default function ClusterBadge() {
 
         if (dif < 120000) {
           background = theme.palette.success.dark;
+          status =
+            "CONEXS HPC cluster is currently online, requested simulations will be submitted immediately.";
         }
       }
     }
   }
 
   return (
-    <Chip
-      sx={{
-        backgroundColor: background,
-        color: theme.palette.primary.contrastText,
-      }}
-      size="large"
-      variant="outlined"
-      label="HPC"
-      icon={
-        <StorageIcon color={theme.palette.primary.contrastText}></StorageIcon>
-      }
-    ></Chip>
+    <Tooltip title={status} arrow>
+      <Box>
+        <Chip
+          sx={{
+            backgroundColor: background,
+            color: theme.palette.primary.contrastText,
+          }}
+          size="large"
+          variant="outlined"
+          label="HPC"
+          icon={
+            <StorageIcon
+              color={theme.palette.primary.contrastText}
+            ></StorageIcon>
+          }
+        ></Chip>
+      </Box>
+    </Tooltip>
   );
 }

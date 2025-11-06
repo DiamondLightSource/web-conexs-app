@@ -28,19 +28,10 @@ export default function SimulationReviewPage() {
     }
   }
 
-  const theme = useTheme();
-
   return (
-    <MainPanel>
-      <Stack overflow="auto" justifyContent="space-between" width={"100%"}>
-        <Toolbar
-          sx={{
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: theme.palette.action.disabled,
-            borderRadius: "4px 4px 0px 0px",
-          }}
-        >
+    <MainPanel
+      toolbarElements={
+        <>
           <Typography variant="h5" component="div">
             Simulation Results
           </Typography>
@@ -60,7 +51,10 @@ export default function SimulationReviewPage() {
               &gt;
             </Button>
           </Stack>
-        </Toolbar>
+        </>
+      }
+    >
+      <Stack overflow="auto" justifyContent="space-between" width={"100%"}>
         <SimulationTable
           simulations={query.data ? query.data.items : []}
           setSelectedSimulation={(simulation) => {
