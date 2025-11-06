@@ -113,7 +113,7 @@ def submit_simulation(script, job_name, sim, user, session, as_tasks):
         sim.job_id = job_id
         sim.working_directory = job_name
         sim.submission_date = datetime.datetime.now()
-        sim.status = SimulationStatus.requested
+        sim.status = SimulationStatus.submitted
         update_simulation(session, sim)
     except Exception:
         sim.status = SimulationStatus.failed
