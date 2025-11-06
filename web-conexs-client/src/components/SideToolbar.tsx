@@ -203,7 +203,7 @@ export default function SideToolbar(props: { open: boolean }) {
           <ListItemStyled
             theme={theme}
             open={props.open}
-            to={"/login"}
+            to={"/oauth2/sign_in"}
             label="Login"
             icon={<Login />}
             reloadDocument={true}
