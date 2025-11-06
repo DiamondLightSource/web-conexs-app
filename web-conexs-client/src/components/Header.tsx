@@ -99,11 +99,8 @@ export default function Header() {
       logo={undefined}
       rightSlot={
         <Stack direction="row" alignItems="center">
-          <Tooltip title="Status of High Performance Compute cluster on which the CONEXS simulations run.">
-            <Box>
-              <ClusterBadge />
-            </Box>
-          </Tooltip>
+          <ClusterBadge />
+
           <User
             colour="white"
             onLogin={handleLogin}
