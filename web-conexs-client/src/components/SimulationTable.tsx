@@ -10,6 +10,7 @@ import {
   Box,
   Typography,
   Button,
+  useMediaQuery,
 } from "@mui/material";
 
 import { tableCellClasses } from "@mui/material/TableCell";
@@ -49,6 +50,7 @@ function SimulationMetadata(props: {
   clickSimulation: (simulation: Simulation | null) => void;
   setSelectedRow: React.Dispatch<React.SetStateAction<number>>;
   cancellationMutation: (id: number) => void;
+  compact: boolean;
 }): JSX.Element {
   const theme = useTheme();
 
@@ -105,9 +107,12 @@ function SimulationMetadata(props: {
       <StyledTableCell align="center" onClick={clickCell}>
         <Typography color={color}> {props.simulation?.status ?? ""}</Typography>
       </StyledTableCell>
-      <StyledTableCell align="left" onClick={clickCell}>
-        {request_string}
-      </StyledTableCell>
+      {props.compact && (
+        <StyledTableCell align="left" onClick={clickCell}>
+          {request_string}
+        </StyledTableCell>
+      )}
+
       <StyledTableCell align="left" onClick={clickCell}>
         {complete_string}
       </StyledTableCell>
@@ -134,6 +139,8 @@ export default function SimulationTable(props: {
   simulations: Simulation[];
   setSelectedSimulation: (x: Simulation | null) => void;
 }) {
+  const matches = !useMediaQuery((theme) => theme.breakpoints.down("md"));
+
   const [selectedRow, setSelectedRow] = useState(-1);
   const queryClient = useQueryClient();
 
@@ -156,13 +163,14 @@ export default function SimulationTable(props: {
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: 0 }}>
       <TableContainer>
-        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+        <Table sx={{ minWidth: 350 }} size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
               <TableCell align="left">ID</TableCell>
               <TableCell align="center">Type</TableCell>
               <TableCell align="center">Status</TableCell>
-              <TableCell align="left">Request Date</TableCell>
+              {matches && <TableCell align="left">Request Date</TableCell>}
+
               <TableCell align="left">Completion Date</TableCell>
               <TableCell align="left"></TableCell>
             </TableRow>
@@ -176,6 +184,7 @@ export default function SimulationTable(props: {
                 clickSimulation: props.setSelectedSimulation,
                 setSelectedRow: setSelectedRow,
                 cancellationMutation: mutation.mutate,
+                compact: matches,
               })
             )}
           </TableBody>

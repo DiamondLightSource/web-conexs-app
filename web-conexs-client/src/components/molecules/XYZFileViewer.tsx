@@ -13,7 +13,7 @@ export default function XYZFileViewer(props: { id: number | undefined }) {
   });
 
   return (
-    <Stack spacing={3} minWidth={"450px"}>
+    <Stack spacing={3} minWidth={"350px"}>
       <TextField
         id="Label"
         label="Label"

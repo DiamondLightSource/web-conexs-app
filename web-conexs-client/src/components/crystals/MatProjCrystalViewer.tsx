@@ -73,19 +73,19 @@ function MatProjCrystalViewer(props: { mpid: string }) {
               onClick={() => {
                 const structure = query.data;
 
-                if (checked) {
+                if (checked && structure && structure.lattice) {
                   structure.lattice.a =
-                    Math.round(structure.lattice.a * 10000.0) / 10000.0;
+                    Math.round(structure.lattice.a! * 10000.0) / 10000.0;
                   structure.lattice.b =
-                    Math.round(structure.lattice.b * 10000.0) / 10000.0;
+                    Math.round(structure.lattice.b! * 10000.0) / 10000.0;
                   structure.lattice.c =
-                    Math.round(structure.lattice.c * 10000.0) / 10000.0;
+                    Math.round(structure.lattice.c! * 10000.0) / 10000.0;
                   structure.lattice.alpha =
-                    Math.round(structure.lattice.alpha * 10000.0) / 10000.0;
+                    Math.round(structure.lattice.alpha! * 10000.0) / 10000.0;
                   structure.lattice.beta =
-                    Math.round(structure.lattice.beta * 10000.0) / 10000.0;
+                    Math.round(structure.lattice.beta! * 10000.0) / 10000.0;
                   structure.lattice.gamma =
-                    Math.round(structure.lattice.gamma * 10000.0) / 10000.0;
+                    Math.round(structure.lattice.gamma! * 10000.0) / 10000.0;
                 }
 
                 mutation.mutate(structure);

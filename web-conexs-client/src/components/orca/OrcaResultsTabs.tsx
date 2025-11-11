@@ -122,6 +122,7 @@ export default function OrcaResultsTabs(props: {
           value={value}
           onChange={handleChange}
           aria-label="basic tabs example"
+          variant="fullWidth"
         >
           {tabs}
         </Tabs>

@@ -1,4 +1,4 @@
-import { CrystalInput, MoleculeInput, Site } from "./models";
+import { Crystal, CrystalInput, MoleculeInput, Site, Molecule } from "./models";
 import { elementMap, elementSet, periodic_table } from "./periodictable";
 
 function sortSites(sites: Site[]) {
@@ -156,3 +156,7 @@ export function siteFromString(data: string): Site[] {
 
   return sites;
 }
+
+export const isCrystal = (model: Crystal | Molecule): model is Crystal => {
+  return typeof model === "object" && "lattice" in model;
+};

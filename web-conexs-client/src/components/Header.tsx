@@ -112,7 +112,9 @@ export default function Header() {
                 : { fedid: user.person.identifier }
             }
           />
-          <ColourSchemeButton />
+          <Box sx={{ display: { xs: "none", sm: "none", md: "block" } }}>
+            <ColourSchemeButton />
+          </Box>
         </Stack>
       }
       containerWidth={false}
@@ -122,6 +124,7 @@ export default function Header() {
         color={theme.palette.primary.contrastText}
         sx={{ padding: "10px 5px 2px 5px" }}
         height="100%"
+        fontSize={{ xs: "1.5rem", sm: "1.5rem", md: "2.125rem" }}
       >
         Web&#8209;CONEXS
       </Typography>

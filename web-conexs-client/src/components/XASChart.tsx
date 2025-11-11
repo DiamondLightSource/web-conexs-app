@@ -1,18 +1,12 @@
 import {
-  LineVis,
   getDomain,
-  Separator,
-  Selector,
   Toolbar,
-  ScaleType,
-  CurveType,
   ToggleBtn,
   VisCanvas,
   DefaultInteractions,
   TooltipMesh,
   ResetZoomButton,
   DataCurve,
-  getVisDomain,
 } from "@h5web/lib";
 import "@h5web/lib/dist/styles.css";
 
@@ -28,15 +22,15 @@ import { Box } from "@mui/material";
 import { XASData } from "../models";
 // import { XASData } from "../models";
 
-function CurveOption(props: { option: CurveType }) {
-  const { option } = props;
+// function CurveOption(props: { option: CurveType }) {
+//   const { option } = props;
 
-  return (
-    <div>
-      <span>{String(option)}</span>
-    </div>
-  );
-}
+//   return (
+//     <div>
+//       <span>{String(option)}</span>
+//     </div>
+//   );
+// }
 
 function XASChart(props: { xas: XASData }) {
   // const curveOptions: CurveType[] = Object.values(

@@ -1,11 +1,4 @@
-import {
-  Box,
-  Paper,
-  Stack,
-  Toolbar,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Box, Paper, Stack, Toolbar, useTheme } from "@mui/material";
 import React from "react";
 
 export default function MainPanel(props: {

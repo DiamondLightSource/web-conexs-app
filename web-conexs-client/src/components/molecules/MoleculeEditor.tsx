@@ -4,8 +4,6 @@ import XYZEditor from "../XYZEditor";
 import { useState } from "react";
 import { inputToXYZNoHeader, siteFromString } from "../../utils";
 
-import ConvertMoleculeFromCif from "./ConvertMoleculeFromCif";
-
 const templateMolecule: MoleculeInput = {
   label: "Benzene",
   sites: [
@@ -39,6 +37,7 @@ export default function MoleculeEditor(props: {
         const sites = siteFromString(structure);
         props.setMolecule({ label: label, sites: sites });
       } catch (error) {
+        console.log(error);
         props.setMolecule(null);
       }
     }
@@ -60,7 +59,7 @@ export default function MoleculeEditor(props: {
   };
 
   return (
-    <Stack spacing={"10px"} minWidth={"450px"}>
+    <Stack spacing={"10px"} minWidth={"350px"}>
       <TextField
         error={labelError.length != 0}
         helperText={labelError}

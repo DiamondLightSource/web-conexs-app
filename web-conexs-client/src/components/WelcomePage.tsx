@@ -1,11 +1,4 @@
-import {
-  Paper,
-  Stack,
-  Toolbar,
-  Tooltip,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import MainPanel from "./MainPanel";
 
 import LoginIcon from "@mui/icons-material/Login";
@@ -79,17 +72,31 @@ export default function WelcomePage() {
               <Typography variant="h6">
                 What would you like to simulate?
               </Typography>
-              <Stack direction="row" spacing="1em" margin="1em" padding={"1em"}>
+              <Stack direction="row" spacing="1em" margin="1em" padding="1em">
                 <NavButton
                   label="Molecules"
                   path={"/molecules"}
-                  icon={<MoleculeIcon sx={{ width: "3em", height: "3em" }} />}
+                  icon={
+                    <MoleculeIcon
+                      sx={{
+                        width: { sm: "1em", md: "3em" },
+                        height: { sm: "1em", md: "3em" },
+                      }}
+                    />
+                  }
                   reload={false}
                 ></NavButton>
                 <NavButton
                   label="Crystals"
                   path={"/crystals"}
-                  icon={<GrainIcon sx={{ width: "4em", height: "4em" }} />}
+                  icon={
+                    <GrainIcon
+                      sx={{
+                        width: { sm: "1em", md: "3em" },
+                        height: { sm: "1em", md: "3em" },
+                      }}
+                    />
+                  }
                   reload={false}
                 ></NavButton>
               </Stack>

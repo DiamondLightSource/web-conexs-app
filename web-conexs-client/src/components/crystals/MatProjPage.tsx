@@ -1,23 +1,12 @@
-import {
-  Button,
-  Card,
-  CardContent,
-  Stack,
-  TextField,
-  Toolbar,
-  Typography,
-  useTheme,
-} from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import MainPanel from "../MainPanel";
 import { useState } from "react";
 import MatProjCrystalViewer from "./MatProjCrystalViewer";
-import MatProj from "../icons/MatProj";
 import MatProjGuide from "./MatProjGuide";
 import StructureIDComponent from "./StructureIDComponent";
 
 export default function MatProjPage() {
   const [mpid, setMpid] = useState<string | null>(null);
-  const theme = useTheme();
 
   return (
     <MainPanel

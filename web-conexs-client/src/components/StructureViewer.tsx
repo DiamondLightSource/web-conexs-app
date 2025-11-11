@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { skipToken, useQuery } from "@tanstack/react-query";
 import { getStructure } from "../queryfunctions";
-import { crystalInputToCIF, moleculeInputToXYZ } from "../utils";
+import { crystalInputToCIF, isCrystal, moleculeInputToXYZ } from "../utils";
 import { MolStarMoleculeWrapper } from "./MolstarMoleculeViewer";
 import { MolStarCrystalWrapper } from "./MolstarCrystalViewer";
 
@@ -18,7 +18,7 @@ export default function StructureViewer(props: {
   let xyzData = null;
   let molecule = true;
 
-  if (query.data && query.data.lattice) {
+  if (query.data && isCrystal(query.data)) {
     xyzData = crystalInputToCIF(query.data);
     molecule = false;
   } else if (query.data) {

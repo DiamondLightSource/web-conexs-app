@@ -84,7 +84,7 @@ export default function CrystalEditor(props: {
   };
 
   return (
-    <Stack spacing={2} minWidth={"450px"}>
+    <Stack spacing={2} minWidth={"350px"}>
       <TextField
         error={labelError.length != 0}
         helperText={labelError}

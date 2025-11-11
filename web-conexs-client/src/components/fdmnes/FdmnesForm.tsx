@@ -3,15 +3,13 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { Box, Button, Paper, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Button, Paper, Skeleton, Stack } from "@mui/material";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postFdmnes } from "../../queryfunctions";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
-import CompactGroupRenderer, {
-  CompactGroupTester,
-} from "../renderers/CompactGroup";
+import { CompactGroup, CompactGroupTester } from "../renderers/CompactGroup";
 import StructureViewer from "../StructureViewer";
 import { FDMNESSimulationInput } from "../../models";
 import { JsonSchema, UISchemaElement } from "@jsonforms/core";
@@ -19,7 +17,7 @@ import FdmnesGuide from "./FdmnesGuide";
 
 const renderers = [
   ...materialRenderers,
-  { tester: CompactGroupTester, renderer: CompactGroupRenderer },
+  { tester: CompactGroupTester, renderer: CompactGroup },
 ];
 
 export default function FdmnesForm(props: {

@@ -1,4 +1,4 @@
-import { Button, Stack, Toolbar, Typography, useTheme } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import { CrystalInput } from "../../models";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +30,6 @@ const templateCrystal: CrystalInput = {
 export default function CreateCystalPage() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const theme = useTheme();
 
   const callback = () => {
     window.alert("Thank you for your submission");
@@ -50,6 +49,9 @@ export default function CreateCystalPage() {
   });
 
   const [crystal, setCrytal] = useState<CrystalInput | null>(templateCrystal);
+  const [renderedCrystal, setRenderedCrytal] = useState<CrystalInput | null>(
+    templateCrystal
+  );
 
   return (
     <MainPanel
@@ -74,10 +76,24 @@ export default function CreateCystalPage() {
             Create
           </Button>
         </Stack>
-        <MolStarCrystalWrapper
-          cif={crystal == null ? null : crystalInputToCIF(crystal)}
-          labelledAtomIndex={undefined}
-        />
+        <Stack flex={1}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setRenderedCrytal(crystal);
+            }}
+          >
+            Re-Render Structure
+          </Button>
+          <MolStarCrystalWrapper
+            cif={
+              renderedCrystal == null
+                ? null
+                : crystalInputToCIF(renderedCrystal)
+            }
+            labelledAtomIndex={undefined}
+          />
+        </Stack>
       </Stack>
     </MainPanel>
   );

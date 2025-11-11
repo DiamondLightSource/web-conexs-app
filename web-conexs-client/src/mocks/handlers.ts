@@ -95,9 +95,9 @@ const mockSimulation: Simulation = {
   status: "mock",
   working_directory: "/mock",
   request_date: "2025-02-27T09:22:41.035872",
+  completion_date: "2025-02-27T09:22:41.035872",
   chemical_structure_id: 2,
   submission_date: null,
-  completion_date: null,
 };
 
 const mockOrcaSimulation: OrcaSimulation = {
@@ -214,13 +214,9 @@ export const handlers = [
   http.get("/api/structures", async ({ request }) => {
     const url = new URL(request.url);
 
-    console.log(url);
-
     // Given a request url of "/product?id=1",
     // the `productId` will be a "1" string.
     const type = url.searchParams.get("type");
-
-    console.log(type);
 
     if (type == "crystal") {
       return HttpResponse.json([mockCrysWithMetadata]);

@@ -26,17 +26,15 @@ export default function QEGuide() {
               <Typography variant="h6">Quantum Espresso</Typography>
             </Stack>
 
-            <Typography>
+            <Typography gutterBottom margin="10px">
               Quantum ESPRESSO (Quantum opEn-Source Package for Research in
               Electronic Structure, Simulation, and Optimisation) is a suite of
               applications for ab-initio electronic structure calculations using
               plane waves and pseudopotentials.
-              <p />
             </Typography>
-            <Typography variant="body2">
+            <Typography variant="body2" gutterBottom margin="10px">
               If you publish calculation results performed with FDMNES code
               please cite the original papers:
-              <p />
             </Typography>
             <Typography sx={{ fontStyle: "italic" }} variant="body2">
               Journal of Physics: Condensed Matter 21, 395502 (2009).
@@ -61,28 +59,26 @@ export default function QEGuide() {
           <Typography variant="h7" sx={{ fontStyle: "italic" }}>
             Structure
           </Typography>
-          <Typography>
+          <Typography gutterBottom margin="10px">
             Select one of your crystal structures from the drop down menu. If
             you do not have any head to the crystal creation or materials
             project page.
-            <p />
           </Typography>
           <Typography variant="h7" sx={{ fontStyle: "italic" }}>
             Absorbing Atom
           </Typography>
-          <Typography>
+          <Typography gutterBottom margin="10px">
             Quantum ESPRESSO computes the x-ray absorption spectrum for each
             individual atom (not 2element) in the crystal. This means you will
             need to perform a simulation for each inequivalent element in the
             crystal structure. Choose from the index in your crystal structure,
             to help the current absorbing atom is highlighted in the structure
             displayed.
-            <p />
           </Typography>
           <Typography variant="h7" sx={{ fontStyle: "italic" }}>
             Conductivity
           </Typography>
-          <Typography>
+          <Typography gutterBottom margin="10px">
             The conductivity dropdown menu determines which set of computational
             parameters are used to aid with convergence of the electronic
             structure. One set of parameters better suits systems with a
@@ -90,7 +86,6 @@ export default function QEGuide() {
             finite band-gap (insulators & semiconductors). If you do not know
             the conductivity of the system we recommend first trying with the
             Insulator option and then switching to metallic.
-            <p />
           </Typography>
         </Stack>
         <Divider />
