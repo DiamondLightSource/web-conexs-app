@@ -1,9 +1,9 @@
-import { Button, Stack, Toolbar, Typography, useTheme } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import { MoleculeInput } from "../../models";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postConvertMolecule, postMolecule } from "../../queryfunctions";
+import { postMolecule } from "../../queryfunctions";
 import MoleculeEditor from "./MoleculeEditor";
 import MainPanel from "../MainPanel";
 import { MolStarMoleculeWrapper } from "../MolstarMoleculeViewer";
@@ -31,9 +31,12 @@ export default function CreateMoleculePage() {
   const [molecule, setMolecule] = useState<MoleculeInput | null>(
     templateMolecule
   );
+
+  const [renderedMolecule, setRenderedMolecule] =
+    useState<MoleculeInput | null>(molecule);
+
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const theme = useTheme();
 
   const callback = () => {
     window.alert("Thank you for your submission");
@@ -79,10 +82,23 @@ export default function CreateMoleculePage() {
             Create Molecule
           </Button>
         </Stack>
-
-        <MolStarMoleculeWrapper
-          xyz={molecule == null ? null : moleculeInputToXYZ(molecule)}
-        />
+        <Stack flex={1}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setRenderedMolecule(molecule);
+            }}
+          >
+            Re-Render Structure
+          </Button>
+          <MolStarMoleculeWrapper
+            xyz={
+              renderedMolecule == null
+                ? null
+                : moleculeInputToXYZ(renderedMolecule)
+            }
+          />
+        </Stack>
       </Stack>
     </MainPanel>
   );

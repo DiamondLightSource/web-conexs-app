@@ -1,4 +1,4 @@
-import { Typography, Stack, Toolbar, useTheme } from "@mui/material";
+import { Typography, Stack } from "@mui/material";
 import { useState } from "react";
 import XYZFileViewer from "./XYZFileViewer";
 import { useQuery } from "@tanstack/react-query";

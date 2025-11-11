@@ -1,4 +1,4 @@
-import { Button, Stack, Toolbar, Typography, useTheme } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import SimulationTable from "./SimulationTable";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";

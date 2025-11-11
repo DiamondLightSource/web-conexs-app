@@ -1,9 +1,4 @@
-import {
-  CssBaseline,
-  responsiveFontSizes,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { CssBaseline, Stack } from "@mui/material";
 import Header from "./components/Header";
 import WelcomePage from "./components/WelcomePage";
 import MoleculePage from "./components/molecules/MoleculePage";

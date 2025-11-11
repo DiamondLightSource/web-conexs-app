@@ -1,10 +1,9 @@
-import { Button, Stack, Toolbar, Typography, useTheme } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 import MainPanel from "./MainPanel";
 import { SimulationInformation } from "./SimulationInformation";
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function SimulationView() {
-  const theme = useTheme();
   const { id } = useParams();
   const navigate = useNavigate();
 

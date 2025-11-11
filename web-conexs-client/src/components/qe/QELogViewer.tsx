@@ -10,10 +10,11 @@ export default function QELogViewer(props: { id: number }) {
 
   return (
     <Typography
+      fontSize={{ xs: "8px", sm: "10px", md: "12px", lg: "16px" }}
       sx={{
         fontFamily: "Monospace",
         whiteSpace: "pre-wrap",
-        overflowY: "auto",
+        overflow: "auto",
       }}
     >
       {query.data ? query.data : "No Log"}

@@ -96,7 +96,7 @@ export default function StructureTable(props: {
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <TableContainer component={Paper} sx={{ height: "34em" }}>
-        <Table sx={{ minWidth: 350 }} size="small" aria-label="a dense table">
+        <Table sx={{ minWidth: 250 }} size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
               <TableCell align="left">ID</TableCell>

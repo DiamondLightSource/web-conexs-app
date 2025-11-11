@@ -8,13 +8,11 @@ import {
   Stack,
   Theme,
   Toolbar,
-  Tooltip,
   useTheme,
 } from "@mui/material";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { UserContext } from "../UserContext";
-
 import HomeIcon from "@mui/icons-material/Home";
 import GrainIcon from "./icons/GrainIcon";
 import LabIcon from "./icons/LabIcon";
@@ -209,6 +207,7 @@ export default function SideToolbar(props: { open: boolean }) {
             reloadDocument={true}
           ></ListItemStyled>
         )}
+        <Toolbar />
       </List>
     </Box>
   );

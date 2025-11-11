@@ -106,7 +106,13 @@ export function MolStarCrystalWrapper(props: {
   return (
     <Box position="relative" display="flex" flexGrow={5} h="100%" w="100%">
       <Box
-        style={{ width: 640, height: 300, position: "relative" }}
+        style={{
+          height: "100%",
+          width: "100%",
+          position: "relative",
+          minHeight: "250px",
+          minWidth: "250px",
+        }}
         ref={viewerDiv}
       ></Box>
     </Box>

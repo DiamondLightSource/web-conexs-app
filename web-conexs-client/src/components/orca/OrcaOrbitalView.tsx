@@ -15,7 +15,11 @@ export default function OrcaOrbitalView(props: { id: number }) {
   const [isoValue, setIsoValue] = useState(1);
 
   return (
-    <Stack direction="row" margin={"5px"}>
+    <Stack
+      direction={{ sm: "column", md: "row" }}
+      margin={"5px"}
+      overflow="auto"
+    >
       <Stack margin={"5px"} spacing={"15px"}>
         <OrbitalTable
           orbitals={query.data ? query.data : []}

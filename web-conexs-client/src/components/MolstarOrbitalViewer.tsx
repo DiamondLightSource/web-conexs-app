@@ -17,7 +17,7 @@ const Default3DSpec: PluginSpec = {
 };
 
 export function MolStarOrbitalWrapper(props: {
-  cube: string | null;
+  cube: string | null | undefined;
   isoValue: number;
 }) {
   const viewerDiv = useRef<HTMLDivElement>(null);
@@ -135,7 +135,13 @@ export function MolStarOrbitalWrapper(props: {
   return (
     <Box position="relative" display="flex" flexGrow={5} h="100%" w="100%">
       <Box
-        style={{ width: 500, height: 440, position: "relative" }}
+        style={{
+          height: "100%",
+          width: "100%",
+          position: "relative",
+          minHeight: "250px",
+          minWidth: "250px",
+        }}
         ref={viewerDiv}
       ></Box>
     </Box>

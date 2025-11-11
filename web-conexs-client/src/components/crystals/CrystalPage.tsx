@@ -1,4 +1,4 @@
-import { Typography, Stack, Toolbar, useTheme } from "@mui/material";
+import { Typography, Stack } from "@mui/material";
 
 import XYZCrystalFileViewer from "./XYZCrystalFileViewer";
 import { getCrystals } from "../../queryfunctions";

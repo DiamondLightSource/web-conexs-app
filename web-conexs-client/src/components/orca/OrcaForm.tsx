@@ -3,22 +3,20 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { Box, Button, Paper, Skeleton, Stack, Typography } from "@mui/material";
+import { Box, Button, Paper, Skeleton, Stack } from "@mui/material";
 import useOrcaSchema from "../../hooks/useOrcaSchema";
 import { postOrca } from "../../queryfunctions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-import CompactGroupRenderer, {
-  CompactGroupTester,
-} from "../renderers/CompactGroup";
+import { CompactGroup, CompactGroupTester } from "../renderers/CompactGroup";
 import StructureViewer from "../StructureViewer";
 import OrcaGuide from "./OrcaGuide";
 
 const renderers = [
   ...materialRenderers,
-  { tester: CompactGroupTester, renderer: CompactGroupRenderer },
+  { tester: CompactGroupTester, renderer: CompactGroup },
 ];
 
 function getPlacemarker(noMolecules: boolean) {

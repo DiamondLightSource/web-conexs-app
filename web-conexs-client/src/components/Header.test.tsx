@@ -3,11 +3,11 @@ import { describe, expect, it } from "vitest";
 import Header from "./Header";
 import { ThemeProvider } from "@mui/material";
 import { DiamondTheme } from "@diamondlightsource/sci-react-ui";
-import React from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const queryClient = new QueryClient();
 
+//@ts-expect-error: Until I figure out the typing for this....
 const themeProvider = ({ children }) => {
   return (
     <QueryClientProvider client={queryClient}>

@@ -7,9 +7,7 @@ import {
   Container,
   FormControlLabel,
   Stack,
-  Toolbar,
   Typography,
-  useTheme,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -19,7 +17,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import MainPanel from "../MainPanel";
 
 export default function OrcaEulaPage() {
-  const theme = useTheme();
   const navigate = useNavigate();
 
   const queryClient = useQueryClient();

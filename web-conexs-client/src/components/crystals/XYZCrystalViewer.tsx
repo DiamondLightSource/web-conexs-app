@@ -19,7 +19,7 @@ export default function XYZCrystalViewer(props: {
         };
 
   return (
-    <Stack spacing={3} minWidth={"450px"}>
+    <Stack spacing={3} minWidth={"350px"} alignItems="stretch">
       <TextField
         id="Label"
         label="Label"
@@ -32,7 +32,7 @@ export default function XYZCrystalViewer(props: {
         id="datafilebox"
         label="Atomic Coordinate (Fractional)"
         multiline
-        rows={12}
+        rows={10}
         value={props.crystal ? inputToXYZNoHeader(props.crystal) : ""}
       />
     </Stack>

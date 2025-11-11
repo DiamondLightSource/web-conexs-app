@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import { Box } from "@mui/material";
 import { DefaultPluginSpec, PluginSpec } from "molstar/lib/mol-plugin/spec";
 import { PluginContext } from "molstar/lib/mol-plugin/context";
 import { PluginConfig } from "molstar/lib/mol-plugin/config";
@@ -84,8 +83,8 @@ export function MolStarMoleculeWrapper(props: {
         height: "100%",
         width: "100%",
         position: "relative",
-        minHeight: "100px",
-        minWidth: "100px",
+        minHeight: "250px",
+        minWidth: "250px",
       }}
     />
   );

@@ -39,7 +39,7 @@ export default function FdmnesResultsTabs(props: {
 }) {
   const [value, setValue] = useState(0);
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
@@ -52,6 +52,7 @@ export default function FdmnesResultsTabs(props: {
           value={value}
           onChange={handleChange}
           aria-label="basic tabs example"
+          variant="fullWidth"
         >
           <Tab label="XAS Plot" {...a11yProps(0)} />
           <Tab label="Results Log" {...a11yProps(1)} />

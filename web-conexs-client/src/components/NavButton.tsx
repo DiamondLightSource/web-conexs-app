@@ -12,7 +12,10 @@ export default function NavButton(props: NavButtonProps) {
   const navigate = useNavigate();
   return (
     <Button
-      sx={{ height: "175px", width: "175px" }}
+      sx={{
+        height: { xs: "100px", sm: "150px", md: "175px" },
+        width: { xs: "100px", sm: "150px", md: "175px" },
+      }}
       component="label"
       role={undefined}
       variant="contained"
