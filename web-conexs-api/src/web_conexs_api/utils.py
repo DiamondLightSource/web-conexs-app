@@ -6,7 +6,7 @@ from io import BytesIO
 smtp_files = "*.out, *.txt, job*, orca_result*, *_conv.txt, xanes.*, result.*"
 
 
-def create_results_zip(working_directory: str, simulation_type_id: int):
+def create_results_zip(working_directory: str, simulation_type_id: int) -> BytesIO:
     if not os.path.isdir(working_directory):
         raise RuntimeError(f"Working directory {working_directory} does not exist")
 

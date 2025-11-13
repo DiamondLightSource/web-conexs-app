@@ -1,7 +1,10 @@
 import datetime
 import json
 import os
+import shutil
+from io import BytesIO
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import List
 
 import numpy as np
@@ -278,7 +281,7 @@ def get_simulation(session, id, user_id) -> Simulation:
         raise HTTPException(status_code=404, detail=f"No simulation with id={id}")
 
 
-def get_simulation_zipped(session, id, user_id) -> Simulation:
+def get_simulation_zipped(session, id, user_id) -> BytesIO:
     statement = (
         select(Simulation)
         .join(Person)
@@ -293,6 +296,25 @@ def get_simulation_zipped(session, id, user_id) -> Simulation:
     wd = get_working_directory(simulation)
 
     return create_results_zip(wd, simulation.simulation_type_id)
+
+
+def get_user_folder(user_id):
+    directory = str(get_user_directory(user_id))
+
+    if not os.path.isdir(directory):
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    return directory
+
+
+def write_archive(dir, filepath):
+    p = Path(filepath)
+    shutil.make_archive(p.parent / p.stem, "zip", dir)
+
+
+def get_tmp_dir():
+    with TemporaryDirectory(dir=STORAGE_DIR) as tmp_dir:
+        yield tmp_dir
 
 
 def get_orca_simulation(session, id, user_id) -> OrcaSimulation:
@@ -697,13 +719,16 @@ def request_cancel_simulation(session, id, user_id):
     return sim
 
 
+def get_user_directory(identifier):
+    return Path(STORAGE_DIR) / Path(identifier)
+
+
 def get_working_directory(simulation: Simulation):
     if simulation.working_directory is None:
         return None
 
     return str(
-        Path(STORAGE_DIR)
-        / Path(simulation.person.identifier)
+        get_user_directory(simulation.person.identifier)
         / Path(simulation.working_directory)
     )
 
