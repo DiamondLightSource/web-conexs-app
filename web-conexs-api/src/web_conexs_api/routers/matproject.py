@@ -33,5 +33,5 @@ def get_fdmnes_simulation_endpoint(
             structure = m.get_structure_by_material_id(id, conventional_unit_cell=False)
             return pymatstruct_to_crystal(structure, id)
         except Exception as e:
-            print(e)
+            logger.exception(e)
             raise HTTPException(status_code=500, detail="Error retrieving structure")

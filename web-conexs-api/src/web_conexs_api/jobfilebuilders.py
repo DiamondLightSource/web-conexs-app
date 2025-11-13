@@ -460,7 +460,6 @@ def cif_string_to_crystal(cif_string: str):
         parser = CifParser(cif_file)
         structure = parser.parse_structures(primitive=True)
         structure = structure[0]
-        print(structure.sites[0].species.elements[0])
         return pymatstruct_to_crystal(structure, label="Generated from cif")
     except Exception as e:
         logger.exception(f"Could not parse cif to crystal {e}")
