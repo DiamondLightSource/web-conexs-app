@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi_pagination import add_pagination
 
 from .routers import (
+    archive,
     cluster,
     fdmnes,
     matproject,
@@ -22,5 +23,6 @@ app.include_router(user.router, prefix="/user")
 app.include_router(matproject.router, prefix="/matproj")
 app.include_router(structures.router, prefix="/structures")
 app.include_router(cluster.router, prefix="/cluster")
+app.include_router(archive.router, prefix="/archive")
 
 add_pagination(app)

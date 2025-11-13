@@ -1,4 +1,13 @@
-import { Button, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Stack,
+  Typography,
+} from "@mui/material";
 import SimulationTable from "./SimulationTable";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
@@ -11,7 +20,22 @@ export default function SimulationReviewPage() {
   const [cursor, setCursor] = useState<string | null>(null);
   const [next, setNext] = useState<string | null>(null);
   const [previous, setPrevious] = useState<string | null>(null);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleCancel = () => {
+    setOpen(false);
+  };
+
+  const handleProceed = () => {
+    const newTab = window.open("api/archive", "_blank", "noopener,noreferrer");
+    if (newTab) newTab.opener = null;
+    setOpen(false);
+  };
 
   const query = useQuery({
     queryKey: ["simulations", cursor],
@@ -32,9 +56,35 @@ export default function SimulationReviewPage() {
     <MainPanel
       toolbarElements={
         <>
-          <Typography variant="h5" component="div">
-            Simulation Results
-          </Typography>
+          <Stack direction="row" spacing="20px" alignItems="center">
+            <Typography variant="h5" component="div">
+              Simulation Results
+            </Typography>
+            <Button variant="contained" onClick={handleClickOpen}>
+              Download All
+            </Button>
+            <Dialog
+              open={open}
+              onClose={handleCancel}
+              aria-labelledby="alert-dialog-title"
+              aria-describedby="alert-dialog-description"
+            >
+              <DialogTitle id="alert-dialog-title">
+                {"Download All Simulation Results?"}
+              </DialogTitle>
+              <DialogContent>
+                <DialogContentText id="alert-dialog-description">
+                  The download will be a single zip file and open in a new tab.
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCancel}>Cancel</Button>
+                <Button onClick={handleProceed} autoFocus>
+                  Proceed
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </Stack>
           <Stack direction="row" spacing={2}>
             <Button
               variant="contained"
