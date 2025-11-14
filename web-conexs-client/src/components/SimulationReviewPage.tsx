@@ -104,7 +104,12 @@ export default function SimulationReviewPage() {
         </>
       }
     >
-      <Stack overflow="auto" justifyContent="space-between" width={"100%"}>
+      <Stack
+        overflow="auto"
+        justifyContent="space-between"
+        width={"100%"}
+        padding="10px"
+      >
         <SimulationTable
           simulations={query.data ? query.data.items : []}
           setSelectedSimulation={(simulation) => {

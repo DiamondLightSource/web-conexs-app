@@ -1,21 +1,47 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMatProjStructure, postCrystal } from "../../queryfunctions";
-import { Button, Checkbox, Stack, Typography } from "@mui/material";
+import { Checkbox, Stack, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import XYZCrystalViewer from "./XYZCrystalViewer";
 import { MolStarCrystalWrapper } from "../MolstarCrystalViewer";
 import { crystalInputToCIF } from "../../utils";
+import StateIconButton from "../StateIconButton";
+import PublishIcon from "@mui/icons-material/Publish";
 
-function MatProjCrystalViewer(props: { mpid: string }) {
+function MatProjCrystalViewer(props: {
+  mpid: string;
+  setRequestStatus: (status: "ok" | "running" | "error" | "default") => void;
+  setRequestComplete: () => void;
+}) {
   const mpid = props.mpid;
   const query = useQuery({
     queryKey: ["matproj", mpid],
-    queryFn: () => getMatProjStructure(mpid),
+    queryFn: () => {
+      props.setRequestStatus("running");
+      return getMatProjStructure(
+        mpid,
+        () => {
+          props.setRequestStatus("ok");
+          props.setRequestComplete();
+        },
+        () => {
+          props.setRequestStatus("error");
+          props.setRequestComplete();
+        }
+      );
+    },
     retry: false,
   });
 
   const [checked, setChecked] = useState(false);
+  const [disabled, setDisabled] = useState(false);
+  const [state, setState] = useState<"ok" | "running" | "error" | "default">(
+    "default"
+  );
+  const resetState = () => {
+    setState("default");
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -25,6 +51,8 @@ function MatProjCrystalViewer(props: { mpid: string }) {
   const queryClient = useQueryClient();
 
   const callback = () => {
+    setState("ok");
+    setDisabled(false);
     window.alert("Thank you for your submission");
     navigate("/crystals");
   };
@@ -35,6 +63,11 @@ function MatProjCrystalViewer(props: { mpid: string }) {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["crystals"] });
       callback();
+    },
+    onError: () => {
+      setState("error");
+      setDisabled(false);
+      window.alert("Error Submitting Struture!");
     },
   });
 
@@ -68,9 +101,15 @@ function MatProjCrystalViewer(props: { mpid: string }) {
                 Round Lattice Parameters to 4 Decimal Places
               </Typography>
             </Stack>
-            <Button
+            <StateIconButton
+              endIcon={<PublishIcon />}
+              resetState={resetState}
+              state={state}
+              disabled={disabled}
               variant="contained"
               onClick={() => {
+                setDisabled(true);
+                setState("running");
                 const structure = query.data;
 
                 if (checked && structure && structure.lattice) {
@@ -92,7 +131,7 @@ function MatProjCrystalViewer(props: { mpid: string }) {
               }}
             >
               Create Crystal
-            </Button>
+            </StateIconButton>
           </Stack>
         </Stack>
       </Stack>

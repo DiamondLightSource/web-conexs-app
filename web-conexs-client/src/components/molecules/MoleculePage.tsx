@@ -30,13 +30,18 @@ export default function MoleculePage() {
     }
   }
 
+  const icon_breakpoints = {
+    width: { sm: "1em", md: "3em" },
+    height: { sm: "1em", md: "3em" },
+  };
+
   return (
     <MainPanel
       toolbarElements={<Typography variant="h5">Molecules</Typography>}
     >
       <Stack
         direction={{ sm: "column", md: "row" }}
-        spacing={"10px"}
+        spacing={"20px"}
         margin={"20px"}
         overflow="auto"
       >
@@ -52,23 +57,27 @@ export default function MoleculePage() {
         </Stack>
         <Stack>
           <StructureViewer id={finalMolecule?.structure.id}></StructureViewer>
-          <Stack direction="row" padding={"2em"} spacing={"2em"}>
+          <Stack
+            direction={{ md: "row", lg: "column", xl: "row" }}
+            padding={"1em"}
+            spacing={"1em"}
+          >
             <NavButton
               label="Create Molecule"
               path={"/createmolecule"}
-              icon={<MoleculePlusIcon sx={{ width: "5em", height: "5em" }} />}
+              icon={<MoleculePlusIcon sx={{ ...icon_breakpoints }} />}
               reload={false}
             ></NavButton>
             <NavButton
               label="Submit ORCA"
               path={"/orca"}
-              icon={<OrcaIcon sx={{ width: "5em", height: "5em" }} />}
+              icon={<OrcaIcon sx={{ ...icon_breakpoints }} />}
               reload={false}
             ></NavButton>
             <NavButton
               label="Submit FDMNES"
               path={"/fdmnesmolecule"}
-              icon={<FDMNESIcon sx={{ width: "5em", height: "5em" }} />}
+              icon={<FDMNESIcon sx={{ ...icon_breakpoints }} />}
               reload={false}
             ></NavButton>
           </Stack>

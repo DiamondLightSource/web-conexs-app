@@ -7,6 +7,14 @@ import StructureIDComponent from "./StructureIDComponent";
 
 export default function MatProjPage() {
   const [mpid, setMpid] = useState<string | null>(null);
+  const [disabled, setDisabled] = useState(false);
+  const [state, setState] = useState<"ok" | "running" | "error" | "default">(
+    "default"
+  );
+
+  const resetState = () => {
+    setState("default");
+  };
 
   return (
     <MainPanel
@@ -22,10 +30,23 @@ export default function MatProjPage() {
           sx={{ alignItems: "center" }}
         >
           <MatProjGuide />
-          <StructureIDComponent setMpid={setMpid} />
+          <StructureIDComponent
+            setMpid={setMpid}
+            disabled={disabled}
+            setDisabled={setDisabled}
+            state={state}
+            resetState={resetState}
+            currentID={mpid}
+          />
         </Stack>
 
-        {mpid && <MatProjCrystalViewer mpid={mpid}></MatProjCrystalViewer>}
+        {mpid && (
+          <MatProjCrystalViewer
+            mpid={mpid}
+            setRequestComplete={() => setDisabled(false)}
+            setRequestStatus={setState}
+          ></MatProjCrystalViewer>
+        )}
       </Stack>
     </MainPanel>
   );

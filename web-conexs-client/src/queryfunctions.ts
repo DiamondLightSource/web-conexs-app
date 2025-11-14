@@ -290,14 +290,20 @@ export const cancelSimulation = async (id: number) => {
   return data;
 };
 
-export const getMatProjStructure = async (id: string) => {
+export const getMatProjStructure = async (
+  id: string,
+  successCallback: () => void,
+  errorCallback: () => void
+) => {
   const response = await axios.get<Crystal, AxiosResponse<Crystal>>(
     matprojUrl + id
   );
 
   if (response.status != 200) {
+    errorCallback();
     throw new Error("Failed to submit job");
   }
+  successCallback();
   return response.data;
 };
 
