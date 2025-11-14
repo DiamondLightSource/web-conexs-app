@@ -56,7 +56,7 @@ export default function FdmnesGuide() {
             creation page.
           </Typography>
           <Typography variant="h7" sx={{ fontStyle: "italic" }}>
-            Element & Edge
+            Element & Absorption Edge
           </Typography>
           <Typography gutterBottom margin="10px">
             Simply select the element you wish to probe and the edge you where

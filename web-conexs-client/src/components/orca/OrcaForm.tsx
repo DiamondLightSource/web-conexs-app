@@ -3,7 +3,7 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { Box, Button, Paper, Skeleton, Stack } from "@mui/material";
+import { Box, Paper, Skeleton, Stack } from "@mui/material";
 import useOrcaSchema from "../../hooks/useOrcaSchema";
 import { postOrca } from "../../queryfunctions";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +13,8 @@ import { useState } from "react";
 import { CompactGroup, CompactGroupTester } from "../renderers/CompactGroup";
 import StructureViewer from "../StructureViewer";
 import OrcaGuide from "./OrcaGuide";
+import StateIconButton from "../StateIconButton";
+import PublishIcon from "@mui/icons-material/Publish";
 
 const renderers = [
   ...materialRenderers,
@@ -34,13 +36,21 @@ export default function OrcaForm() {
   const { data, setData, schema, uischema, hasData } = useOrcaSchema();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const [disabled, setDisabled] = useState(false);
+  const [state, setState] = useState<"ok" | "running" | "error" | "default">(
+    "default"
+  );
 
   const callback = () => {
+    setState("ok");
+    setDisabled(false);
     window.alert("Thank you for your submission");
     navigate("/simulations");
   };
 
   const errorCallback = () => {
+    setState("error");
+    setDisabled(false);
     window.alert("Error Submitting Job!");
   };
 
@@ -59,6 +69,10 @@ export default function OrcaForm() {
   if (data != null && data.chemical_structure_id != selectedMoleculeID) {
     setSelectedMoleculeId(data.chemical_structure_id);
   }
+
+  const resetState = () => {
+    setState("default");
+  };
 
   return (
     <Stack
@@ -91,9 +105,15 @@ export default function OrcaForm() {
                     setSelectedMoleculeId(data.molecular_structure_id);
                   }}
                 />
-                <Button
+                <StateIconButton
+                  endIcon={<PublishIcon />}
+                  resetState={resetState}
+                  state={state}
+                  disabled={disabled}
                   variant="contained"
                   onClick={() => {
+                    setDisabled(true);
+                    setState("running");
                     const localData = { ...data };
                     if (localData.solvent == "None") {
                       localData.solvent = null;
@@ -103,7 +123,7 @@ export default function OrcaForm() {
                   }}
                 >
                   Submit Simulation
-                </Button>
+                </StateIconButton>
               </Stack>
             </Paper>
 

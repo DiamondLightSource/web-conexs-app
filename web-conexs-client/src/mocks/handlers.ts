@@ -1,4 +1,4 @@
-import { http, HttpResponse } from "msw";
+import { delay, http, HttpResponse } from "msw";
 import {
   Crystal,
   HPCCluster,
@@ -159,7 +159,7 @@ export const handlers = [
     return HttpResponse.json(mockXASdata);
   }),
 
-  http.post("/api/submit/orca", async ({ request }) => {
+  http.post("/api/orca", async ({ request }) => {
     // Read the intercepted request body as JSON.
     const newOrcaSimulation = (await request.json()) as OrcaSimulationInput;
 
@@ -168,9 +168,9 @@ export const handlers = [
       simulation: mockSimulation,
     };
 
-    // Don't forget to declare a semantic "201 Created"
-    // response and send back the newly created post!
-    return HttpResponse.json(responseSimulation, { status: 201 });
+    await delay(1000);
+
+    return HttpResponse.json(responseSimulation);
   }),
 
   http.get("/api/user", async (request) => {
@@ -198,6 +198,8 @@ export const handlers = [
   http.get("/api/matproj/:id", async (request) => {
     const auth = request.request.headers.get("authorization");
 
+    await delay(1000);
+
     if (auth && auth.startsWith("Bearer ")) {
       return HttpResponse.json(mockCrystalStructure);
     }
@@ -221,7 +223,7 @@ export const handlers = [
     if (type == "crystal") {
       return HttpResponse.json([mockCrysWithMetadata]);
     } else {
-      return HttpResponse.json([mockMoleWithMetadata]);
+      return HttpResponse.json(Array(1).fill(mockMoleWithMetadata));
     }
   }),
 

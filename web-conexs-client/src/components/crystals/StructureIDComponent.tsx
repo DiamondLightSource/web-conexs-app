@@ -1,8 +1,15 @@
-import { Button, Stack, TextField } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 import { useState } from "react";
+import MatProj from "../icons/MatProj";
+import StateIconButton from "../StateIconButton";
 
 export default function StructureIDComponent(props: {
-  setMpid: (mpid: string) => void;
+  setMpid: (mpid: string | null) => void;
+  disabled: boolean;
+  setDisabled: (disabled: boolean) => void;
+  state: "ok" | "running" | "error" | "default";
+  resetState: () => void;
+  currentID: string | null;
 }) {
   const [tmpmMpid, setTmpMpid] = useState<string | null>("mp-1234");
   return (
@@ -13,16 +20,23 @@ export default function StructureIDComponent(props: {
         value={tmpmMpid}
         onChange={(e) => setTmpMpid(e.target.value)}
       />
-      <Button
+      <StateIconButton
+        endIcon={<MatProj />}
+        resetState={props.resetState}
+        state={props.state}
+        disabled={props.disabled}
         variant="contained"
         onClick={() => {
           if (tmpmMpid != null) {
-            props.setMpid(tmpmMpid);
+            if (tmpmMpid != props.currentID) {
+              props.setDisabled(true);
+              props.setMpid(tmpmMpid);
+            }
           }
         }}
       >
         Retrieve Structure
-      </Button>
+      </StateIconButton>
     </Stack>
   );
 }

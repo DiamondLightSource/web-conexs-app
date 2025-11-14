@@ -29,10 +29,15 @@ export default function CrystalPage() {
     }
   }
 
+  const icon_breakpoints = {
+    width: { sm: "1em", md: "3em" },
+    height: { sm: "1em", md: "3em" },
+  };
+
   return (
     <MainPanel toolbarElements={<Typography variant="h5">Crystals</Typography>}>
       <Stack
-        direction={{ sm: "column", md: "row" }}
+        direction={{ md: "column", lg: "row" }}
         spacing={"10px"}
         margin={"20px"}
         overflow="auto"
@@ -50,23 +55,27 @@ export default function CrystalPage() {
         <XYZCrystalFileViewer id={finalCrystal?.structure.id} />
         <Stack>
           <StructureViewer id={finalCrystal?.structure.id}></StructureViewer>
-          <Stack direction="row" padding={"2em"} spacing={"2em"}>
+          <Stack
+            direction={{ md: "row", lg: "column", xl: "row" }}
+            padding={"1em"}
+            spacing={"1em"}
+          >
             <NavButton
               label="Create Crystal"
               path={"/createcrystal"}
-              icon={<GrainPlusIcon sx={{ width: "4em", height: "4em" }} />}
+              icon={<GrainPlusIcon sx={{ ...icon_breakpoints }} />}
               reload={false}
             ></NavButton>
             <NavButton
               label="Submit FDMNES"
               path={"/fdmnescrystal"}
-              icon={<FDMNESIcon sx={{ width: "4em", height: "4em" }} />}
+              icon={<FDMNESIcon sx={{ ...icon_breakpoints }} />}
               reload={false}
             ></NavButton>
             <NavButton
               label="Submit Quantum Espresso"
               path={"/qe"}
-              icon={<QEIcon sx={{ width: "4em", height: "4em" }} />}
+              icon={<QEIcon sx={{ ...icon_breakpoints }} />}
               reload={false}
             ></NavButton>
           </Stack>

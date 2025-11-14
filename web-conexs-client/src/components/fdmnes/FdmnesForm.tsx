@@ -3,7 +3,7 @@ import {
   materialCells,
 } from "@jsonforms/material-renderers";
 import { JsonForms } from "@jsonforms/react";
-import { Box, Button, Paper, Skeleton, Stack } from "@mui/material";
+import { Box, Paper, Skeleton, Stack } from "@mui/material";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { postFdmnes } from "../../queryfunctions";
@@ -14,6 +14,9 @@ import StructureViewer from "../StructureViewer";
 import { FDMNESSimulationInput } from "../../models";
 import { JsonSchema, UISchemaElement } from "@jsonforms/core";
 import FdmnesGuide from "./FdmnesGuide";
+import { useState } from "react";
+import StateIconButton from "../StateIconButton";
+import PublishIcon from "@mui/icons-material/Publish";
 
 const renderers = [
   ...materialRenderers,
@@ -28,6 +31,12 @@ export default function FdmnesForm(props: {
   hasData: boolean;
 }) {
   const navigate = useNavigate();
+
+  const [disabled, setDisabled] = useState(false);
+  const [state, setState] = useState<"ok" | "running" | "error" | "default">(
+    "default"
+  );
+
   const mutation = useMutation({
     mutationFn: postFdmnes,
     onSuccess: () => {
@@ -42,12 +51,20 @@ export default function FdmnesForm(props: {
 
   const queryClient = useQueryClient();
   const callback = () => {
+    setState("ok");
+    setDisabled(false);
     window.alert("Thank you for your submission");
     navigate("/simulations");
   };
 
   const errorCallback = () => {
+    setState("error");
+    setDisabled(false);
     window.alert("Error Submitting Job!");
+  };
+
+  const resetState = () => {
+    setState("default");
   };
 
   function getPlacemarker(noCrystals: boolean) {
@@ -88,15 +105,21 @@ export default function FdmnesForm(props: {
                     props.setData(data);
                   }}
                 />
-                <Button
+                <StateIconButton
+                  endIcon={<PublishIcon />}
+                  resetState={resetState}
+                  state={state}
+                  disabled={disabled}
                   variant="contained"
                   onClick={() => {
+                    setDisabled(true);
+                    setState("running");
                     const localData = { ...props.data };
                     mutation.mutate(localData);
                   }}
                 >
                   Submit Simulation
-                </Button>
+                </StateIconButton>
               </Stack>
             </Paper>
             <StructureViewer id={props.data.chemical_structure_id} />

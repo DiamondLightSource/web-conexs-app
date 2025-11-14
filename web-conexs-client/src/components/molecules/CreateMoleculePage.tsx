@@ -8,6 +8,8 @@ import MoleculeEditor from "./MoleculeEditor";
 import MainPanel from "../MainPanel";
 import { MolStarMoleculeWrapper } from "../MolstarMoleculeViewer";
 import { moleculeInputToXYZ } from "../../utils";
+import PublishIcon from "@mui/icons-material/Publish";
+import StateIconButton from "../StateIconButton";
 
 const templateMolecule: MoleculeInput = {
   label: "Benzene",
@@ -35,10 +37,16 @@ export default function CreateMoleculePage() {
   const [renderedMolecule, setRenderedMolecule] =
     useState<MoleculeInput | null>(molecule);
 
+  const [disabled, setDisabled] = useState(false);
+  const [state, setState] = useState<"ok" | "running" | "error" | "default">(
+    "default"
+  );
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const callback = () => {
+    setState("ok");
+    setDisabled(false);
     window.alert("Thank you for your submission");
     navigate("/molecules");
   };
@@ -51,9 +59,15 @@ export default function CreateMoleculePage() {
       callback();
     },
     onError: () => {
+      setState("error");
+      setDisabled(false);
       window.alert("Error submitting structure!");
     },
   });
+
+  const resetState = () => {
+    setState("default");
+  };
 
   return (
     <MainPanel
@@ -65,22 +79,27 @@ export default function CreateMoleculePage() {
         margin={"20px"}
         overflow="auto"
       >
-        <Stack spacing="10px" margin="10px">
+        <Stack spacing="10px" margin="10px" padding="10px">
           <MoleculeEditor
             molecule={molecule}
             setMolecule={setMolecule}
           ></MoleculeEditor>
-          <Button
+          <StateIconButton
+            endIcon={<PublishIcon />}
+            resetState={resetState}
+            state={state}
+            disabled={disabled || molecule == null}
             variant="contained"
-            disabled={molecule == null}
             onClick={() => {
+              setDisabled(true);
+              setState("running");
               if (molecule != null) {
                 mutation.mutate(molecule);
               }
             }}
           >
             Create Molecule
-          </Button>
+          </StateIconButton>
         </Stack>
         <Stack flex={1}>
           <Button

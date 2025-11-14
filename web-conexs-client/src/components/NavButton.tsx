@@ -13,8 +13,8 @@ export default function NavButton(props: NavButtonProps) {
   return (
     <Button
       sx={{
-        height: { xs: "100px", sm: "150px", md: "175px" },
-        width: { xs: "100px", sm: "150px", md: "175px" },
+        height: { xs: "100px", sm: "120px", md: "150px", lg: "175px" },
+        width: { xs: "100px", sm: "120px", md: "150px", lg: "175px" },
       }}
       component="label"
       role={undefined}
