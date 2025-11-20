@@ -49,6 +49,7 @@ dev = [
 [project.scripts]
 web-conexs-api = "web_conexs_api.__main__:main"
 web-conexs-submitter = "slurm_submission_service.__main__:main"
+web-conexs-cleanup = "data_clean_up.__main__:main"
 
 [project.urls]
 GitHub = "https://github.com/DiamondLightSource/web-conexs-app"
