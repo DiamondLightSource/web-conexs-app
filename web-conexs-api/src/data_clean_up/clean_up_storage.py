@@ -1,3 +1,4 @@
+import argparse
 import logging
 import os
 import shutil
@@ -17,7 +18,13 @@ STORAGE_DIR = os.environ.get("CONEXS_STORAGE_DIR")
 STORAGE_DAYS = os.environ.get("CONEXS_STORAGE_DAYS", "30")
 
 
-def main(dry_run=False):
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--dry-run", action="store_true")
+
+    args = parser.parse_args()
+    dry_run = args.dry_run
+
     rootlogger = logging.getLogger()
     formatter = logging.Formatter(
         "%(asctime)s - %(levelname)s - %(name)s - %(message)s",
@@ -40,16 +47,20 @@ def main(dry_run=False):
         logger.error("Could not parse days to store")
         return
 
-    logger.info(f"Running clean-up on {STORAGE_DIR}")
+    message = "dry run " if dry_run else ""
+
+    logger.info(f"Running {message}clean-up on {STORAGE_DIR}")
 
     del_date = datetime.now() - timedelta(days=days)
     del_stamp = del_date.timestamp()
-    deleted = clean_up(Path(STORAGE_DIR), del_stamp)
+    deleted = clean_up(Path(STORAGE_DIR), del_stamp, dry_run)
 
     if len(deleted) != 0:
         logger.debug(
-            f"Flagged for deletion: {len(deleted)}," + " {deleted[0]} to {deleted[-1]}"
+            f"Flagged for deletion: {len(deleted)}," + f" {deleted[0]} to {deleted[-1]}"
         )
+    else:
+        logger.debug("No files flagged for deletion")
 
 
 def clean_up(storage_dir: Path, del_date: int, dry_run: bool = False):
