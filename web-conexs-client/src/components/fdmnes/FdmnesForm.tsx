@@ -1,41 +1,162 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getCrystals, getMolecules, postFdmnes } from "../../queryfunctions";
 import {
-  materialRenderers,
-  materialCells,
-} from "@jsonforms/material-renderers";
-import { JsonForms } from "@jsonforms/react";
-import { Box, Paper, Skeleton, Stack } from "@mui/material";
-
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { postFdmnes } from "../../queryfunctions";
+  Alert,
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
+  Snackbar,
+  SnackbarCloseReason,
+  Stack,
+  Typography,
+} from "@mui/material";
+import { fdmnesDefaultValues, FDMNESSimulationInput } from "../../models";
+import { Formik, useFormikContext } from "formik";
+import StateIconButton from "../StateIconButton";
+import { ReactNode, useEffect, useState } from "react";
+import PublishIcon from "@mui/icons-material/Publish";
+import { periodic_table } from "../../periodictable";
 import { useNavigate } from "react-router-dom";
 
-import { CompactGroup, CompactGroupTester } from "../renderers/CompactGroup";
-import StructureViewer from "../StructureViewer";
-import { FDMNESSimulationInput } from "../../models";
-import { JsonSchema, UISchemaElement } from "@jsonforms/core";
-import FdmnesGuide from "./FdmnesGuide";
-import { useState } from "react";
-import StateIconButton from "../StateIconButton";
-import PublishIcon from "@mui/icons-material/Publish";
+interface ChemicalStructureInfo {
+  const: number;
+  title: string;
+  elements: number[];
+}
 
-const renderers = [
-  ...materialRenderers,
-  { tester: CompactGroupTester, renderer: CompactGroup },
-];
+function DependentSelect(props: {
+  structures: ChemicalStructureInfo[];
+  selectedStructure: number;
+  element: number;
+  handleChange: (event: SelectChangeEvent<number>, child: ReactNode) => void;
+}) {
+  const { setFieldValue } = useFormikContext();
+  const [elements, setElements] = useState<{ const: number; title: string }[]>(
+    []
+  );
+
+  useEffect(() => {
+    setElements([]);
+    const structure = props.structures.find((s) => {
+      return s.const == props.selectedStructure;
+    });
+
+    let el: { const: number; title: string }[] = [];
+
+    if (structure != undefined) {
+      el = structure.elements.map((el) => {
+        const e = periodic_table.at(el - 1);
+        return {
+          const: e ? e.atomic_number : -1,
+          title: e ? e.name : "unknown",
+        };
+      });
+      setElements(el);
+      setFieldValue("element", el[0].const);
+    }
+  }, [props.structures, props.selectedStructure, setFieldValue]);
+
+  const isValidElement =
+    elements.find((e) => {
+      return props.element == e.const;
+    }) != undefined;
+
+  return (
+    <FormControl sx={{ flexBasis: 0, flex: 1 }}>
+      <InputLabel id="select-basis-set">Element</InputLabel>
+      <Select
+        labelId="demo-simple-select-label"
+        id="element"
+        name="element"
+        type="number"
+        value={isValidElement ? props.element : ""}
+        label="Element"
+        onChange={props.handleChange}
+      >
+        {isValidElement &&
+          elements.map((b, i) => (
+            <MenuItem key={i} value={b.const}>
+              {b.title}
+            </MenuItem>
+          ))}
+      </Select>
+    </FormControl>
+  );
+}
 
 export default function FdmnesForm(props: {
-  data: FDMNESSimulationInput;
-  schema: JsonSchema;
-  uischema: UISchemaElement;
-  setData: (newData: FDMNESSimulationInput) => void;
-  hasData: boolean;
+  isCrystal: boolean;
+  setStructureId: (id: number) => void;
 }) {
-  const navigate = useNavigate();
+  const query = useQuery({
+    queryKey: [props.isCrystal ? "crystals" : "molecules"],
+    queryFn: props.isCrystal ? getCrystals : getMolecules,
+  });
 
-  const [disabled, setDisabled] = useState(false);
+  if (!query.data) {
+    return <Typography>Loading...</Typography>;
+  }
+
+  if (query.data.length == 0) {
+    return (
+      <Typography>
+        Make {props.isCrystal ? "Crystals" : "Molecules"}...
+      </Typography>
+    );
+  }
+
+  const output: ChemicalStructureInfo[] = query.data.map((m) => ({
+    const: m.structure.id,
+    title: m.structure.id + " " + m.structure.label,
+    elements: m.elements,
+  }));
+
+  return (
+    <FdmnesFormikForm
+      structures={output}
+      setStructureId={props.setStructureId}
+    ></FdmnesFormikForm>
+  );
+}
+
+function FdmnesFormikForm(props: {
+  structures: ChemicalStructureInfo[];
+  setStructureId: (id: number) => void;
+}) {
+  const setStructureId = props.setStructureId;
+  const structId = props.structures[0].const;
+  const initialValues: FDMNESSimulationInput = fdmnesDefaultValues;
+  initialValues.chemical_structure_id = structId;
+
+  const navigate = useNavigate();
+  useEffect(() => {
+    setStructureId(structId);
+  }, [structId, setStructureId]);
+
+  const [snackOpen, setSnackOpen] = useState(false);
+
+  const handleSnackClose = (
+    _event?: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setSnackOpen(false);
+  };
+
   const [state, setState] = useState<"ok" | "running" | "error" | "default">(
     "default"
   );
+
+  const resetState = () => {
+    setState("default");
+  };
+  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: postFdmnes,
@@ -49,87 +170,176 @@ export default function FdmnesForm(props: {
     },
   });
 
-  const queryClient = useQueryClient();
   const callback = () => {
     setState("ok");
-    setDisabled(false);
-    window.alert("Thank you for your submission");
-    navigate("/simulations");
+    setSnackOpen(true);
+
+    setTimeout(() => {
+      navigate("/simulations");
+    }, 2000);
   };
 
   const errorCallback = () => {
     setState("error");
-    setDisabled(false);
-    window.alert("Error Submitting Job!");
+    setSnackOpen(true);
   };
 
-  const resetState = () => {
-    setState("default");
-  };
-
-  function getPlacemarker(noCrystals: boolean) {
-    if (!noCrystals) {
-      return <Skeleton width={"100%"} height={"100%"} />;
-    } else {
-      return <Box>First create a crystal</Box>;
-    }
-  }
+  const errorMessage = "Error Submitting Job!";
+  const successMessage = "Successfully submitted job!";
 
   return (
-    <Stack
-      className="jsonFormsContainer"
-      direction="row"
-      justifyContent="space-between"
-      margin="5px"
-      spacing="5px"
-      overflow="auto"
-    >
-      {props.hasData && props.data != null ? (
-        <Stack
-          direction={{ sm: "column", md: "row" }}
-          flex={1}
-          spacing={"5px"}
-          align-content={"stretch"}
-          margin={"10px"}
+    <Box>
+      <Snackbar
+        open={snackOpen}
+        autoHideDuration={4000}
+        onClose={handleSnackClose}
+      >
+        <Alert
+          onClose={handleSnackClose}
+          severity={state == "ok" ? "success" : "error"}
+          variant="filled"
+          sx={{ width: "100%" }}
         >
-          <Stack flex={1} margin={"10px"} spacing="10px">
-            <Paper margin={"10px"} spacing="10px" elevation={16}>
-              <Stack flex={1} margin={"10px"} spacing="10px">
-                <JsonForms
-                  schema={props.schema}
-                  data={props.data}
-                  renderers={renderers}
-                  uischema={props.uischema}
-                  cells={materialCells}
-                  onChange={({ data }) => {
-                    props.setData(data);
-                  }}
-                />
-                <StateIconButton
-                  endIcon={<PublishIcon />}
-                  resetState={resetState}
-                  state={state}
-                  disabled={disabled}
-                  variant="contained"
-                  onClick={() => {
-                    setDisabled(true);
-                    setState("running");
-                    const localData = { ...props.data };
-                    mutation.mutate(localData);
-                  }}
-                >
-                  Submit Simulation
-                </StateIconButton>
-              </Stack>
-            </Paper>
-            <StructureViewer id={props.data.chemical_structure_id} />
-          </Stack>
+          {state == "ok" ? successMessage : errorMessage}
+        </Alert>
+      </Snackbar>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={async (values, { setSubmitting }) => {
+          // alert(JSON.stringify(values, null, 2));
+          setState("running");
+          mutation.mutate(values, {
+            onError: () => {
+              setState("error");
+              setSubmitting(false);
+            },
+            onSuccess: () => {
+              setState("ok");
+              setSubmitting(false);
+            },
+          });
+        }}
+      >
+        {({ values, handleChange, handleSubmit, isSubmitting }) => (
+          <FdmnesInnerForm
+            values={values}
+            handleChange={handleChange}
+            handleSubmit={handleSubmit}
+            isSubmitting={isSubmitting}
+            setStructureId={setStructureId}
+            structures={props.structures}
+            state={state}
+            resetState={resetState}
+          ></FdmnesInnerForm>
+        )}
+      </Formik>
+    </Box>
+  );
+}
 
-          <FdmnesGuide />
+function FdmnesInnerForm(props: {
+  values: FDMNESSimulationInput;
+  handleChange: (e: unknown) => void;
+  handleSubmit: (e?: React.FormEvent<HTMLFormElement> | undefined) => void;
+  isSubmitting: boolean;
+  setStructureId: (id: number) => void;
+  structures: ChemicalStructureInfo[];
+  resetState: () => void;
+  state: "ok" | "running" | "error" | "default";
+}) {
+  const { values, handleChange, handleSubmit, isSubmitting } = { ...props };
+  const edges: string[] = ["k", "l1", "l2", "l3", "m1", "m2", "m3", "m4", "m5"];
+  const methods = [
+    {
+      const: false,
+      title: "Finite-Difference Method",
+    },
+    {
+      const: true,
+      title: "Multiple-Scattering Theory (Green's function)",
+    },
+  ];
+  return (
+    <Box component="form" onSubmit={handleSubmit}>
+      <Stack margin="5px" spacing="10px">
+        <Typography>Structure</Typography>
+        <FormControl sx={{ flexBasis: 0, flex: 1 }}>
+          <InputLabel id="select-basis-set">Chemical Structure</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="chemical_structure_id"
+            name="chemical_structure_id"
+            type="number"
+            value={values.chemical_structure_id}
+            label="Chemical Structure"
+            onChange={(e) => {
+              handleChange(e);
+              props.setStructureId(e.target.value as number);
+            }}
+          >
+            {props.structures.map((b, i) => (
+              <MenuItem key={i} value={b.const}>
+                {b.title}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Stack direction="row" spacing="10px" justifyContent="space-between">
+          <DependentSelect
+            structures={props.structures}
+            selectedStructure={values.chemical_structure_id}
+            element={values.element}
+            handleChange={handleChange}
+          ></DependentSelect>
+          <FormControl sx={{ flexBasis: 0, flex: 1 }}>
+            <InputLabel id="select-basis-set">Edge</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="edge"
+              name="edge"
+              type="text"
+              value={values.edge}
+              label="Edge"
+              onChange={handleChange}
+            >
+              {edges.map((b, i) => (
+                <MenuItem key={i} value={b}>
+                  {b}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </Stack>
-      ) : (
-        getPlacemarker(props.hasData && props.data == null)
-      )}
-    </Stack>
+        <Typography>Calculation</Typography>
+        <FormControl sx={{ flexBasis: 0, flex: 1 }}>
+          <InputLabel id="select-basis-set">Theory</InputLabel>
+          <Select
+            labelId="demo-simple-select-label"
+            id="greens_approach"
+            name="greens_approach"
+            type="boolean"
+            value={values.greens_approach}
+            label="Theory"
+            onChange={handleChange}
+          >
+            {methods.map((b, i) => (
+              <MenuItem key={i} value={b.const}>
+                {b.title}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <StateIconButton
+          type="submit"
+          endIcon={<PublishIcon />}
+          resetState={props.resetState}
+          state={props.state}
+          disabled={isSubmitting}
+          variant="contained"
+        >
+          Submit Simulation
+        </StateIconButton>
+      </Stack>
+    </Box>
   );
 }

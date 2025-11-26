@@ -11,12 +11,12 @@ export interface StateIconButtonProps extends ButtonProps {
 export default function StateIconButton(props: StateIconButtonProps) {
   const { state, resetState, ...buttonProps } = props;
 
-  if (props.state == "running") {
+  if (state == "running") {
     buttonProps.endIcon = <CircularProgress size="1em" />;
   } else if (props.state == "error") {
     buttonProps.endIcon = <ErrorIcon />;
-    setTimeout(() => props.resetState(), 2000);
-  } else if (props.state == "ok") {
+    setTimeout(() => resetState(), 2000);
+  } else if (state == "ok") {
     buttonProps.endIcon = <CheckCircleIcon />;
     setTimeout(() => props.resetState(), 2000);
   }

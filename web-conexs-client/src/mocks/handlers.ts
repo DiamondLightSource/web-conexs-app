@@ -74,10 +74,23 @@ const mockMole: Structure = {
   lattice_id: null,
 };
 
+const mockMole2: Structure = {
+  id: 3,
+  label: "test2",
+  person_id: 1,
+  lattice_id: null,
+};
+
 const mockMoleWithMetadata: StructureWithMetadata = {
   atom_count: 12,
   elements: [1, 6],
   structure: mockMole,
+};
+
+const mockMoleWithMetadata2: StructureWithMetadata = {
+  atom_count: 10,
+  elements: [2, 7, 8],
+  structure: mockMole2,
 };
 
 const mockXASdata: XASData = {
@@ -106,10 +119,10 @@ const mockOrcaSimulation: OrcaSimulation = {
   functional: "mockFunctional",
   chemical_structure_id: 1,
   multiplicity: 0,
-  orb_win_0_start: null,
-  orb_win_0_stop: null,
-  orb_win_1_start: null,
-  orb_win_1_stop: null,
+  orb_win_0_start: 0,
+  orb_win_0_stop: 0,
+  orb_win_1_start: 0,
+  orb_win_1_stop: 0,
   simulation: mockSimulation,
   solvent: "None",
   calculation_type: "mock",
@@ -170,6 +183,7 @@ export const handlers = [
 
     await delay(1000);
 
+    // return new HttpResponse(null, { status: 401 });
     return HttpResponse.json(responseSimulation);
   }),
 
@@ -223,7 +237,7 @@ export const handlers = [
     if (type == "crystal") {
       return HttpResponse.json([mockCrysWithMetadata]);
     } else {
-      return HttpResponse.json(Array(1).fill(mockMoleWithMetadata));
+      return HttpResponse.json([mockMoleWithMetadata, mockMoleWithMetadata2]);
     }
   }),
 

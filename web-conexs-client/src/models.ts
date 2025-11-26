@@ -104,11 +104,11 @@ export interface OrcaSimulationInput extends SimulationInputBase {
   basis_set: string;
   charge: number;
   multiplicity: number;
+  orb_win_0_start: number;
+  orb_win_0_stop: number;
+  orb_win_1_start: number;
+  orb_win_1_stop: number;
   solvent: string | null;
-  orb_win_0_start: number | null;
-  orb_win_0_stop: number | null;
-  orb_win_1_start: number | null;
-  orb_win_1_stop: number | null;
 }
 
 export interface OrcaSimulation extends OrcaSimulationInput {
