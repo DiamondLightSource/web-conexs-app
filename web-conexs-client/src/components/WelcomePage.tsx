@@ -45,7 +45,7 @@ export default function WelcomePage() {
             alignItems: "center",
           }}
         >
-          <Typography variant="h6" padding="16px" fontStyle="italic">
+          <Typography variant="h6" padding="16px" fontStyle="">
             A platform for your first steps in theoretical x-ray spectroscopy.
           </Typography>
           <Typography>

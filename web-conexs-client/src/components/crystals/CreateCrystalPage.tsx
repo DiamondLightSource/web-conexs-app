@@ -82,7 +82,7 @@ export default function CreateCystalPage() {
             endIcon={<PublishIcon />}
             resetState={resetState}
             state={state}
-            disabled={disabled}
+            disabled={crystal == null || disabled}
             variant="contained"
             onClick={() => {
               setDisabled(true);

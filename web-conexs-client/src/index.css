@@ -20,11 +20,3 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
-
-.jsonFormsContainer .MuiGrid-item {
-  padding-bottom: 7px;
-}
-
-.jsonFormsContainer [class$="MuiAutocomplete-clearIndicator"] {
-  display: none;
-}

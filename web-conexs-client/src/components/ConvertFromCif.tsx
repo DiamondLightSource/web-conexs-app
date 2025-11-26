@@ -74,8 +74,13 @@ export default function ConvertFromCif(props: {
 
   return (
     <Card>
-      <Stack>
-        <Typography>{title}</Typography>
+      <Stack margin="5px">
+        <Typography variant="subtitle1">{title}</Typography>
+        {!props.isFractional && (
+          <Typography variant="subtitle2" sx={{ fontStyle: "italic" }}>
+            Only suitable for molecular crystals
+          </Typography>
+        )}
         <Stack direction="row" spacing="5px" margin="5px">
           <Button
             variant="contained"
