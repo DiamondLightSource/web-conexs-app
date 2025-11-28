@@ -185,18 +185,17 @@ function OrcaFormikForm(props: {
           }
           return errors;
         }}
-        onSubmit={async (values, { setSubmitting }) => {
+        onSubmit={(values, { setSubmitting }) => {
           setState("running");
           const localData = { ...values };
           if (localData.solvent == "None") {
             localData.solvent = null;
           }
           mutation.mutate(localData, {
-            onError: () => {
-              setSubmitting(false);
-            },
-            onSuccess: () => {
-              setSubmitting(false);
+            onSettled: () => {
+              setTimeout(() => {
+                setSubmitting(false);
+              }, 2000);
             },
           });
         }}
