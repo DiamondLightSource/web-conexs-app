@@ -234,6 +234,8 @@ export const handlers = [
     // the `productId` will be a "1" string.
     const type = url.searchParams.get("type");
 
+    // return new HttpResponse(null, { status: 401 });
+
     if (type == "crystal") {
       return HttpResponse.json([mockCrysWithMetadata]);
     } else {

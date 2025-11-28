@@ -1,4 +1,4 @@
-import { Stack, TextField } from "@mui/material";
+import { Box, Button, Stack, TextField } from "@mui/material";
 import LatticeEditor from "./LatticeEditor";
 import { inputToXYZNoHeader } from "../../utils";
 import { Crystal, LatticeParameter } from "../../models";
@@ -19,22 +19,27 @@ export default function XYZCrystalViewer(props: {
         };
 
   return (
-    <Stack spacing={3} minWidth={"350px"} alignItems="stretch">
+    <Stack spacing={3} minWidth={"350px"}>
       <TextField
         id="Label"
         label="Label"
         value={props.crystal ? props.crystal.label : ""}
       />
       <LatticeEditor lattice={lp} setLattice={() => {}}></LatticeEditor>
-
-      <TextField
-        sx={{ width: "100%" }}
-        id="datafilebox"
-        label="Atomic Coordinate (Fractional)"
-        multiline
-        rows={10}
-        value={props.crystal ? inputToXYZNoHeader(props.crystal) : ""}
-      />
+      <Stack flex={1}>
+        {/* <Button variant="contained" width="100%" height="100%" sx={{ flex: 1 }}>
+          Test
+        </Button> */}
+        <TextField
+          sx={{ width: "100%", height: "100%", flex: 1 }}
+          id="datafilebox"
+          label="Atomic Coordinate (Fractional)"
+          multiline
+          minRows={5}
+          variant="outlined"
+          value={props.crystal ? inputToXYZNoHeader(props.crystal) : ""}
+        />
+      </Stack>
     </Stack>
   );
 }

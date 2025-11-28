@@ -138,14 +138,13 @@ function QEFormikForm(props: {
       </Snackbar>
       <Formik
         initialValues={initialValues}
-        onSubmit={async (values, { setSubmitting }) => {
+        onSubmit={(values, { setSubmitting }) => {
           setState("running");
           mutation.mutate(values, {
-            onError: () => {
-              setSubmitting(false);
-            },
-            onSuccess: () => {
-              setSubmitting(false);
+            onSettled: () => {
+              setTimeout(() => {
+                setSubmitting(false);
+              }, 2000);
             },
           });
         }}
@@ -180,6 +179,7 @@ function QEInnerForm(props: {
   const { values, handleChange, handleSubmit, isSubmitting } = { ...props };
   const edges: string[] = ["k", "l1", "l2", "l23"];
   const conductivity: string[] = ["metallic", "semiconductor", "insulator"];
+
   return (
     <Box component="form" onSubmit={handleSubmit}>
       <Stack margin="5px" spacing="10px">

@@ -205,17 +205,14 @@ function FdmnesFormikForm(props: {
       </Snackbar>
       <Formik
         initialValues={initialValues}
-        onSubmit={async (values, { setSubmitting }) => {
+        onSubmit={(values, { setSubmitting }) => {
           // alert(JSON.stringify(values, null, 2));
           setState("running");
           mutation.mutate(values, {
-            onError: () => {
-              setState("error");
-              setSubmitting(false);
-            },
-            onSuccess: () => {
-              setState("ok");
-              setSubmitting(false);
+            onSettled: () => {
+              setTimeout(() => {
+                setSubmitting(false);
+              }, 2000);
             },
           });
         }}

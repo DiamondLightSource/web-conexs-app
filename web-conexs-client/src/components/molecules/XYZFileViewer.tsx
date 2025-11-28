@@ -20,6 +20,7 @@ export default function XYZFileViewer(props: { id: number | undefined }) {
         value={query.data == null ? " " : query.data.label}
       />
       <TextField
+        hiddenLabel
         sx={{ width: "100%" }}
         id="datafilebox"
         label="Atomic Coordinates (Angstroms)"

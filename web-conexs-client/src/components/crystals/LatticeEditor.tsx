@@ -60,13 +60,8 @@ export default function LatticeEditor(props: {
   };
 
   return (
-    <Stack flex={1} spacing={"10px"}>
-      <Stack
-        flex={1}
-        direction={"row"}
-        spacing={"10px"}
-        justifyContent="space-between"
-      >
+    <Stack spacing={"10px"}>
+      <Stack direction={"row"} spacing={"10px"} justifyContent="space-between">
         {firstRowKeys.map((k) => (
           <NumberNoSpinner
             key={k}
@@ -77,7 +72,7 @@ export default function LatticeEditor(props: {
         ))}
       </Stack>
 
-      <Stack flex={1} direction={"row"} spacing={"10px"}>
+      <Stack direction={"row"} spacing={"10px"}>
         {secondRowKeys.map((k) => (
           <NumberNoSpinner
             key={k}
