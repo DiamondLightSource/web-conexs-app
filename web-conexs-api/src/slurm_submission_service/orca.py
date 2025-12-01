@@ -23,7 +23,7 @@ def submit_orca(session, sim: Simulation):
     user = sim.person.identifier
     uid = uuid.uuid4()
 
-    job_name = sim.id + "-" + application_name + "-" + str(uid)
+    job_name = str(sim.id) + "-" + application_name + "-" + str(uid)
     working_dir = str(Path(ROOT_DIR) / Path(user) / Path(job_name))
 
     file_map = {"job.inp": job_string}
