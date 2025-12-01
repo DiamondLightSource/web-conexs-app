@@ -111,6 +111,7 @@ const mockSimulation: Simulation = {
   completion_date: "2025-02-27T09:22:41.035872",
   chemical_structure_id: 2,
   submission_date: null,
+  chemical_structure: { id: 1, label: "test", lattice_id: null, person_id: 1 },
 };
 
 const mockOrcaSimulation: OrcaSimulation = {
