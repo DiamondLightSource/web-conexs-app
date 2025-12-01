@@ -23,31 +23,60 @@ export default function FdmnesGuide() {
           <CardContent>
             <Stack direction="row" spacing={"10px"}>
               <FDMNESIcon />
-              <Typography variant="h6">FDMNES</Typography>
+              <Typography sx={{ fontWeight: "bold" }} variant="h6">
+                FDMNES
+              </Typography>
             </Stack>
             <Typography gutterBottom margin="10px">
               The FDMNES project is developed in the SIN team, Institut Néel,
               CNRS, Grenoble, France.
             </Typography>
-            <Typography variant="body2" gutterBottom margin="10px">
+            <Typography
+              variant="body2"
+              gutterBottom
+              margin="10px"
+              sx={{ fontStyle: "italic", fontWeight: "bold" }}
+            >
               If you publish calculation results performed with FDMNES code
               please cite the original papers:
             </Typography>
-            <Typography sx={{ fontStyle: "italic" }} variant="body2">
+            <Typography
+              margin="0px 10px"
+              sx={{ fontStyle: "italic", fontWeight: "bold" }}
+              variant="body2"
+            >
               J. Phys.: Condens. Matter 21, 345501 (2009).
             </Typography>
-            <Typography sx={{ fontStyle: "italic" }} variant="body2">
+            <Typography
+              margin="0px 10px"
+              sx={{ fontStyle: "italic", fontWeight: "bold" }}
+              variant="body2"
+            >
               J. Chem. Theory Comput. 11, 4512-4521 (2015).
             </Typography>
-            <Typography sx={{ fontStyle: "italic" }} variant="body2">
+            <Typography
+              margin="0px 10px"
+              sx={{ fontStyle: "italic", fontWeight: "bold" }}
+              variant="body2"
+            >
               J. Synchrotron Rad. 23, 551-559 (2016).
             </Typography>
           </CardContent>
         </Card>
         <Divider />
         <Stack>
-          <Typography variant="h6">Quick Start</Typography>
-          <Typography variant="h7" sx={{ fontStyle: "italic" }}>
+          <Typography
+            sx={{ fontWeight: "bold" }}
+            variant="h6"
+            margin="0px 10px"
+          >
+            Quick Start
+          </Typography>
+          <Typography
+            variant="h7"
+            margin="0px 10px"
+            sx={{ fontStyle: "italic", fontWeight: "bold" }}
+          >
             Structure
           </Typography>
           <Typography gutterBottom margin="10px">
@@ -55,14 +84,22 @@ export default function FdmnesGuide() {
             down menu. If you do not have any head to the molecule or crystal
             creation page.
           </Typography>
-          <Typography variant="h7" sx={{ fontStyle: "italic" }}>
+          <Typography
+            variant="h7"
+            margin="0px 10px"
+            sx={{ fontStyle: "italic", fontWeight: "bold" }}
+          >
             Element & Absorption Edge
           </Typography>
           <Typography gutterBottom margin="10px">
             Simply select the element you wish to probe and the edge you where
             you would like to simulate the x-ray absorption spectrum.
           </Typography>
-          <Typography variant="h7" sx={{ fontStyle: "italic" }}>
+          <Typography
+            variant="h7"
+            margin="0px 10px"
+            sx={{ fontStyle: "italic", fontWeight: "bold" }}
+          >
             Theory
           </Typography>
           <Typography gutterBottom margin="10px">
