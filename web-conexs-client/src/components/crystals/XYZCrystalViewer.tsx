@@ -1,4 +1,4 @@
-import { Box, Button, Stack, TextField } from "@mui/material";
+import { Stack, TextField } from "@mui/material";
 import LatticeEditor from "./LatticeEditor";
 import { inputToXYZNoHeader } from "../../utils";
 import { Crystal, LatticeParameter } from "../../models";

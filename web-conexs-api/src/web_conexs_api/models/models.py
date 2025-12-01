@@ -45,6 +45,11 @@ class ChemicalStructure(StructureBase, table=True):
     )
 
 
+class ChemicalStructureResponse(StructureBase):
+    lattice_id: int | None
+    id: int | None
+
+
 class StructureWithMetadata(SQLModel):
     structure: ChemicalStructure
     atom_count: int
@@ -162,6 +167,13 @@ class Simulation(SimulationBase, table=True):
         }
     )
 
+    chemical_structure: ChemicalStructure = Relationship(
+        sa_relationship_kwargs={
+            "lazy": "selectin",
+            "foreign_keys": "[Simulation.chemical_structure_id]",
+        }
+    )
+
     status: SimulationStatus = SimulationStatus.requested
 
 
@@ -268,6 +280,7 @@ class SimulationResponse(SimulationBase):
     status: SimulationStatus
     request_date: Optional[datetime.datetime]
     person: Person
+    chemical_structure: ChemicalStructureResponse
 
 
 class Edge(enum.Enum):

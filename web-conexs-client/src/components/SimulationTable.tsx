@@ -11,6 +11,7 @@ import {
   Typography,
   Button,
   useMediaQuery,
+  Tooltip,
 } from "@mui/material";
 
 import { tableCellClasses } from "@mui/material/TableCell";
@@ -90,6 +91,12 @@ function SimulationMetadata(props: {
     props.simulation?.status == "running" ||
     props.simulation?.status == "requested";
 
+  const structLabel = props.simulation
+    ? props.simulation.chemical_structure.id +
+      " " +
+      props.simulation.chemical_structure.label
+    : "";
+
   return (
     <StyledTableRow
       key={props.key}
@@ -101,19 +108,33 @@ function SimulationMetadata(props: {
         {props.simulation?.id ?? "\xa0"}
       </StyledTableCell>
 
-      <StyledTableCell align="center" onClick={clickCell}>
+      <StyledTableCell align="left" onClick={clickCell}>
         {props.simulation?.simulation_type.type ?? ""}
       </StyledTableCell>
+      <Tooltip title={structLabel}>
+        <StyledTableCell
+          align="left"
+          onClick={clickCell}
+          sx={{
+            maxWidth: "50px",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+          }}
+        >
+          {structLabel}
+        </StyledTableCell>
+      </Tooltip>
       <StyledTableCell align="center" onClick={clickCell}>
         <Typography color={color}> {props.simulation?.status ?? ""}</Typography>
       </StyledTableCell>
       {props.compact && (
-        <StyledTableCell align="left" onClick={clickCell}>
+        <StyledTableCell align="center" onClick={clickCell}>
           {request_string}
         </StyledTableCell>
       )}
 
-      <StyledTableCell align="left" onClick={clickCell}>
+      <StyledTableCell align="center" onClick={clickCell}>
         {complete_string}
       </StyledTableCell>
       <StyledTableCell align="left">
@@ -167,11 +188,12 @@ export default function SimulationTable(props: {
           <TableHead>
             <TableRow>
               <TableCell align="left">ID</TableCell>
-              <TableCell align="center">Type</TableCell>
+              <TableCell align="left">Type</TableCell>
+              <TableCell align="left">Structure</TableCell>
               <TableCell align="center">Status</TableCell>
-              {matches && <TableCell align="left">Request Date</TableCell>}
+              {matches && <TableCell align="center">Request Date</TableCell>}
 
-              <TableCell align="left">Completion Date</TableCell>
+              <TableCell align="center">Completion Date</TableCell>
               <TableCell align="left"></TableCell>
             </TableRow>
           </TableHead>

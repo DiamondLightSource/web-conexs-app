@@ -83,6 +83,7 @@ export interface Simulation {
   request_date: string;
   submission_date: string | null;
   completion_date: string | null;
+  chemical_structure: Structure;
 }
 
 export interface SimulationPage {

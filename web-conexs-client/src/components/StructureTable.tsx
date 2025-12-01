@@ -71,7 +71,15 @@ function StructureMetadata(props: {
       <StyledTableCell align="left">
         {props.structure?.structure.id ?? "\xa0"}
       </StyledTableCell>
-      <StyledTableCell align="center">
+      <StyledTableCell
+        align="left"
+        sx={{
+          maxWidth: "150px",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+        }}
+      >
         {props.structure?.structure.label ?? ""}
       </StyledTableCell>
       <StyledTableCell align="center">
@@ -100,7 +108,7 @@ export default function StructureTable(props: {
           <TableHead>
             <TableRow>
               <TableCell align="left">ID</TableCell>
-              <TableCell align="center">Label</TableCell>
+              <TableCell align="left">Label</TableCell>
               <TableCell align="center">No. Atoms</TableCell>
               <TableCell align="center">Elements</TableCell>
             </TableRow>
