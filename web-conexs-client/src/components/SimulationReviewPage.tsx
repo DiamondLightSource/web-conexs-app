@@ -16,6 +16,9 @@ import { getSimulationPage } from "../queryfunctions";
 import MainPanel from "./MainPanel";
 import { useNavigate } from "react-router-dom";
 
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
+
 export default function SimulationReviewPage() {
   const [cursor, setCursor] = useState<string | null>(null);
   const [next, setNext] = useState<string | null>(null);
@@ -56,7 +59,12 @@ export default function SimulationReviewPage() {
     <MainPanel
       toolbarElements={
         <>
-          <Stack direction="row" spacing="20px" alignItems="center">
+          <Stack
+            spacing={"30px"}
+            direction="row"
+            alignItems="center"
+            margin="5px 20px"
+          >
             <Typography variant="h5" component="div">
               Simulation Results
             </Typography>
@@ -85,20 +93,20 @@ export default function SimulationReviewPage() {
               </DialogActions>
             </Dialog>
           </Stack>
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={"10px"}>
             <Button
               variant="contained"
               disabled={previous == null}
               onClick={() => setCursor(previous)}
             >
-              &lt;
+              <NavigateBeforeIcon />
             </Button>
             <Button
               variant="contained"
               disabled={next == null}
               onClick={() => setCursor(next)}
             >
-              &gt;
+              <NavigateNextIcon />
             </Button>
           </Stack>
         </>
