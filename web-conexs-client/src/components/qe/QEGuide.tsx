@@ -23,40 +23,77 @@ export default function QEGuide() {
           <CardContent>
             <Stack direction="row" spacing={"10px"}>
               <QEIcon />
-              <Typography variant="h6">Quantum Espresso</Typography>
+              <Typography sx={{ fontWeight: "bold" }} variant="h6">
+                Quantum Espresso
+              </Typography>
             </Stack>
 
-            <Typography gutterBottom margin="10px">
+            <Typography margin="10px">
               Quantum ESPRESSO (Quantum opEn-Source Package for Research in
               Electronic Structure, Simulation, and Optimisation) is a suite of
               applications for ab-initio electronic structure calculations using
               plane waves and pseudopotentials.
             </Typography>
-            <Typography variant="body2" gutterBottom margin="10px">
+            <Typography
+              variant="body2"
+              gutterBottom
+              margin="10px"
+              sx={{ fontWeight: "bold" }}
+            >
               If you publish calculation results performed with FDMNES code
               please cite the original papers:
             </Typography>
-            <Typography sx={{ fontStyle: "italic" }} variant="body2">
+            <Typography
+              sx={{ fontStyle: "italic", fontWeight: "bold" }}
+              variant="body2"
+              margin="0px 10px"
+            >
               Journal of Physics: Condensed Matter 21, 395502 (2009).
             </Typography>
-            <Typography sx={{ fontStyle: "italic" }} variant="body2">
+            <Typography
+              sx={{ fontStyle: "italic", fontWeight: "bold" }}
+              variant="body2"
+              margin="0px 10px"
+            >
               Phys. Rev. B 80, 075102 (2009)
             </Typography>
-            <Typography sx={{ fontStyle: "italic" }} variant="body2">
+            <Typography
+              sx={{ fontStyle: "italic", fontWeight: "bold" }}
+              variant="body2"
+              margin="0px 10px"
+            >
               Phys. Rev. B 87, 205105 (2013)
             </Typography>
-            <Typography sx={{ fontStyle: "italic" }} variant="body2">
+            <Typography
+              sx={{ fontStyle: "italic", fontWeight: "bold" }}
+              variant="body2"
+              margin="0px 10px"
+            >
               Journal of Physics: Condensed Matter 29, 465901 (2017).
             </Typography>
-            <Typography sx={{ fontStyle: "italic" }} variant="body2">
+            <Typography
+              sx={{ fontStyle: "italic", fontWeight: "bold" }}
+              variant="body2"
+              margin="0px 10px"
+            >
               The Journal of Chemical Physics 152, 154105 (2020).
             </Typography>
           </CardContent>
         </Card>
         <Divider />
         <Stack>
-          <Typography variant="h6">Quick Start</Typography>
-          <Typography variant="h7" sx={{ fontStyle: "italic" }}>
+          <Typography
+            margin="0px 10px"
+            variant="h6"
+            sx={{ fontWeight: "bold" }}
+          >
+            Quick Start
+          </Typography>
+          <Typography
+            variant="h7"
+            margin="0px 10px"
+            sx={{ fontStyle: "italic", fontWeight: "bold" }}
+          >
             Structure
           </Typography>
           <Typography gutterBottom margin="10px">
@@ -64,7 +101,11 @@ export default function QEGuide() {
             you do not have any head to the crystal creation or materials
             project page.
           </Typography>
-          <Typography variant="h7" sx={{ fontStyle: "italic" }}>
+          <Typography
+            margin="0px 10px"
+            variant="h7"
+            sx={{ fontStyle: "italic", fontWeight: "bold" }}
+          >
             Absorbing Atom
           </Typography>
           <Typography gutterBottom margin="10px">
@@ -75,10 +116,14 @@ export default function QEGuide() {
             to help the current absorbing atom is highlighted in the structure
             displayed.
           </Typography>
-          <Typography variant="h7" sx={{ fontStyle: "italic" }}>
+          <Typography
+            margin="0px 10px"
+            variant="h7"
+            sx={{ fontStyle: "italic", fontWeight: "bold" }}
+          >
             Conductivity
           </Typography>
-          <Typography gutterBottom margin="10px">
+          <Typography margin="10px">
             The conductivity dropdown menu determines which set of computational
             parameters are used to aid with convergence of the electronic
             structure. One set of parameters better suits systems with a

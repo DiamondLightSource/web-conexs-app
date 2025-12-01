@@ -23,7 +23,12 @@ export default function OrcaGuide() {
           <CardContent>
             <Stack direction="row" spacing={"10px"}>
               <OrcaIcon />
-              <Typography variant="h6" gutterBottom margin="10px">
+              <Typography
+                sx={{ fontWeight: "bold" }}
+                variant="h6"
+                gutterBottom
+                margin="10px"
+              >
                 ORCA
               </Typography>
             </Stack>
@@ -32,24 +37,26 @@ export default function OrcaGuide() {
               developed by Frank Neese et al. at the Max Planck Institut für
               Kohlenforschung.
             </Typography>
-            <Typography variant="body2" gutterBottom margin="10px">
+            <Typography
+              variant="body2"
+              margin="10px"
+              sx={{ fontWeight: "bold" }}
+            >
               If you publish calculation results performed with ORCA code please
               cite the original papers:
             </Typography>
             <Typography
-              sx={{ fontStyle: "italic" }}
+              sx={{ fontStyle: "italic", fontWeight: "bold" }}
               variant="body2"
-              gutterBottom
-              margin="10px"
+              margin="0px 10px"
             >
               F. Neese, Wiley Interdisciplinary Reviews: Computational Molecular
               Science 2, 73 (2012).
             </Typography>
             <Typography
-              sx={{ fontStyle: "italic" }}
+              sx={{ fontStyle: "italic", fontWeight: "bold" }}
               variant="body2"
-              gutterBottom
-              margin="10px"
+              margin="0px 10px"
             >
               F. Neese, Wiley Interdisciplinary Reviews: Computational Molecular
               Science 8, e1327 (2018).
@@ -58,15 +65,29 @@ export default function OrcaGuide() {
         </Card>
         <Divider />
         <Stack>
-          <Typography variant="h6">Quick Start</Typography>
-          <Typography variant="h7" sx={{ fontStyle: "italic" }}>
+          <Typography
+            sx={{ fontWeight: "bold" }}
+            margin="0px 10px"
+            variant="h6"
+          >
+            Quick Start
+          </Typography>
+          <Typography
+            margin="0px 10px"
+            variant="h7"
+            sx={{ fontStyle: "italic", fontWeight: "bold" }}
+          >
             Structure
           </Typography>
           <Typography margin="10px">
             Select one of your molecules from the drop down menu. If you do not
             have any head to the molecule creation page.
           </Typography>
-          <Typography variant="h7" sx={{ fontStyle: "italic" }}>
+          <Typography
+            margin="0px 10px"
+            variant="h7"
+            sx={{ fontStyle: "italic", fontWeight: "bold" }}
+          >
             Charge & Multiplicity
           </Typography>
           <Typography margin="10px">
@@ -75,17 +96,25 @@ export default function OrcaGuide() {
             multiplicity can be calculated using the formula 2S + 1, with S
             being to total spin (or number of unpaired electrons × 1/2).
           </Typography>
-          <Typography variant="h7" sx={{ fontStyle: "italic" }}>
+          <Typography
+            margin="0px 10px"
+            variant="h7"
+            sx={{ fontStyle: "italic", fontWeight: "bold" }}
+          >
             Solvent
           </Typography>
           <Typography gutterBottom margin="10px">
             Include a solvent using Orca's conductor-like polarizable continuum
             model (C-PCM) implementation.
           </Typography>
-          <Typography variant="h7" sx={{ fontStyle: "italic" }}>
+          <Typography
+            margin="0px 10px"
+            variant="h7"
+            sx={{ fontStyle: "italic", fontWeight: "bold" }}
+          >
             Technique
           </Typography>
-          <Typography gutterBottom margin="10px" component="div">
+          <Typography margin="10px" component="div">
             &#x2022; OPT: Geometry Optimisation of the molecule.
             <br /> &#x2022; SCF: Self-Consistent Calculation of the electronic
             structure, used to determine the donor (core) orbitals.
@@ -96,22 +125,30 @@ export default function OrcaGuide() {
             <br /> <p />
             We recommend a workflow OPT → SCF → XAS/XES.
           </Typography>
-          <Typography variant="h7" sx={{ fontStyle: "italic" }}>
+          <Typography
+            margin="0px 10px"
+            variant="h7"
+            sx={{ fontStyle: "italic", fontWeight: "bold" }}
+          >
             Functional & Basis set
           </Typography>
-          <Typography gutterBottom margin="10px">
+          <Typography margin="10px">
             We recommend trying each of the functionals, look for differences in
             the final geometries af- ter optimisation and spectra after XAS and
             XES calculations. Note that the hybrid functional B3LYP can be
             considered “the most accurate” available on Web-CONEXS.
           </Typography>
-          <Typography gutterBottom margin="10px">
+          <Typography margin="10px">
             Basis sets increase in size with def-SVP being the smallest and
             def-TZVP being the largest. Similarly we recommend exploring each of
             these, but it is worth noting that molecules with heavier elements
             will require the larger def-TZVP basis set for calculation.
           </Typography>
-          <Typography variant="h7" sx={{ fontStyle: "italic" }}>
+          <Typography
+            margin="0px 10px"
+            variant="h7"
+            sx={{ fontStyle: "italic", fontWeight: "bold" }}
+          >
             X-ray absorption - TD-DFT Donor/Acceptor Orbitals
           </Typography>
           <Typography gutterBottom margin="10px">
