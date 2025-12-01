@@ -22,7 +22,7 @@ def submit_fdmnes(session, sim: Simulation):
     user = sim.person.identifier
     uid = uuid.uuid4()
 
-    job_name = application_name + "-" + str(uid)
+    job_name = sim.id + "-" + application_name + "-" + str(uid)
 
     file_map = {}
     file_map["job.txt"] = job_string
