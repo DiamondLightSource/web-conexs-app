@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 
+
 export default function SimulationReviewPage() {
   const [cursor, setCursor] = useState<string | null>(null);
   const [next, setNext] = useState<string | null>(null);
@@ -65,11 +66,15 @@ export default function SimulationReviewPage() {
             alignItems="center"
             margin="5px 20px"
           >
-            <Typography variant="h5" component="div">
+            <Typography
+              variant="h5"
+              component="div"
+              fontSize={{ xs: "1rem", sm: "1.25rem", md: "1.5rem" }}
+            >
               Simulation Results
             </Typography>
             <Button variant="contained" onClick={handleClickOpen}>
-              Download All
+              Download
             </Button>
             <Dialog
               open={open}

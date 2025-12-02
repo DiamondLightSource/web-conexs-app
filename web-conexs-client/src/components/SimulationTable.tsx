@@ -9,10 +9,12 @@ import {
   TableBody,
   Box,
   Typography,
-  Button,
   useMediaQuery,
   Tooltip,
+  IconButton,
 } from "@mui/material";
+
+import CancelIcon from "@mui/icons-material/Cancel";
 
 import { tableCellClasses } from "@mui/material/TableCell";
 
@@ -122,24 +124,37 @@ function SimulationMetadata(props: {
             overflow: "hidden",
           }}
         >
-          {structLabel}
+          {props.compact
+            ? structLabel
+            : props.simulation?.chemical_structure.id}
         </StyledTableCell>
       </Tooltip>
-      <StyledTableCell align="center" onClick={clickCell}>
+      <StyledTableCell
+        sx={{
+          maxWidth: "50px",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+        }}
+        align="center"
+        onClick={clickCell}
+      >
         <Typography color={color}> {props.simulation?.status ?? ""}</Typography>
       </StyledTableCell>
       {props.compact && (
-        <StyledTableCell align="center" onClick={clickCell}>
-          {request_string}
-        </StyledTableCell>
+        <>
+          <StyledTableCell align="center" onClick={clickCell}>
+            {request_string}
+          </StyledTableCell>
+          <StyledTableCell align="center" onClick={clickCell}>
+            {complete_string}
+          </StyledTableCell>
+        </>
       )}
-
-      <StyledTableCell align="center" onClick={clickCell}>
-        {complete_string}
-      </StyledTableCell>
       <StyledTableCell align="left">
         {showCancel && (
-          <Button
+          <IconButton
+            color="error"
             size="small"
             onClick={() => {
               if (props.simulation != null) {
@@ -148,8 +163,8 @@ function SimulationMetadata(props: {
             }}
             variant="contained"
           >
-            Cancel
-          </Button>
+            <CancelIcon fontSize="small" />
+          </IconButton>
         )}
       </StyledTableCell>
     </StyledTableRow>
@@ -189,11 +204,18 @@ export default function SimulationTable(props: {
             <TableRow>
               <TableCell align="left">ID</TableCell>
               <TableCell align="left">Type</TableCell>
-              <TableCell align="left">Structure</TableCell>
+              <TableCell align="left">
+                {" "}
+                {matches ? "Structure" : "Struct."}
+              </TableCell>
               <TableCell align="center">Status</TableCell>
-              {matches && <TableCell align="center">Request Date</TableCell>}
+              {matches && (
+                <>
+                  <TableCell align="center">Request Date</TableCell>
+                  <TableCell align="center">Completion Date</TableCell>
+                </>
+              )}
 
-              <TableCell align="center">Completion Date</TableCell>
               <TableCell align="left"></TableCell>
             </TableRow>
           </TableHead>
