@@ -1,31 +1,13 @@
-import {
-  Button,
-  Card,
-  CircularProgress,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Button, Card, Stack, Typography } from "@mui/material";
 import VisuallyHiddenInput from "./VisuallyHiddenInput";
 import { useMutation } from "@tanstack/react-query";
 import { postConvertCrystal, postConvertMolecule } from "../queryfunctions";
 import { CrystalInput, MoleculeInput } from "../models";
 import { useState } from "react";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import ErrorIcon from "@mui/icons-material/Error";
 import GrainIcon from "./icons/GrainIcon";
 import MoleculeIcon from "./icons/MoleculeIcon";
-
-function getConvertIcon(state: string, molecule: boolean) {
-  if (state == "ok") {
-    return <CheckCircleIcon />;
-  } else if (state == "failed") {
-    return <ErrorIcon />;
-  } else if (state == "running") {
-    return <CircularProgress size="1em" />;
-  }
-
-  return molecule ? <MoleculeIcon /> : <GrainIcon />;
-}
+import useStateIconButton from "./useStateIconButton";
+import StateIconButton from "./StateIconButton";
 
 export default function ConvertFromCif(props: {
   isFractional: boolean;
@@ -34,20 +16,21 @@ export default function ConvertFromCif(props: {
   const [textFile, setTextFile] = useState<string | null>(null);
   const [filename, setFileName] = useState<string | null>(null);
 
-  const [convertState, setConvertState] = useState<
-    "default" | "ok" | "failed" | "running"
-  >("default");
+  const { state, setState, resetState } = useStateIconButton();
+  const [submitting, setSubmitting] = useState(false);
 
   const mutation = useMutation({
     mutationFn: props.isFractional ? postConvertCrystal : postConvertMolecule,
     onSuccess: (data) => {
+      setSubmitting(false);
       props.setStructure(data);
-      setConvertState("ok");
-      setTimeout(() => setConvertState("default"), 2000);
+      setState("ok");
+      setTimeout(() => resetState, 2000);
     },
     onError: () => {
-      setConvertState("failed");
-      setTimeout(() => setConvertState("default"), 2000);
+      setSubmitting(false);
+      setState("error");
+      setTimeout(() => resetState, 2000);
     },
   });
 
@@ -69,8 +52,8 @@ export default function ConvertFromCif(props: {
   };
 
   const title = props.isFractional
-    ? "Convert from Crystal Cif File"
-    : "Convert from Molecular Crystal Cif File";
+    ? "Convert from Crystal Cif File:"
+    : "Convert from Molecular Crystal Cif File:";
 
   return (
     <Card>
@@ -96,19 +79,22 @@ export default function ConvertFromCif(props: {
               onChange={handleFile}
             />
           </Button>
-          <Button
-            variant="outlined"
-            disabled={textFile == null}
+          <StateIconButton
+            endIcon={props.isFractional ? <GrainIcon /> : <MoleculeIcon />}
+            resetState={resetState}
+            state={state}
+            disabled={textFile == null || submitting}
+            variant="contained"
             onClick={() => {
               if (textFile != null) {
-                setConvertState("running");
+                setSubmitting(true);
+                setState("running");
                 mutation.mutate(textFile);
               }
             }}
-            endIcon={getConvertIcon(convertState, !props.isFractional)}
           >
             Run Convert
-          </Button>
+          </StateIconButton>
           <Typography>{filename ? filename : "No file"}</Typography>
         </Stack>
       </Stack>

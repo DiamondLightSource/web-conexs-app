@@ -8,6 +8,7 @@ import { MolStarCrystalWrapper } from "../MolstarCrystalViewer";
 import { crystalInputToCIF } from "../../utils";
 import StateIconButton from "../StateIconButton";
 import PublishIcon from "@mui/icons-material/Publish";
+import useStateIconButton from "../useStateIconButton";
 
 function MatProjCrystalViewer(props: {
   mpid: string;
@@ -36,12 +37,7 @@ function MatProjCrystalViewer(props: {
 
   const [checked, setChecked] = useState(false);
   const [disabled, setDisabled] = useState(false);
-  const [state, setState] = useState<"ok" | "running" | "error" | "default">(
-    "default"
-  );
-  const resetState = () => {
-    setState("default");
-  };
+  const { state, setState, resetState } = useStateIconButton();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -53,7 +49,6 @@ function MatProjCrystalViewer(props: {
   const callback = () => {
     setState("ok");
     setDisabled(false);
-    window.alert("Thank you for your submission");
     navigate("/crystals");
   };
 
@@ -67,7 +62,6 @@ function MatProjCrystalViewer(props: {
     onError: () => {
       setState("error");
       setDisabled(false);
-      window.alert("Error Submitting Struture!");
     },
   });
 

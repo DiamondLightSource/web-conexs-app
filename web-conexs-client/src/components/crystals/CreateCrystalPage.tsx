@@ -10,6 +10,7 @@ import { MolStarCrystalWrapper } from "../MolstarCrystalViewer";
 import { crystalInputToCIF } from "../../utils";
 import StateIconButton from "../StateIconButton";
 import PublishIcon from "@mui/icons-material/Publish";
+import useStateIconButton from "../useStateIconButton";
 
 const templateCrystal: CrystalInput = {
   lattice: {
@@ -33,14 +34,12 @@ export default function CreateCystalPage() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [disabled, setDisabled] = useState(false);
-  const [state, setState] = useState<"ok" | "running" | "error" | "default">(
-    "default"
-  );
+
+  const { state, setState, resetState } = useStateIconButton();
 
   const callback = () => {
     setState("ok");
     setDisabled(false);
-    window.alert("Thank you for your submission");
     navigate("/crystals");
   };
 
@@ -54,7 +53,6 @@ export default function CreateCystalPage() {
     onError: () => {
       setState("error");
       setDisabled(false);
-      window.alert("Error submitting structure!");
     },
   });
 
@@ -63,9 +61,6 @@ export default function CreateCystalPage() {
     templateCrystal
   );
 
-  const resetState = () => {
-    setState("default");
-  };
   return (
     <MainPanel
       toolbarElements={<Typography variant="h5">Create Crystal</Typography>}

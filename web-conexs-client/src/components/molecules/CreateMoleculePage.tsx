@@ -10,6 +10,7 @@ import { MolStarMoleculeWrapper } from "../MolstarMoleculeViewer";
 import { moleculeInputToXYZ } from "../../utils";
 import PublishIcon from "@mui/icons-material/Publish";
 import StateIconButton from "../StateIconButton";
+import useStateIconButton from "../useStateIconButton";
 
 const templateMolecule: MoleculeInput = {
   label: "Benzene",
@@ -38,16 +39,14 @@ export default function CreateMoleculePage() {
     useState<MoleculeInput | null>(molecule);
 
   const [disabled, setDisabled] = useState(false);
-  const [state, setState] = useState<"ok" | "running" | "error" | "default">(
-    "default"
-  );
+  const { state, setState, resetState } = useStateIconButton();
+
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const callback = () => {
     setState("ok");
     setDisabled(false);
-    window.alert("Thank you for your submission");
     navigate("/molecules");
   };
 
@@ -61,13 +60,8 @@ export default function CreateMoleculePage() {
     onError: () => {
       setState("error");
       setDisabled(false);
-      window.alert("Error submitting structure!");
     },
   });
-
-  const resetState = () => {
-    setState("default");
-  };
 
   return (
     <MainPanel

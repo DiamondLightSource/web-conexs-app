@@ -1,12 +1,9 @@
 import {
-  Alert,
   Box,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
-  Snackbar,
-  SnackbarCloseReason,
   Stack,
   TextField,
   Typography,
@@ -17,8 +14,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMolecules, postOrca } from "../../queryfunctions";
 import { useNavigate } from "react-router-dom";
 import StateIconButton from "../StateIconButton";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import PublishIcon from "@mui/icons-material/Publish";
+import useStateIconButton from "../useStateIconButton";
 interface ChemicalStructureInfo {
   const: number;
   title: string;
@@ -66,34 +64,14 @@ function OrcaFormikForm(props: {
   const initialValues: OrcaSimulationInput = orcaDefaultValues;
   initialValues.chemical_structure_id = structId;
 
-  const [snackOpen, setSnackOpen] = useState(false);
-
-  const handleSnackClose = (
-    _event?: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setSnackOpen(false);
-  };
-
   useEffect(() => {
     setStructureId(structId);
   }, [structId, setStructureId]);
 
-  const [state, setState] = useState<"ok" | "running" | "error" | "default">(
-    "default"
-  );
-  const resetState = () => {
-    setState("default");
-  };
+  const { state, setState, resetState } = useStateIconButton();
 
   const callback = () => {
     setState("ok");
-    setSnackOpen(true);
-
     setTimeout(() => {
       navigate("/simulations");
     }, 2000);
@@ -103,11 +81,7 @@ function OrcaFormikForm(props: {
 
   const errorCallback = () => {
     setState("error");
-    setSnackOpen(true);
   };
-
-  const errorMessage = "Error Submitting Job!";
-  const successMessage = "Successfully submitted job!";
 
   const mutation = useMutation({
     mutationFn: postOrca,
@@ -126,20 +100,6 @@ function OrcaFormikForm(props: {
 
   return (
     <Box>
-      <Snackbar
-        open={snackOpen}
-        autoHideDuration={2000}
-        onClose={handleSnackClose}
-      >
-        <Alert
-          onClose={handleSnackClose}
-          severity={state == "ok" ? "success" : "error"}
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          {state == "ok" ? successMessage : errorMessage}
-        </Alert>
-      </Snackbar>
       <Formik
         initialValues={initialValues}
         validate={(values) => {
