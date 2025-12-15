@@ -21,8 +21,6 @@ export default function StateIconButton(props: StateIconButtonProps) {
   const { state, resetState, ...buttonProps } = props;
   const [snackOpen, setSnackOpen] = useState(false);
 
-  console.log(state);
-
   const handleSnackClose = (
     _event?: React.SyntheticEvent | Event,
     reason?: SnackbarCloseReason
