@@ -1,17 +1,12 @@
-import {
-  Box,
-  Button,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Stack, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { getOrcaXyz } from "../../queryfunctions";
 import { MolStarMoleculeWrapper } from "../MolstarMoleculeViewer";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { cleanOrcaXYZ } from "../../utils";
-import { useState } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
+import useStateIconButton from "../useStateIconButton";
 
 function getCopyIcon(state: string) {
   if (state == "ok") {
@@ -29,9 +24,7 @@ export default function OrcaXYZViewer(props: { id: number }) {
     queryFn: () => getOrcaXyz(props.id),
   });
 
-  const [copyState, setCopyState] = useState<"default" | "ok" | "failed">(
-    "default"
-  );
+  const { state, setState, resetState } = useStateIconButton();
 
   const handleCopy = async () => {
     try {
@@ -42,12 +35,12 @@ export default function OrcaXYZViewer(props: { id: number }) {
       const xyz = cleanOrcaXYZ(query.data);
 
       await navigator.clipboard.writeText(xyz);
-      setCopyState("ok");
-      setTimeout(() => setCopyState("default"), 2000);
+      setState("ok");
+      setTimeout(() => resetState, 2000);
     } catch (err) {
       console.error("Failed to copy text: ", err);
-      setCopyState("failed");
-      setTimeout(() => setCopyState("default"), 2000);
+      setState("error");
+      setTimeout(() => resetState, 2000);
     }
   };
 
@@ -55,7 +48,7 @@ export default function OrcaXYZViewer(props: { id: number }) {
     <Stack direction={"row"} overflow="hidden" spacing="10px">
       <Stack spacing="10px">
         <Button variant="contained" onClick={handleCopy}>
-          {getCopyIcon(copyState)}
+          {getCopyIcon(state)}
         </Button>
         <Box overflow="auto" sx={{ flex: 1 }}>
           <Typography

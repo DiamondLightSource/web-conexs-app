@@ -4,17 +4,12 @@ import { useState } from "react";
 import MatProjCrystalViewer from "./MatProjCrystalViewer";
 import MatProjGuide from "./MatProjGuide";
 import StructureIDComponent from "./StructureIDComponent";
+import useStateIconButton from "../useStateIconButton";
 
 export default function MatProjPage() {
   const [mpid, setMpid] = useState<string | null>(null);
   const [disabled, setDisabled] = useState(false);
-  const [state, setState] = useState<"ok" | "running" | "error" | "default">(
-    "default"
-  );
-
-  const resetState = () => {
-    setState("default");
-  };
+  const { state, setState, resetState } = useStateIconButton();
 
   return (
     <MainPanel

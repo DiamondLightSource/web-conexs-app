@@ -1,15 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getCrystals, postQe } from "../../queryfunctions";
 import {
-  Alert,
   Box,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   SelectChangeEvent,
-  Snackbar,
-  SnackbarCloseReason,
   Stack,
   Typography,
 } from "@mui/material";
@@ -19,6 +16,7 @@ import { ReactNode, useEffect, useState } from "react";
 import { Formik, useFormikContext } from "formik";
 import StateIconButton from "../StateIconButton";
 import PublishIcon from "@mui/icons-material/Publish";
+import useStateIconButton from "../useStateIconButton";
 
 interface ChemicalStructureInfo {
   const: number;
@@ -70,25 +68,7 @@ function QEFormikForm(props: {
     setStructureId(structId);
   }, [structId, setStructureId]);
 
-  const [state, setState] = useState<"ok" | "running" | "error" | "default">(
-    "default"
-  );
-  const [snackOpen, setSnackOpen] = useState(false);
-
-  const handleSnackClose = (
-    _event?: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
-  ) => {
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setSnackOpen(false);
-  };
-
-  const resetState = () => {
-    setState("default");
-  };
+  const { state, setState, resetState } = useStateIconButton();
 
   const mutation = useMutation({
     mutationFn: postQe,
@@ -105,7 +85,6 @@ function QEFormikForm(props: {
   const queryClient = useQueryClient();
   const callback = () => {
     setState("ok");
-    setSnackOpen(true);
 
     setTimeout(() => {
       navigate("/simulations");
@@ -114,28 +93,10 @@ function QEFormikForm(props: {
 
   const errorCallback = () => {
     setState("error");
-    setSnackOpen(true);
   };
-
-  const errorMessage = "Error Submitting Job!";
-  const successMessage = "Successfully submitted job!";
 
   return (
     <Box>
-      <Snackbar
-        open={snackOpen}
-        autoHideDuration={4000}
-        onClose={handleSnackClose}
-      >
-        <Alert
-          onClose={handleSnackClose}
-          severity={state == "ok" ? "success" : "error"}
-          variant="filled"
-          sx={{ width: "100%" }}
-        >
-          {state == "ok" ? successMessage : errorMessage}
-        </Alert>
-      </Snackbar>
       <Formik
         initialValues={initialValues}
         onSubmit={(values, { setSubmitting }) => {
