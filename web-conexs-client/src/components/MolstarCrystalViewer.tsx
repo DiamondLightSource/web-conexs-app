@@ -59,6 +59,8 @@ export function MolStarCrystalWrapper(props: {
             name: "ball-and-stick",
             params: {
               size: "physical",
+              celShaded: false,
+              ignoreLight: false,
             },
           },
           colorTheme: {
@@ -104,17 +106,16 @@ export function MolStarCrystalWrapper(props: {
   }, [viewerDiv, props.cif, props.labelledAtomIndex]);
 
   return (
-    <Box position="relative" display="flex" flexGrow={5} h="100%" w="100%">
-      <Box
-        style={{
-          height: "100%",
-          width: "100%",
-          position: "relative",
-          minHeight: "250px",
-          minWidth: "250px",
-        }}
-        ref={viewerDiv}
-      ></Box>
-    </Box>
+    <Box
+      style={{
+        height: "100%",
+        width: "100%",
+        position: "relative",
+        minHeight: "250px",
+        minWidth: "250px",
+        flex: 1,
+      }}
+      ref={viewerDiv}
+    ></Box>
   );
 }

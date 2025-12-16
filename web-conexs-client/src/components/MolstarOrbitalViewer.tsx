@@ -107,6 +107,8 @@ export function MolStarOrbitalWrapper(props: {
             name: "element-symbol",
             params: {
               carbonColor: { name: "element-symbol", params: {} },
+              celShaded: false,
+              ignoreLight: false,
             },
           },
           sizeTheme: { name: "physical", params: {} },
@@ -133,17 +135,16 @@ export function MolStarOrbitalWrapper(props: {
   }, [viewerDiv, props.cube, props.isoValue]);
 
   return (
-    <Box position="relative" display="flex" flexGrow={5} h="100%" w="100%">
-      <Box
-        style={{
-          height: "100%",
-          width: "100%",
-          position: "relative",
-          minHeight: "250px",
-          minWidth: "250px",
-        }}
-        ref={viewerDiv}
-      ></Box>
-    </Box>
+    <Box
+      style={{
+        height: "100%",
+        width: "100%",
+        position: "relative",
+        minHeight: "250px",
+        minWidth: "250px",
+        flex: 1,
+      }}
+      ref={viewerDiv}
+    ></Box>
   );
 }

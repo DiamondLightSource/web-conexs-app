@@ -26,6 +26,7 @@ interface ChemicalStructureInfo {
 
 export default function QEForm(props: {
   setStructureId: (id: number) => void;
+  setSelectedAtom: (id: number) => void;
 }) {
   const query = useQuery({
     queryKey: ["crystals"],
@@ -50,6 +51,7 @@ export default function QEForm(props: {
     <QEFormikForm
       structures={output}
       setStructureId={props.setStructureId}
+      setSelectedAtom={props.setSelectedAtom}
     ></QEFormikForm>
   );
 }
@@ -57,6 +59,7 @@ export default function QEForm(props: {
 function QEFormikForm(props: {
   structures: ChemicalStructureInfo[];
   setStructureId: (id: number) => void;
+  setSelectedAtom: (id: number) => void;
 }) {
   const setStructureId = props.setStructureId;
   const structId = props.structures[0].const;
@@ -120,6 +123,7 @@ function QEFormikForm(props: {
             structures={props.structures}
             state={state}
             resetState={resetState}
+            setSelectedAtom={props.setSelectedAtom}
           ></QEInnerForm>
         )}
       </Formik>
@@ -136,6 +140,7 @@ function QEInnerForm(props: {
   structures: ChemicalStructureInfo[];
   resetState: () => void;
   state: "ok" | "running" | "error" | "default";
+  setSelectedAtom: (id: number) => void;
 }) {
   const { values, handleChange, handleSubmit, isSubmitting } = { ...props };
   const edges: string[] = ["k", "l1", "l2", "l23"];
@@ -157,6 +162,7 @@ function QEInnerForm(props: {
             onChange={(e) => {
               handleChange(e);
               props.setStructureId(e.target.value as number);
+              props.setSelectedAtom(0);
             }}
           >
             {props.structures.map((b, i) => (
@@ -171,7 +177,10 @@ function QEInnerForm(props: {
             structures={props.structures}
             selectedStructure={values.chemical_structure_id}
             selectedAtom={values.absorbing_atom}
-            handleChange={handleChange}
+            handleChange={(e) => {
+              props.setSelectedAtom((e.target.value as number) - 1);
+              handleChange(e);
+            }}
           ></DependentSelect>
           <FormControl fullWidth>
             <InputLabel id="select-basis-set">Edge</InputLabel>
@@ -250,9 +259,21 @@ function DependentSelect(props: {
       });
 
       setAtoms(oneOfAtoms);
-      setFieldValue("absorbing_atom", oneOfAtoms[0].const);
+
+      const isValidElement =
+        oneOfAtoms.find((e) => {
+          return props.selectedAtom == e.const;
+        }) != undefined;
+
+      const atom_index = isValidElement ? props.selectedAtom - 1 : 0;
+      setFieldValue("absorbing_atom", oneOfAtoms[atom_index].const);
     }
-  }, [props.structures, props.selectedStructure, setFieldValue]);
+  }, [
+    props.structures,
+    props.selectedStructure,
+    setFieldValue,
+    props.selectedAtom,
+  ]);
 
   const isValidElement =
     atoms.find((e) => {
@@ -267,7 +288,7 @@ function DependentSelect(props: {
         id="absorbing_atom"
         name="absorbing_atom"
         type="number"
-        value={isValidElement ? props.selectedAtom : ""}
+        value={isValidElement ? props.selectedAtom : 0}
         label="Element"
         onChange={props.handleChange}
       >

@@ -7,6 +7,7 @@ import { useState } from "react";
 
 export default function QeSubmitPage() {
   const [structureId, setStructureId] = useState<undefined | number>(undefined);
+  const [selectedAtom, setSelectedAtom] = useState<number>(0);
 
   return (
     <MainPanel
@@ -18,17 +19,20 @@ export default function QeSubmitPage() {
         direction={{ sm: "column", md: "row" }}
         flex={1}
         spacing={"5px"}
-        align-content={"stretch"}
+        alignContent={"stretch"}
         margin={"10px"}
         overflow={"auto"}
       >
         <Stack flex={1} margin={"10px"} spacing="10px">
-          <Paper margin={"10px"} spacing="10px" elevation={16}>
+          <Paper margin={"10px"} spacing="10px" elevation={16} flex={1}>
             <Stack flex={1} margin={"10px"} spacing="10px">
-              <QEForm setStructureId={setStructureId}></QEForm>
+              <QEForm
+                setStructureId={setStructureId}
+                setSelectedAtom={setSelectedAtom}
+              ></QEForm>
             </Stack>
           </Paper>
-          <StructureViewer id={structureId} />
+          <StructureViewer id={structureId} labelledAtomIndex={selectedAtom} />
         </Stack>
 
         <QEGuide />
