@@ -26,7 +26,7 @@ export default function StructureViewer(props: {
   }
 
   return (
-    <Box width={"100%"} height={"100%"}>
+    <Box width={"100%"} height={"100%"} flex={1} layout={"flex"}>
       {molecule ? (
         <MolStarMoleculeWrapper xyz={xyzData} />
       ) : (

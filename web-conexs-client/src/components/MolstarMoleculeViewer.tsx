@@ -3,6 +3,7 @@ import { DefaultPluginSpec, PluginSpec } from "molstar/lib/mol-plugin/spec";
 import { PluginContext } from "molstar/lib/mol-plugin/context";
 import { PluginConfig } from "molstar/lib/mol-plugin/config";
 import { StructureRepresentation3D } from "molstar/lib/mol-plugin-state/transforms/representation";
+import { Box } from "@mui/material";
 
 const Default3DSpec: PluginSpec = {
   ...DefaultPluginSpec(),
@@ -48,6 +49,8 @@ export function MolStarMoleculeWrapper(props: {
             name: "ball-and-stick",
             params: {
               size: "physical",
+              celShaded: false,
+              ignoreLight: false,
             },
           },
           colorTheme: {
@@ -77,15 +80,16 @@ export function MolStarMoleculeWrapper(props: {
   }, [viewerDiv, props.xyz]);
 
   return (
-    <div
-      ref={viewerDiv}
+    <Box
       style={{
         height: "100%",
         width: "100%",
         position: "relative",
         minHeight: "250px",
         minWidth: "250px",
+        flex: 1,
       }}
-    />
+      ref={viewerDiv}
+    ></Box>
   );
 }

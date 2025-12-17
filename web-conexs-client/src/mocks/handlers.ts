@@ -35,8 +35,32 @@ const mockCrystalStructure: Crystal = {
   ],
 };
 
+const mockCrystalStructure2: Crystal = {
+  id: 4,
+  lattice: {
+    a: 4.1043564,
+    b: 4.1043564,
+    c: 4.1043564,
+    alpha: 90,
+    beta: 90,
+    gamma: 90,
+  },
+  label: "test",
+  sites: [
+    { element_z: 47, x: 0.0, y: 0.0, z: 0.0, index: 1 },
+    { element_z: 47, x: 0.5, y: 0.5, z: 0.0, index: 2 },
+  ],
+};
+
 const mockCrystal: Structure = {
   id: 1,
+  label: "test",
+  person_id: 1,
+  lattice_id: 1,
+};
+
+const mockCrystal2: Structure = {
+  id: 4,
   label: "test",
   person_id: 1,
   lattice_id: 1,
@@ -46,6 +70,12 @@ const mockCrysWithMetadata: StructureWithMetadata = {
   atom_count: 4,
   elements: [47],
   structure: mockCrystal,
+};
+
+const mockCrysWithMetadata2: StructureWithMetadata = {
+  atom_count: 2,
+  elements: [47],
+  structure: mockCrystal2,
 };
 
 const mockMoleculeStructure: Molecule = {
@@ -238,7 +268,7 @@ export const handlers = [
     // return new HttpResponse(null, { status: 401 });
 
     if (type == "crystal") {
-      return HttpResponse.json([mockCrysWithMetadata]);
+      return HttpResponse.json([mockCrysWithMetadata, mockCrysWithMetadata2]);
     } else {
       return HttpResponse.json([mockMoleWithMetadata, mockMoleWithMetadata2]);
     }
@@ -249,6 +279,8 @@ export const handlers = [
 
     if (id == "1") {
       return HttpResponse.json(mockCrystalStructure);
+    } else if (id == "4") {
+      return HttpResponse.json(mockCrystalStructure2);
     } else if (id == "2") {
       return HttpResponse.json(mockMoleculeStructure);
     }
