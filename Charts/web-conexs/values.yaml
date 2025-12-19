@@ -76,6 +76,7 @@ database:
   dbname: webconexsdb
   protocol: "postgresql+psycopg2"
   passwordSecretName: application-passwords
+  host: ""
 
 auth:
   userInfoEndpoint: ""

@@ -13,6 +13,8 @@ spec:
       labels:
         app: {{ include "web-conexs.fullname" . }}-client
     spec:
+      securityContext:
+        runAsUser: 1000
       containers:
         - name: {{ include "web-conexs.fullname" . }}-client
           image: "{{ .Values.client.deployment.image.repository }}:{{ .Values.client.deployment.image.tag | default .Chart.AppVersion }}"
