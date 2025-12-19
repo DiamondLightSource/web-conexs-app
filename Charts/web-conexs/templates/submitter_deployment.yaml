@@ -45,7 +45,7 @@ spec:
                     name: {{.Values.database.passwordSecretName}}
                     key: passwords
               - name: POSTGRESURL
-                value: {{ .Values.database.protocol }}://{{ .Values.database.username }}:$(POSTGRESS_PASSWORD)@{{.Release.Name}}-postgresql.{{.Release.Namespace}}.svc.cluster.local/{{ .Values.database.dbname }}
+                value: {{ .Values.database.protocol }}://{{ .Values.database.username }}:$(POSTGRESS_PASSWORD)@{{.Values.database.host | default (printf "%s-postgresql.%s.svc.cluster.local" .Release.Name .Release.Namespace)}}/{{ .Values.database.dbname }}
               - name: ORCA_IMAGE
                 value: {{ .Values.submitter.singularity.orca }}
               - name: FDMNES_IMAGE

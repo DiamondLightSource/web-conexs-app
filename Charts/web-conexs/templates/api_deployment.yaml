@@ -13,6 +13,8 @@ spec:
       labels:
         app: {{ include "web-conexs.fullname" . }}-api
     spec:
+      securityContext:
+        runAsUser: 1000
       volumes:
         - name: data-pv-volume
           persistentVolumeClaim:
@@ -36,7 +38,7 @@ spec:
                   name: {{.Values.database.passwordSecretName}}
                   key: passwords
             - name: POSTGRESURL
-              value: {{ .Values.database.protocol }}://{{ .Values.database.username }}:$(POSTGRESS_PASSWORD)@{{.Release.Name}}-postgresql.{{.Release.Namespace}}.svc.cluster.local/{{ .Values.database.dbname }}
+              value: {{ .Values.database.protocol }}://{{ .Values.database.username }}:$(POSTGRESS_PASSWORD)@{{.Values.database.host | default (printf "%s-postgresql.%s.svc.cluster.local" .Release.Name .Release.Namespace)}}/{{ .Values.database.dbname }}
             - name: OIDC_USER_INFO_ENDPOINT
               value: {{ .Values.auth.userInfoEndpoint}}
             - name: OIDC_ID_KEY
