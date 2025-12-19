@@ -19,6 +19,8 @@ spec:
         - name: data-pv-volume
           persistentVolumeClaim:
             claimName: data-pv-claim
+        - emptyDir: {}
+          name: tmp
       containers:
         - name: {{ include "web-conexs.fullname" . }}-api
           image:  "{{ .Values.api.deployment.image.repository }}:{{ .Values.api.deployment.image.tag | default .Chart.AppVersion }}"
@@ -55,6 +57,8 @@ spec:
               value: {{ .Values.api.authz.key}}
             - name: LDAP_ATTR_VALUE
               value: {{ .Values.api.authz.value}}
+            - name: MPLCONFIGDIR
+              value: /tmp
             - name: PMG_MAPI_KEY
               valueFrom:
                 secretKeyRef:

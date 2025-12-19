@@ -19,7 +19,7 @@ RUN pnpm vite build
 From docker.io/nginxinc/nginx-unprivileged:alpine3.21-slim as host
 
 COPY --from=build-web /client/dist/ /usr/share/nginx/html
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./nginx/default.conf /etc/nginx/nginx.conf
 
 EXPOSE 8081
 ENTRYPOINT ["nginx","-g", "daemon off;"]
