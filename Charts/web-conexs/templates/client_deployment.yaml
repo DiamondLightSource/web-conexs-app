@@ -22,5 +22,11 @@ spec:
             {{- toYaml .Values.api.resources | nindent 12 }}
           ports:
             - name: http
-              containerPort: 80
+              containerPort: 8081
+          volumeMounts:
+            - mountPath: /tmp
+              name: tmp
+      volumes:
+        - emptyDir: {}
+          name: tmp
 {{- end }}
