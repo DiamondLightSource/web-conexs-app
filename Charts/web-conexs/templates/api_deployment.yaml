@@ -33,6 +33,8 @@ spec:
           volumeMounts:
             - mountPath: {{ .Values.data.mountPath}}
               name: data-pv-volume
+            - mountPath: /tmp
+              name: tmp
           env:
             - name: POSTGRESS_PASSWORD
               valueFrom:

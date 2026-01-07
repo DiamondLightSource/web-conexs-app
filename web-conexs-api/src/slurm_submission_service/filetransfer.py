@@ -72,8 +72,10 @@ def transfer_results(simulation_type_id, result_dir, storage_dir):
 
     if not parent.exists:
         parent.mkdir()
+        os.chmod(parent, 0o755)
 
     shutil.copytree(result_dir, storage_dir, ignore=ignore_pattern, dirs_exist_ok=True)
+    os.chmod(storage_dir, 0o755)
 
 
 def clean_up(directory):
