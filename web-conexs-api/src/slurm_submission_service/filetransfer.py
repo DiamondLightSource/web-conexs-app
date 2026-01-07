@@ -68,14 +68,22 @@ def transfer_results(simulation_type_id, result_dir, storage_dir):
         ignore_files = ["*.UPF", "*.wfc", "xanes.sav"]
         ignore_pattern = shutil.ignore_patterns(*ignore_files)
 
-    parent = Path(storage_dir).parent
+    store_path = Path(storage_dir)
+    parent = store_path.parent
 
     if not parent.exists:
-        parent.mkdir()
-        os.chmod(parent, 0o755)
+        parent.mkdir(mode=0o755)
 
-    shutil.copytree(result_dir, storage_dir, ignore=ignore_pattern, dirs_exist_ok=True)
-    os.chmod(storage_dir, 0o755)
+    if not store_path.exists:
+        store_path.mkdir(mode=0o755)
+
+    shutil.copytree(
+        result_dir,
+        storage_dir,
+        ignore=ignore_pattern,
+        dirs_exist_ok=True,
+        copy_function=shutil.copy,
+    )
 
 
 def clean_up(directory):
