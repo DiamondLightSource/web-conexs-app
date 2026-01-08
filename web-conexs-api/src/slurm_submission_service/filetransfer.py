@@ -82,7 +82,7 @@ def transfer_results(simulation_type_id, result_dir, storage_dir):
         storage_dir,
         ignore=ignore_pattern,
         dirs_exist_ok=True,
-        copy_function=shutil.copy,
+        copy_function=shutil.copyfile,
     )
 
 
