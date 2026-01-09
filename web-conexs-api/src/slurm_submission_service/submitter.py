@@ -46,6 +46,8 @@ def run_update():
 
 
 def main():
+    os.umask(0o007)
+
     rootlogger = logging.getLogger()
     formatter = logging.Formatter(
         "%(asctime)s - %(levelname)s - %(name)s - %(message)s",
