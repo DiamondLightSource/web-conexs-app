@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from slurm_submission_service.filetransfer import (
@@ -5,7 +6,6 @@ from slurm_submission_service.filetransfer import (
     clean_up,
     copy_directory,
     copy_multiple_files,
-    make_directory,
     transfer_inputs,
     transfer_results,
 )
@@ -16,13 +16,6 @@ def test_check_filesystem(tmp_path: Path):
     d.mkdir()
     check_filesystem(str(d))
     assert True
-
-
-def test_make_directory(tmp_path: Path):
-    d = tmp_path / "test_dir"
-    assert not d.exists()
-    make_directory(str(d))
-    assert d.exists()
 
 
 def test_copy_dir_file(tmp_path: Path):
@@ -48,6 +41,7 @@ def test_copy_dir_file(tmp_path: Path):
 
 
 def test_transfer_inputs(tmp_path: Path):
+    os.umask(0o007)
     job_text = "job"
     filename = "job.inp"
     file_map = {}
@@ -58,17 +52,24 @@ def test_transfer_inputs(tmp_path: Path):
 
     output = d / filename
 
+    mode = oct(os.stat(d).st_mode)
+
+    assert mode[-3:] == "770"
+
     assert output.exists()
 
     assert output.read_text() == job_text
 
 
 def test_transfer_results(tmp_path: Path):
+    os.umask(0o007)
     job_text = "job"
     filename = "job.inp"
     bad_file = "test.gbw"
     s = tmp_path / "source"
     s.mkdir()
+    os.chmod(s, 0o770)
+
     p = s / filename
     p.write_text("job")
 
@@ -76,10 +77,14 @@ def test_transfer_results(tmp_path: Path):
     b.touch()
 
     orca = tmp_path / "orca"
-    orca.mkdir()
 
     transfer_results(1, str(s), str(orca))
 
+    print(oct(os.stat(orca).st_mode))
+
+    mode = oct(os.stat(orca).st_mode)
+
+    assert mode[-3:] == "770"
     print([str(x) for x in s.iterdir()])
     print([str(x) for x in orca.iterdir()])
 

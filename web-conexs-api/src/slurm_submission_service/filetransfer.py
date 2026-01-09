@@ -2,7 +2,6 @@ import glob
 import logging
 import os
 import shutil
-import tempfile
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -11,11 +10,6 @@ logger = logging.getLogger(__name__)
 def check_filesystem(path):
     logger.info(f"Attempting to stat {path}")
     Path(path).stat()
-
-
-def make_directory(path):
-    logger.info(f"Attempting to make directory {path}")
-    Path(path).mkdir(parents=True)
 
 
 def copy_directory(source, destination):
@@ -35,14 +29,19 @@ def copy_multiple_files(abs_paths: list[str], destination):
         shutil.copy(p, destination)
 
 
-def transfer_inputs(file_map: dict[str, str], final_dir):
-    with tempfile.TemporaryDirectory() as tmpdirname:
-        for k, v in file_map.items():
-            input_file = tmpdirname + "/" + k
-            with open(input_file, "w+") as f:
-                f.write(v)
+def transfer_inputs(file_map: dict[str, str], destination):
+    dest = Path(destination)
+    parent = dest.parent
 
-        return copy_directory(tmpdirname, final_dir)
+    if not parent.exists:
+        parent.mkdir()
+
+    dest.mkdir()
+
+    for k, v in file_map.items():
+        input_file = dest / k
+        with open(input_file, "w+") as f:
+            f.write(v)
 
 
 def transfer_results(simulation_type_id, result_dir, storage_dir):
@@ -72,17 +71,16 @@ def transfer_results(simulation_type_id, result_dir, storage_dir):
     parent = store_path.parent
 
     if not parent.exists:
-        parent.mkdir(mode=0o755)
+        parent.mkdir()
 
     if not store_path.exists:
-        store_path.mkdir(mode=0o755)
+        store_path.mkdir()
 
     shutil.copytree(
         result_dir,
         storage_dir,
         ignore=ignore_pattern,
         dirs_exist_ok=True,
-        copy_function=shutil.copyfile,
     )
 
 
