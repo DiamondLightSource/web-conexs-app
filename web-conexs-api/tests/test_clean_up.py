@@ -67,16 +67,22 @@ def test_clean_up_database(tmp_path: Path, monkeypatch):
         # database.engine = engine
         monkeypatch.setattr("data_clean_up.clean_up_storage.get_session", get_session)
 
-        build_test_database(session, working_dir_list=[str(s1), str(s2), str(s3)])
+        wd1 = str(s1.name)
+        wd2 = str(s2.name)
+        wd3 = str(s3.name)
+
+        build_test_database(session, working_dir_list=[wd1, wd2, wd3])
 
         del_date = datetime.now() - timedelta(days=30)
         del_stamp = del_date.timestamp()
 
-        statement = select(Simulation).where(Simulation.working_directory == str(s3))
+        statement = select(Simulation).where(Simulation.working_directory == wd3)
         sim = session.exec(statement).first()
 
+        assert sim is not None
+
         assert sim.status == SimulationStatus.completed
-        assert sim.working_directory == str(s3)
+        assert sim.working_directory == wd3
 
         deleted = clean_up(tmp_path, del_stamp, dry_run=False)
 
@@ -95,9 +101,9 @@ def test_clean_up_database(tmp_path: Path, monkeypatch):
         assert s.status == SimulationStatus.deleted
         assert s.working_directory is None
 
-        statement = select(Simulation).where(Simulation.working_directory == str(s1))
+        statement = select(Simulation).where(Simulation.working_directory == wd1)
         sim = session.exec(statement).first()
 
         assert sim is not None
         assert sim.status == SimulationStatus.completed
-        assert sim.working_directory == str(s1)
+        assert sim.working_directory == wd1

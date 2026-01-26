@@ -67,7 +67,7 @@ def build_test_database(session: Session, working_dir_list=[]):
     session.add(molecule)
 
     if len(working_dir_list) == 0:
-        working_dir_list.append("/test")
+        working_dir_list.append("test")
 
     for w in working_dir_list:
         orca_sim = create_sim(1, 1, w)
