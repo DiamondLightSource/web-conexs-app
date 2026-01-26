@@ -87,4 +87,4 @@ def remove_dir(directory: Path):
     logger.debug(f"Removing directory: {directory}")
     shutil.rmtree(directory)
     with contextmanager(get_session)() as session:
-        set_simulation_deleted(session, str(directory))
+        set_simulation_deleted(session, directory)
