@@ -25,6 +25,7 @@ import LoginPage from "./components/LoginPage";
 import MatProjPage from "./components/crystals/MatProjPage";
 import SimulationView from "./components/SimulationView";
 import AboutPage from "./components/AboutPage";
+import OrcaRegistrationPage from "./components/orca/OrcaRegistrationPage";
 
 const queryClient = new QueryClient();
 
@@ -99,7 +100,7 @@ function App() {
                 path="/orcaeula"
                 element={
                   <RequireAuth requireOrcaEULA={false}>
-                    <OrcaEulaPage />
+                    <OrcaRegistrationPage />
                   </RequireAuth>
                 }
               ></Route>

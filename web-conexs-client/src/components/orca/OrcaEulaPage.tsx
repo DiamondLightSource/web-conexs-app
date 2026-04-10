@@ -93,7 +93,7 @@ export default function OrcaEulaPage() {
                     disabled={submitting}
                     variant="contained"
                   >
-                    Submit Simulation
+                    Submit
                   </StateIconButton>
                   {/* <Button variant="contained" type="submit">
                     Submit

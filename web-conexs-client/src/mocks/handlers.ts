@@ -224,7 +224,7 @@ export const handlers = [
     if (auth && auth.startsWith("Bearer ")) {
       const user: Person = {
         identifier: auth.slice(7),
-        accepted_orca_eula: true,
+        accepted_orca_eula: false,
       };
       return HttpResponse.json(user);
     }
