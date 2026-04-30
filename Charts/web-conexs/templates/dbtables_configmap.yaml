@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: dbtables-configmap
+  name: {{.Values.global.db_init_name}}
 data:
   tables.sql: |-
 {{ .Files.Get "tables.sql" | indent 4 }}

@@ -1,4 +1,4 @@
-import { Typography, Stack } from "@mui/material";
+import { Typography, Stack, Divider } from "@mui/material";
 import { useState } from "react";
 import XYZFileViewer from "./XYZFileViewer";
 import { useQuery } from "@tanstack/react-query";
@@ -21,6 +21,10 @@ export default function MoleculePage() {
 
   let finalMolecule = null;
 
+  if (query.data && query.data.length != 0 && selectedMoleculeId == null) {
+    setSelectedMoleculeId(query.data[0].structure.id);
+  }
+
   if (query.data && query.data.length != 0 && selectedMoleculeId) {
     finalMolecule = query.data.find(
       (d) => d.structure.id == selectedMoleculeId
@@ -39,47 +43,45 @@ export default function MoleculePage() {
     <MainPanel
       toolbarElements={<Typography variant="h5">Molecules</Typography>}
     >
-      <Stack
-        direction={{ sm: "column", md: "row" }}
-        spacing={"20px"}
-        margin={"20px"}
-        overflow="auto"
-      >
-        <StructureTable
-          structures={query.data ? query.data : []}
-          selectedStructure={undefined}
-          setSelectedStructure={(data) => {
-            setSelectedMoleculeId(data?.structure.id);
-          }}
-        ></StructureTable>
-        <Stack spacing={"2px"}>
-          <XYZFileViewer id={finalMolecule?.structure.id} />
+      <Stack overflow="auto">
+        <Stack direction="row" padding={"1em"} spacing={"1em"}>
+          <NavButton
+            label="Create Molecule"
+            path={"/createmolecule"}
+            icon={<MoleculePlusIcon sx={{ ...icon_breakpoints }} />}
+            reload={false}
+          ></NavButton>
+          <NavButton
+            label="Submit ORCA"
+            path={"/orca"}
+            icon={<OrcaIcon sx={{ ...icon_breakpoints }} />}
+            reload={false}
+          ></NavButton>
+          <NavButton
+            label="Submit FDMNES"
+            path={"/fdmnesmolecule"}
+            icon={<FDMNESIcon sx={{ ...icon_breakpoints }} />}
+            reload={false}
+          ></NavButton>
         </Stack>
-        <Stack>
-          <StructureViewer id={finalMolecule?.structure.id}></StructureViewer>
-          <Stack
-            direction={{ md: "row", lg: "column", xl: "row" }}
-            padding={"1em"}
-            spacing={"1em"}
-          >
-            <NavButton
-              label="Create Molecule"
-              path={"/createmolecule"}
-              icon={<MoleculePlusIcon sx={{ ...icon_breakpoints }} />}
-              reload={false}
-            ></NavButton>
-            <NavButton
-              label="Submit ORCA"
-              path={"/orca"}
-              icon={<OrcaIcon sx={{ ...icon_breakpoints }} />}
-              reload={false}
-            ></NavButton>
-            <NavButton
-              label="Submit FDMNES"
-              path={"/fdmnesmolecule"}
-              icon={<FDMNESIcon sx={{ ...icon_breakpoints }} />}
-              reload={false}
-            ></NavButton>
+        <Divider />
+        <Stack
+          direction={{ sm: "column", md: "column", lg: "row" }}
+          spacing={"20px"}
+          margin={"20px"}
+        >
+          <StructureTable
+            structures={query.data ? query.data : []}
+            selectedStructure={undefined}
+            setSelectedStructure={(data) => {
+              setSelectedMoleculeId(data?.structure.id);
+            }}
+          ></StructureTable>
+          <Stack spacing={"2px"}>
+            <XYZFileViewer id={finalMolecule?.structure.id} />
+          </Stack>
+          <Stack>
+            <StructureViewer id={finalMolecule?.structure.id}></StructureViewer>
           </Stack>
         </Stack>
       </Stack>

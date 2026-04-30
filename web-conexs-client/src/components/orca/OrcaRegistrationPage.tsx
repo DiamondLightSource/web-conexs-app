@@ -43,7 +43,7 @@ export default function OrcaRegistrationPage() {
                   <Link href="mailto:conexs@diamond.ac.uk">
                     conexs@diamond.ac.uk
                   </Link>{" "}
-                  including your FedID in the forwared message and you will be
+                  including your FedID in the forwarded message and you will be
                   added to the ORCA users list.
                 </Typography>
               </Stack>

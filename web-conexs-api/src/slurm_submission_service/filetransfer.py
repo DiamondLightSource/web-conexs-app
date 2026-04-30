@@ -17,7 +17,7 @@ def copy_directory(source, destination):
 
     parent = Path(destination).parent
 
-    if not parent.exists:
+    if not parent.exists():
         parent.mkdir()
 
     shutil.copytree(source, destination)
@@ -33,7 +33,7 @@ def transfer_inputs(file_map: dict[str, str], destination):
     dest = Path(destination)
     parent = dest.parent
 
-    if not parent.exists:
+    if not parent.exists():
         parent.mkdir()
 
     dest.mkdir()
@@ -70,10 +70,10 @@ def transfer_results(simulation_type_id, result_dir, storage_dir):
     store_path = Path(storage_dir)
     parent = store_path.parent
 
-    if not parent.exists:
+    if not parent.exists():
         parent.mkdir()
 
-    if not store_path.exists:
+    if not store_path.exists():
         store_path.mkdir()
 
     shutil.copytree(
@@ -89,7 +89,8 @@ def clean_up(directory):
         "*.tmp",
         "*.cube",
         "*.UPF",
-        "*.wfc",
+        "*.wfc*",
+        ".save",
         "job.gbw",
         "job.scfp",
         "result_bav.txt",
@@ -100,7 +101,7 @@ def clean_up(directory):
     p = Path(directory)
 
     for r in remove:
-        for filepath in glob.glob(str(p / r)):
+        for filepath in glob.glob(str(p / r), include_hidden=True):
             try:
                 # Attempt to delete the file
                 os.remove(filepath)
