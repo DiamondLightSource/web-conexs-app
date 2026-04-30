@@ -12,13 +12,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SimulationReviewPage from "./components/SimulationReviewPage";
 import { UserProvider } from "./UserContext";
 
-import {
-  ThemeProvider,
-  DiamondTheme,
-  Footer,
-} from "@diamondlightsource/sci-react-ui";
+import { ThemeProvider, DiamondTheme } from "@diamondlightsource/sci-react-ui";
 import QeSubmitPage from "./components/qe/QESubmitPage";
-import OrcaEulaPage from "./components/orca/OrcaEulaPage";
 import RequireAuth from "./components/RequireAuth";
 import SideDrawer from "./components/SideDrawer";
 import LoginPage from "./components/LoginPage";
@@ -147,14 +142,6 @@ function App() {
               <Route path="/about" element={<AboutPage />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
-            <Footer
-              copyright="Diamond Light Source"
-              logo={undefined}
-              sx={{
-                zIndex: (theme) => theme.zIndex.drawer + 1,
-                height: "4rem",
-              }}
-            ></Footer>
           </Stack>
         </UserProvider>
       </QueryClientProvider>

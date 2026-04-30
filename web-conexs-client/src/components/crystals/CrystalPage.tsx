@@ -1,4 +1,4 @@
-import { Typography, Stack } from "@mui/material";
+import { Typography, Stack, Divider } from "@mui/material";
 
 import XYZCrystalFileViewer from "./XYZCrystalFileViewer";
 import { getCrystals } from "../../queryfunctions";
@@ -22,6 +22,10 @@ export default function CrystalPage() {
 
   let finalCrystal = null;
 
+  if (query.data && query.data.length != 0 && selectedCrystalId == null) {
+    setSelectedCrystalId(query.data[0].structure.id);
+  }
+
   if (query.data && query.data.length != 0 && selectedCrystalId) {
     finalCrystal = query.data.find((d) => d.structure.id == selectedCrystalId);
     if (finalCrystal == undefined) {
@@ -36,48 +40,47 @@ export default function CrystalPage() {
 
   return (
     <MainPanel toolbarElements={<Typography variant="h5">Crystals</Typography>}>
-      <Stack
-        direction={{ md: "column", lg: "row" }}
-        spacing={"10px"}
-        margin={"20px"}
-        overflow="auto"
-      >
-        <StructureTable
-          structures={query.data ? query.data : []}
-          selectedStructure={undefined}
-          setSelectedStructure={(data) => {
-            if (data) {
-              setSelectedCrystalId(data.structure.id);
-            }
-          }}
-        ></StructureTable>
+      <Stack overflow="auto">
+        <Stack direction="row" padding={"1em"} spacing={"1em"}>
+          <NavButton
+            label="Create Crystal"
+            path={"/createcrystal"}
+            icon={<GrainPlusIcon sx={{ ...icon_breakpoints }} />}
+            reload={false}
+          ></NavButton>
+          <NavButton
+            label="Submit FDMNES"
+            path={"/fdmnescrystal"}
+            icon={<FDMNESIcon sx={{ ...icon_breakpoints }} />}
+            reload={false}
+          ></NavButton>
+          <NavButton
+            label="Submit Quantum Espresso"
+            path={"/qe"}
+            icon={<QEIcon sx={{ ...icon_breakpoints }} />}
+            reload={false}
+          ></NavButton>
+        </Stack>
+        <Divider />
+        <Stack
+          direction={{ md: "column", lg: "row" }}
+          spacing={"10px"}
+          margin={"20px"}
+          overflow="auto"
+        >
+          <StructureTable
+            structures={query.data ? query.data : []}
+            selectedStructure={undefined}
+            setSelectedStructure={(data) => {
+              if (data) {
+                setSelectedCrystalId(data.structure.id);
+              }
+            }}
+          ></StructureTable>
 
-        <XYZCrystalFileViewer id={finalCrystal?.structure.id} />
-        <Stack>
-          <StructureViewer id={finalCrystal?.structure.id}></StructureViewer>
-          <Stack
-            direction={{ md: "row", lg: "column", xl: "row" }}
-            padding={"1em"}
-            spacing={"1em"}
-          >
-            <NavButton
-              label="Create Crystal"
-              path={"/createcrystal"}
-              icon={<GrainPlusIcon sx={{ ...icon_breakpoints }} />}
-              reload={false}
-            ></NavButton>
-            <NavButton
-              label="Submit FDMNES"
-              path={"/fdmnescrystal"}
-              icon={<FDMNESIcon sx={{ ...icon_breakpoints }} />}
-              reload={false}
-            ></NavButton>
-            <NavButton
-              label="Submit Quantum Espresso"
-              path={"/qe"}
-              icon={<QEIcon sx={{ ...icon_breakpoints }} />}
-              reload={false}
-            ></NavButton>
+          <XYZCrystalFileViewer id={finalCrystal?.structure.id} />
+          <Stack>
+            <StructureViewer id={finalCrystal?.structure.id}></StructureViewer>
           </Stack>
         </Stack>
       </Stack>

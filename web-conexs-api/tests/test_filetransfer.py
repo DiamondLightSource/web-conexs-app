@@ -26,12 +26,9 @@ def test_copy_dir_file(tmp_path: Path):
     p = s / filename
     p.write_text("job")
 
-    d = tmp_path / "destination"
+    d = tmp_path / "user" / "destination"
 
     copy_directory(str(s), str(d))
-
-    print([str(x) for x in s.iterdir()])
-    print([str(x) for x in d.iterdir()])
 
     output = d / filename
 
@@ -46,7 +43,7 @@ def test_transfer_inputs(tmp_path: Path):
     filename = "job.inp"
     file_map = {}
     file_map[filename] = job_text
-    d = tmp_path / "destination"
+    d = tmp_path / "user" / "destination"
 
     transfer_inputs(file_map, d)
 
@@ -134,6 +131,7 @@ def test_multiple_files(tmp_path: Path):
 def test_clean_dir(tmp_path: Path):
     filename = "job.inp"
     filename_tmp = "job.tmp"
+    filename_dotwfc = ".wfc10"
     s = tmp_path / "source"
     filename_opt = "job.opt"
     s.mkdir()
@@ -145,8 +143,12 @@ def test_clean_dir(tmp_path: Path):
     p_opt = s / filename_opt
     p_opt.write_text("tmp")
 
+    p_wfc = s / filename_dotwfc
+    p_wfc.write_text("tmp")
+
     clean_up(str(s))
 
     assert p.exists()
     assert not p_tmp.exists()
     assert not p_opt.exists()
+    assert not p_wfc.exists()

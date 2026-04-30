@@ -17,7 +17,7 @@ def create_results_zip(working_directory: str, simulation_type_id: int) -> Bytes
             "job.inp",
             "*.out",
             "*.xyz",
-            "*.gzip",
+            "*.gz",
             "*.json",
         ]
     elif simulation_type_id == 2:

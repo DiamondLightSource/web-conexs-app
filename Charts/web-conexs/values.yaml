@@ -4,6 +4,8 @@
 
 global:
   name: web-conexs
+  #must match custom-init-scripts-volume in postgres section
+  db_init_name: dbtables-configmap
   client:
     port: 8081
   api:

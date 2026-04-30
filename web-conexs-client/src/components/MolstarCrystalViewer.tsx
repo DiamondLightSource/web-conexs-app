@@ -91,7 +91,10 @@ export function MolStarCrystalWrapper(props: {
         });
         const selection = query(new QueryContext(struct));
         const loci = StructureSelection.toLociWithCurrentUnits(selection);
-        molstar.current.managers.interactivity.lociSelects.select({ loci });
+
+        molstar.current.managers.interactivity.lociSelects.select({
+          loci,
+        });
       }
     };
 
