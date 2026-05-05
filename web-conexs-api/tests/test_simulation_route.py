@@ -46,11 +46,11 @@ def test_router():
 
         assert jsonr["person_id"] == 1
 
-        response = client.patch("/api/simulations/1.status", headers=headers)
+        response = client.patch("/api/simulations/1/status", headers=headers)
 
         jsonr = response.json()
 
-        assert jsonr["person_id"] == 1
+        assert jsonr["id"] == 1
 
 
 def test_structures_route():
