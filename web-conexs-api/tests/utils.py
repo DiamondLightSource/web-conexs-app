@@ -1,30 +1,53 @@
 from datetime import datetime
+from typing import List
 
 from sqlmodel import Session
 
 from web_conexs_api.models.models import (
     ChemicalSite,
     ChemicalStructure,
+    MolecularStructureInput,
     OrcaSimulation,
     OrcaSimulationInput,
     Person,
     Simulation,
     SimulationStatus,
     SimulationType,
+    SiteBase,
 )
+
+
+def create_sites():
+    return [
+        ChemicalSite(element_z=1, x=0.7493682, y=0.0000000, z=0.4424329, index=0),
+        ChemicalSite(element_z=8, x=0.0000000, y=0.0000000, z=-0.1653507, index=0),
+        ChemicalSite(element_z=1, x=-0.7493682, y=0.0000000, z=0.4424329, index=0),
+    ]
+
+
+def create_base_sites() -> List[SiteBase]:
+    bs = [
+        SiteBase(element_z=1, x=0.7493682, y=0.0000000, z=0.4424329, index=0),
+        SiteBase(element_z=8, x=0.0000000, y=0.0000000, z=-0.1653507, index=0),
+        SiteBase(element_z=1, x=-0.7493682, y=0.0000000, z=0.4424329, index=0),
+    ]
+    print(bs)
+    return bs
 
 
 def create_molecule(id: int):
     return ChemicalStructure(
         person_id=1,
         label="Water",
-        sites=[
-            ChemicalSite(element_z=1, x=0.7493682, y=0.0000000, z=0.4424329, index=0),
-            ChemicalSite(element_z=8, x=0.0000000, y=0.0000000, z=-0.1653507, index=0),
-            ChemicalSite(element_z=1, x=-0.7493682, y=0.0000000, z=0.4424329, index=0),
-        ],
+        sites=create_sites(),
         id=id,
     )
+
+
+def create_molecule_input() -> MolecularStructureInput:
+    msi = MolecularStructureInput(label="WaterInput", sites=create_base_sites())
+    print(msi)
+    return msi
 
 
 def create_sim(person_id: int, structure_id: int, working_dir: str):

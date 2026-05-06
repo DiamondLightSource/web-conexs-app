@@ -24,9 +24,7 @@ STORAGE_DIR = os.environ.get("CONEXS_STORAGE_DIR")
 
 SLURM_TOKEN = os.environ.get("SLURM_TOKEN")
 SLURM_TOKEN_FILE = os.environ.get("SLURM_TOKEN_FILE")
-SLURM_USER = os.environ.get("SLURM_USER")
-SLURM_API = os.environ.get("SLURM_API")
-SLURM_PARTITION = os.environ.get("SLURM_PARTITION")
+
 
 SLURM_RESPONSE_KEY = os.environ.get("SLURM_RESPONSE_KEY", "account")
 SLURM_TIME_LIMIT = os.environ.get("SLURM_TIME_LIMIT", "30")
@@ -46,10 +44,20 @@ def get_token():
         return fh.read()
 
 
+def get_slurm_config():
+    user = os.environ.get("SLURM_USER")
+    api = os.environ.get("SLURM_API")
+    partition = os.environ.get("SLURM_PARTITION")
+
+    return user, api, partition
+
+
 def build_job_and_run(script, job_name, cpus, memory, cluster_dir, as_tasks):
+    user, api, partition = get_slurm_config()
+
     job_request = {
         "job": {
-            "partition": SLURM_PARTITION,
+            "partition": partition,
             "name": job_name,
             "nodes": 1,
             "tasks": 1 if as_tasks else cpus,
@@ -58,7 +66,7 @@ def build_job_and_run(script, job_name, cpus, memory, cluster_dir, as_tasks):
             "current_working_directory": str(cluster_dir),
             "environment": {
                 "PATH": "/bin:/usr/bin/:/usr/local/bin/",
-                "USER": SLURM_USER,
+                "USER": user,
                 "LD_LIBRARY_PATH": "/lib/:/lib64/:/usr/local/lib",
             },
         },
@@ -72,12 +80,12 @@ def build_job_and_run(script, job_name, cpus, memory, cluster_dir, as_tasks):
 
     logger.debug(job_request)
 
-    url_submit = SLURM_API + "/job/submit"
+    url_submit = api + "/job/submit"
 
     slurm_token = get_token()
 
     headers = {
-        "X-SLURM-USER-NAME": SLURM_USER,
+        "X-SLURM-USER-NAME": user,
         "X-SLURM-USER-TOKEN": slurm_token,
         "Content-Type": "application/json",
     }
@@ -123,6 +131,8 @@ def submit_simulation(script, job_name, sim, user, session, as_tasks):
 
 
 def clean_request_cancelled(session):
+    user, api, partition = get_slurm_config()
+
     request_cancel = get_request_cancelled_simulations(session)
 
     for sim in request_cancel:
@@ -132,11 +142,11 @@ def clean_request_cancelled(session):
             sim.completion_date = datetime.datetime.now()
             update_simulation(session, sim)
         else:
-            url = SLURM_API + "/job/" + str(sim.job_id)
+            url = api + "/job/" + str(sim.job_id)
             slurm_token = get_token()
 
             headers = {
-                "X-SLURM-USER-NAME": SLURM_USER,
+                "X-SLURM-USER-NAME": user,
                 "X-SLURM-USER-TOKEN": slurm_token,
                 "Content-Type": "application/json",
             }
@@ -159,13 +169,15 @@ def clean_request_cancelled(session):
 
 
 def update_active_simulations(session):
+    user, api, partition = get_slurm_config()
+
     active = get_active_simulations(session)
 
     slurm_token = get_token()
 
-    url_jobs = SLURM_API + "/jobs"
+    url_jobs = api + "/jobs"
     headers = {
-        "X-SLURM-USER-NAME": SLURM_USER,
+        "X-SLURM-USER-NAME": user,
         "X-SLURM-USER-TOKEN": slurm_token,
         "Content-Type": "application/json",
     }
@@ -181,7 +193,7 @@ def update_active_simulations(session):
     job_map = {}
 
     for j in jobs:
-        if j[SLURM_RESPONSE_KEY] == SLURM_USER:
+        if j[SLURM_RESPONSE_KEY] == user:
             job_map[j["job_id"]] = {"state": j["job_state"][0]}
 
     if len(active) != 0:
