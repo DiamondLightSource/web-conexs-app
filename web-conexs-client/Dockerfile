@@ -12,7 +12,11 @@ RUN apt update
 
 COPY . .
 
+ENV CI true
+
 RUN yes | pnpm install --frozen-lockfile --prod
+
+RUN yes | pnpm install vite
 
 RUN pnpm vite build
 
