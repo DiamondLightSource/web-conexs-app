@@ -146,7 +146,7 @@ def build_orca_input_file(
             + ",-1,-1\n"
         )
 
-        jobfile += "doquad true" + "\n"
+        jobfile += "decomposefosc true" + "\n"
         jobfile += "nroots 20" + "\n"
         jobfile += "maxdim 10" + "\n"
         jobfile += "end" + "\n\n"
