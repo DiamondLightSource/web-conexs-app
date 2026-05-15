@@ -6,13 +6,13 @@ FROM node:23-bookworm-slim as build-web
 
 WORKDIR /client
 
-RUN yes | npm install -g pnpm
+RUN yes | npm install -g pnpm@10.32
 
 RUN apt update 
 
 COPY . .
 
-RUN yes | pnpm install
+RUN yes | pnpm install --frozen-lockfile --prod
 
 RUN pnpm vite build
 
