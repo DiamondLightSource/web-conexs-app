@@ -30,3 +30,8 @@ jobs:
       run: pnpm install --frozen-lockfile
     - name: Run test
       run: pnpm test
+
+    - name: Build Docker image
+      uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+      with:
+        context: ./web-conexs-client/
