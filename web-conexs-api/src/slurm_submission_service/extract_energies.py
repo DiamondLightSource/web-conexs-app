@@ -1,3 +1,12 @@
+def is_number(s):
+    try:
+        float(s)
+    except ValueError:
+        return False
+    else:
+        return True
+
+
 if __name__ == "__main__":
     try:
         with open("orca_result.txt", "r") as fh:
@@ -5,15 +14,23 @@ if __name__ == "__main__":
             xes = False
             energies = []
 
-            for line in fh.readlines():
-                if "COMBINED ELECTRIC DIPOLE" in line:
+            for line in fh:
+                if (
+                    "COMBINED ELECTRIC DIPOLE" in line
+                    or "EMISSION SPECTRUM VIA TRANSITION ELECTRIC DIPOLE" in line
+                ):
                     found = True
-                if "EMISSION" in line:
-                    xes = True
+                    # skip additional header lines
+                    next(fh)
+                    next(fh)
+                    next(fh)
+                    next(fh)
+                    continue
 
                 if found:
                     test = line.strip()
-                    if test == "":
+
+                    if test == "" or test.startswith("-"):
                         delta = (energies[-1] - energies[0]) * 0.1
                         min_val = energies[0] - delta
                         max_val = energies[-1] + delta
@@ -24,12 +41,9 @@ if __name__ == "__main__":
                         exit()
 
                     test = test.split()
-
-                    if test[0].isdigit():
-                        index = 1 if not xes else 4
+                    if is_number(test[3]):
+                        index = 3
                         val = float(test[index])
-                        if not xes:
-                            val = val / 8065.544
                         energies.append(val)
 
     except Exception as e:
