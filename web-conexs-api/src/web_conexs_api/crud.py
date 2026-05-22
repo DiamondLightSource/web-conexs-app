@@ -562,11 +562,11 @@ def get_orca_xas(session, id, user_id):
     if wd is None:
         raise HTTPException(status_code=404, detail="Item not found")
 
-    keywd = "absq" if orca_simulation.calculation_type == OrcaCalculation.xas else "xes"
+    kwd = "0.ABSQ" if orca_simulation.calculation_type == OrcaCalculation.xas else "XES"
 
-    result_file = wd + f"/orca_result.txt.{keywd}.dat"
+    result_file = wd + f"/orca_result.txt.{kwd}.dat"
 
-    result_stk = wd + f"/orca_result.txt.{keywd}.stk"
+    result_stk = wd + f"/orca_result.txt.{kwd}.stk"
 
     if not os.path.isfile(result_file):
         raise HTTPException(status_code=404, detail="Item not found")
@@ -574,6 +574,7 @@ def get_orca_xas(session, id, user_id):
     out = np.loadtxt(result_file)
     out_stk = np.loadtxt(result_stk)
 
+    # Make stk into plottable "sticks"
     stk_energy = np.zeros_like(out_stk[:, 0], shape=[out_stk[:, 0].shape[0] * 3])
     stk_energy[0::3] = out_stk[:, 0]
     stk_energy[1::3] = out_stk[:, 0]
