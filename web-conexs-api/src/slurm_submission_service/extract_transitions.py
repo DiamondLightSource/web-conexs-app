@@ -3,12 +3,13 @@ import os.path
 
 if __name__ == "__main__":
     try:
-        fname = "orca_result.txt.absq.stk"
+        fname = "orca_result.txt.0.ABSQ.stk"
 
         if not os.path.isfile(fname):
-            fname = "orca_result.txt.xes.stk"
+            fname = "orca_result.txt.XES.stk"
 
             if not os.path.isfile(fname):
+                print("Could not find results file!")
                 exit(1)
 
         with open(fname, "r") as fh:
@@ -35,16 +36,14 @@ if __name__ == "__main__":
                     }
                 )
 
-            print(data)
             with open("cube.json", "w") as jf:
                 json.dump(data, jf)
 
-            plot_file = f"4\n64\n5\n7\n6\ny\n{' '.join(indices)}\n11\n"
-            print(plot_file)
+            plot_file = f"4\n64\n5\n7\n6\ny\n{' '.join(indices)}\n12\n"
 
             with open("plot_file.input", "w") as ofh:
                 ofh.write(plot_file)
     except Exception as e:
-        print("Failed to create cube generation input file")
+        print("Failed to create cube generation input file!")
         print(e)
         exit(1)
