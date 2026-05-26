@@ -36,7 +36,7 @@ spec:
             - name: POSTGRESURL
               value: {{ .Values.database.protocol }}://{{ .Values.database.username }}:$(POSTGRESS_PASSWORD)@{{.Values.database.host | default (printf "%s-postgresql.%s.svc.cluster.local" .Release.Name .Release.Namespace)}}/{{ .Values.database.dbname }}
             - name: CONEXS_STORAGE_DAYS
-              value: {{ .Values.data.storageDays}}
+              value: {{ .Values.data.storageDays | quote }}
             - name: CONEXS_STORAGE_DIR
               value: {{ .Values.data.location}}
           restartPolicy: OnFailure
