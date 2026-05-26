@@ -2,7 +2,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: {{ include "web-conexs.fullname" . }}-cleanup-job
+  name: {{ include "web-conexs.name" . }}-cleanup-job
 spec:
   schedule: {{.Values.data.cleanupSchedule}}
   concurrencyPolicy: Forbid
@@ -11,11 +11,11 @@ spec:
       template:
         spec:
           volumes:
-          - name: data-pv-volume
+          - name: {{ include "web-conexs.name" . }}-data-volume
             persistentVolumeClaim:
-              claimName: data-pv-claim
+              claimName: {{ include "web-conexs.name" . }}-data-claim
           containers:
-          - name: {{ include "web-conexs.fullname" . }}-cleanup-job
+          - name: {{ include "web-conexs.name" . }}-cleanup-job
             image: "{{ .Values.api.deployment.image.repository }}:{{ .Values.api.deployment.image.tag | default .Chart.AppVersion }}"
             imagePullPolicy: IfNotPresent
             command:
@@ -26,7 +26,7 @@ spec:
                 memory: 300M
             volumeMounts:
               - mountPath: {{ .Values.data.mountPath}}
-                name: data-pv-volume
+                name: {{ include "web-conexs.name" . }}-data-volume
             env:
             - name: PGPASSWORD
               valueFrom:

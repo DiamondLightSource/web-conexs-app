@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "web-conexs.fullname" . }}-api-svc
+  name: {{ include "web-conexs.name" . }}-api-svc
 spec:
   ports:
     - name: http
@@ -10,6 +10,6 @@ spec:
       protocol: TCP
       targetPort: {{ .Values.api.service.targetPort }}
   selector:
-    app: {{ include "web-conexs.fullname" . }}-api
+    app: {{ include "web-conexs.name" . }}-api
   type: {{ .Values.api.service.type }}
 {{- end }}

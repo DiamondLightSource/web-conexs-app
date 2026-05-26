@@ -3,16 +3,16 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ include "web-conexs.fullname" . }}-submitter
+  name: {{ include "web-conexs.name" . }}-submitter
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "web-conexs.fullname" . }}-submitter
+      app: {{ include "web-conexs.name" . }}-submitter
   template:
     metadata:
       labels:
-        app: {{ include "web-conexs.fullname" . }}-submitter
+        app: {{ include "web-conexs.name" . }}-submitter
     spec:
       securityContext:
         {{- toYaml .Values.security.securityContext | nindent 8 }}
@@ -20,12 +20,12 @@ spec:
           - name: slurm-token-file
             secret:
               secretName: slurm-token
-          - name: data-pv-volume
+          - name: {{ include "web-conexs.name" . }}-data-volume
             persistentVolumeClaim:
-              claimName: data-pv-claim
+              claimName: {{ include "web-conexs.name" . }}-data-claim
           {{- toYaml .Values.submitter.extraVolumes | nindent 10 }}
       containers:
-          - name: {{ include "web-conexs.fullname" . }}-submitter
+          - name: {{ include "web-conexs.name" . }}-submitter
             image: "{{ .Values.api.deployment.image.repository }}:{{ .Values.api.deployment.image.tag | default .Chart.AppVersion }}"
             args: ["-m", "slurm_submission_service"]
             resources:
@@ -33,7 +33,7 @@ spec:
                 cpu: "1"
                 memory: 300M
             volumeMounts:
-              - name: data-pv-volume
+              - name: {{ include "web-conexs.name" . }}-data-volume
                 mountPath: {{ .Values.data.mountPath}}
               - name: slurm-token-file
                 mountPath: /var/conexs-token

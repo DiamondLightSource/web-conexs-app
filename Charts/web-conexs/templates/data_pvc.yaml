@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: data-pv-claim
+  name: {{ include "web-conexs.name" . }}-data-claim
   annotations:
     helm.sh/resource-policy: keep
 spec:
