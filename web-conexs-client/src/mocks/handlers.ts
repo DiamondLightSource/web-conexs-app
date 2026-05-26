@@ -224,7 +224,7 @@ export const handlers = [
     if (auth && auth.startsWith("Bearer ")) {
       const user: Person = {
         identifier: auth.slice(7),
-        accepted_orca_eula: false,
+        accepted_orca_eula: true,
       };
       return HttpResponse.json(user);
     }
@@ -266,6 +266,8 @@ export const handlers = [
     const type = url.searchParams.get("type");
 
     // return new HttpResponse(null, { status: 401 });
+
+    // return HttpResponse.json([]);
 
     if (type == "crystal") {
       return HttpResponse.json([mockCrysWithMetadata, mockCrysWithMetadata2]);

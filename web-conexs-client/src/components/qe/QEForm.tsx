@@ -17,6 +17,7 @@ import { Formik, useFormikContext } from "formik";
 import StateIconButton from "../StateIconButton";
 import PublishIcon from "@mui/icons-material/Publish";
 import useStateIconButton from "../useStateIconButton";
+import NoStructures from "../NoStructures";
 
 interface ChemicalStructureInfo {
   const: number;
@@ -38,7 +39,7 @@ export default function QEForm(props: {
   }
 
   if (query.data.length == 0) {
-    return <Typography>Make Crystals...</Typography>;
+    return <NoStructures isCrytal={true}></NoStructures>;
   }
 
   const output: ChemicalStructureInfo[] = query.data.map((m) => ({
