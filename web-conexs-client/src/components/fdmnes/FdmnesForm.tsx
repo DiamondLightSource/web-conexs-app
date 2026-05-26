@@ -18,6 +18,7 @@ import PublishIcon from "@mui/icons-material/Publish";
 import { periodic_table } from "../../periodictable";
 import { useNavigate } from "react-router-dom";
 import useStateIconButton from "../useStateIconButton";
+import NoStructures from "../NoStructures";
 
 interface ChemicalStructureInfo {
   const: number;
@@ -33,7 +34,7 @@ function DependentSelect(props: {
 }) {
   const { setFieldValue } = useFormikContext();
   const [elements, setElements] = useState<{ const: number; title: string }[]>(
-    []
+    [],
   );
 
   useEffect(() => {
@@ -99,11 +100,7 @@ export default function FdmnesForm(props: {
   }
 
   if (query.data.length == 0) {
-    return (
-      <Typography>
-        Make {props.isCrystal ? "Crystals" : "Molecules"}...
-      </Typography>
-    );
+    return <NoStructures isCrytal={props.isCrystal}></NoStructures>;
   }
 
   const output: ChemicalStructureInfo[] = query.data.map((m) => ({

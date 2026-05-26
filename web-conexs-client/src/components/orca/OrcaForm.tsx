@@ -17,6 +17,7 @@ import StateIconButton from "../StateIconButton";
 import { useEffect } from "react";
 import PublishIcon from "@mui/icons-material/Publish";
 import useStateIconButton from "../useStateIconButton";
+import NoStructures from "../NoStructures";
 interface ChemicalStructureInfo {
   const: number;
   title: string;
@@ -35,7 +36,7 @@ export default function OrcaForm(props: {
   }
 
   if (query.data.length == 0) {
-    return <Typography>Make Molecules...</Typography>;
+    return <NoStructures isCrytal={false}></NoStructures>;
   }
 
   const output: ChemicalStructureInfo[] = query.data.map((m) => ({
