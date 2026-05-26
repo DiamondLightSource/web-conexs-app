@@ -1,0 +1,43 @@
+{{- if .Values.platform.enabled}}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ include "web-conexs.fullname" . }}-cleanup-job
+spec:
+  schedule: {{.Values.data.cleanupSchedule}}
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          volumes:
+          - name: data-pv-volume
+            persistentVolumeClaim:
+              claimName: data-pv-claim
+          containers:
+          - name: {{ include "web-conexs.fullname" . }}-cleanup-job
+            image: "{{ .Values.api.deployment.image.repository }}:{{ .Values.api.deployment.image.tag | default .Chart.AppVersion }}"
+            imagePullPolicy: IfNotPresent
+            command:
+            - web-conexs-cleanup
+            resources:
+              limits:
+                cpu: "1"
+                memory: 300M
+            volumeMounts:
+              - mountPath: {{ .Values.data.mountPath}}
+                name: data-pv-volume
+            env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{.Values.database.passwordSecretName}}
+                  key: passwords
+            - name: POSTGRESURL
+              value: {{ .Values.database.protocol }}://{{ .Values.database.username }}:$(POSTGRESS_PASSWORD)@{{.Values.database.host | default (printf "%s-postgresql.%s.svc.cluster.local" .Release.Name .Release.Namespace)}}/{{ .Values.database.dbname }}
+            - name: CONEXS_STORAGE_DAYS
+              value: {{ .Values.data.storageDays | quote }}
+            - name: CONEXS_STORAGE_DIR
+              value: {{ .Values.data.location}}
+          restartPolicy: OnFailure
+{{- end }}

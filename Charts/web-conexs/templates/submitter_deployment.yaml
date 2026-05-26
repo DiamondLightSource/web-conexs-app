@@ -34,7 +34,7 @@ spec:
                 memory: 300M
             volumeMounts:
               - name: data-pv-volume
-                mountPath: "/conexs_data"
+                mountPath: {{ .Values.data.mountPath}}
               - name: slurm-token-file
                 mountPath: /var/conexs-token
               {{- toYaml .Values.submitter.extraVolumeMounts | nindent 14 }}

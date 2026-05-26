@@ -90,6 +90,8 @@ data:
   storage: 10Gi
   rootDir: ""
   clusterRootDir: ""
+  storageDays: "90"
+  cleanupSchedule: "0 3 * * *"
   # extraVolumes:
   #   - name: data-pv-volume
   #     persistentVolumeClaim:
