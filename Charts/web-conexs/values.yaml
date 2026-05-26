@@ -3,7 +3,6 @@
 # Declare variables to be passed into your templates.
 
 global:
-  name: web-conexs
   #must match custom-init-scripts-volume in postgres section
   db_init_name: dbtables-configmap
   client:
@@ -197,10 +196,10 @@ oauth2-proxy:
         upstreams:
           - id: api
             path: /api/
-            uri: http://{{ include "web-conexs.fullname" . }}-api-svc:{{.Values.global.api.port}}
+            uri: http://{{ include "web-conexs.name" . }}-api-svc:{{.Values.global.api.port}}
           - id: client
             path: /
-            uri: http://{{ include "web-conexs.fullname" . }}-client-svc:{{.Values.global.client.port}}
+            uri: http://{{ include "web-conexs.name" . }}-client-svc:{{.Values.global.client.port}}
     configData:
       providers: []
       injectRequestHeaders:

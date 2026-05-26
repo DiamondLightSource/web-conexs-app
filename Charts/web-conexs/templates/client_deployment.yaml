@@ -2,21 +2,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "web-conexs.fullname" . }}-client
+  name: {{ include "web-conexs.name" . }}-client
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: {{ include "web-conexs.fullname" . }}-client
+      app: {{ include "web-conexs.name" . }}-client
   template:
     metadata:
       labels:
-        app: {{ include "web-conexs.fullname" . }}-client
+        app: {{ include "web-conexs.name" . }}-client
     spec:
       securityContext:
         runAsUser: 1000
       containers:
-        - name: {{ include "web-conexs.fullname" . }}-client
+        - name: {{ include "web-conexs.name" . }}-client
           image: "{{ .Values.client.deployment.image.repository }}:{{ .Values.client.deployment.image.tag | default .Chart.AppVersion }}"
           resources:
             {{- toYaml .Values.api.resources | nindent 12 }}

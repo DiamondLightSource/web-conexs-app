@@ -2,29 +2,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "web-conexs.fullname" . }}-api
+  name: {{ include "web-conexs.name" . }}-api
 spec:
   replicas: {{ .Values.api.deployment.replicas }}
   selector:
     matchLabels:
-      app: {{ include "web-conexs.fullname" . }}-api
+      app: {{ include "web-conexs.name" . }}-api
   template:
     metadata:
       labels:
-        app: {{ include "web-conexs.fullname" . }}-api
+        app: {{ include "web-conexs.name" . }}-api
     spec:
       securityContext:
         runAsUser: 1000
         supplementalGroups:
           - {{.Values.security.securityContext.runAsGroup}}
       volumes:
-        - name: data-pv-volume
+        - name: {{ include "web-conexs.name" . }}-data-volume
           persistentVolumeClaim:
-            claimName: data-pv-claim
+            claimName: {{ include "web-conexs.name" . }}-data-claim
         - emptyDir: {}
           name: tmp
       containers:
-        - name: {{ include "web-conexs.fullname" . }}-api
+        - name: {{ include "web-conexs.name" . }}-api
           image:  "{{ .Values.api.deployment.image.repository }}:{{ .Values.api.deployment.image.tag | default .Chart.AppVersion }}"
           args: ["-m", "web_conexs_api"]
           resources:
@@ -34,7 +34,7 @@ spec:
               containerPort: {{ .Values.api.service.targetPort }}
           volumeMounts:
             - mountPath: {{ .Values.data.mountPath}}
-              name: data-pv-volume
+              name: {{ include "web-conexs.name" . }}-data-volume
             - mountPath: /tmp
               name: tmp
           env:
