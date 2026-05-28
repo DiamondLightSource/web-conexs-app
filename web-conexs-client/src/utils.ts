@@ -2,7 +2,6 @@ import { Crystal, CrystalInput, MoleculeInput, Site, Molecule } from "./models";
 import { elementMap, elementSet, periodic_table } from "./periodictable";
 
 export const TIMEOUT_TIME = 2000;
-export const TOAST_TIME = 1800;
 
 function sortSites(sites: Site[]) {
   const s = [...sites];
