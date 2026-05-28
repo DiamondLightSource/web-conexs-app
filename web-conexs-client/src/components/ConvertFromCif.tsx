@@ -1,13 +1,25 @@
-import { Button, Card, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  Card,
+  Checkbox,
+  FormControlLabel,
+  Stack,
+  Typography,
+} from "@mui/material";
 import VisuallyHiddenInput from "./VisuallyHiddenInput";
 import { useMutation } from "@tanstack/react-query";
-import { postConvertCrystal, postConvertMolecule } from "../queryfunctions";
+import {
+  postConvertCrystal,
+  postConvertMolecule,
+  postExtractMolecule,
+} from "../queryfunctions";
 import { CrystalInput, MoleculeInput } from "../models";
 import { useState } from "react";
 import GrainIcon from "./icons/GrainIcon";
 import MoleculeIcon from "./icons/MoleculeIcon";
 import useStateIconButton from "./useStateIconButton";
 import StateIconButton from "./StateIconButton";
+import { TIMEOUT_TIME } from "../utils";
 
 export default function ConvertFromCif(props: {
   isFractional: boolean;
@@ -18,19 +30,31 @@ export default function ConvertFromCif(props: {
 
   const { state, setState, resetState } = useStateIconButton();
   const [submitting, setSubmitting] = useState(false);
+  const [extractMolecule, setExtractMolecule] = useState(true);
+
+  const getMutation = () => {
+    if (props.isFractional) {
+      return postConvertCrystal;
+    } else if (extractMolecule) {
+      return postExtractMolecule;
+    } else {
+      return postConvertMolecule;
+    }
+  };
 
   const mutation = useMutation({
-    mutationFn: props.isFractional ? postConvertCrystal : postConvertMolecule,
+    mutationFn: getMutation(),
     onSuccess: (data) => {
       setSubmitting(false);
+      data.label = filename ? filename : "Convert from cif";
       props.setStructure(data);
       setState("ok");
-      setTimeout(() => resetState, 2000);
+      setTimeout(() => resetState, TIMEOUT_TIME);
     },
     onError: () => {
       setSubmitting(false);
       setState("error");
-      setTimeout(() => resetState, 2000);
+      setTimeout(() => resetState, TIMEOUT_TIME);
     },
   });
 
@@ -60,9 +84,20 @@ export default function ConvertFromCif(props: {
       <Stack margin="5px">
         <Typography variant="subtitle1">{title}</Typography>
         {!props.isFractional && (
-          <Typography variant="subtitle2" sx={{ fontStyle: "italic" }}>
-            Only suitable for molecular crystals
-          </Typography>
+          <Stack>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  defaultChecked
+                  onChange={() => setExtractMolecule(!extractMolecule)}
+                />
+              }
+              label="Extract Molecule"
+            />
+            <Typography variant="subtitle2" sx={{ fontStyle: "italic" }}>
+              Only suitable for molecular crystals
+            </Typography>
+          </Stack>
         )}
         <Stack direction="row" spacing="5px" margin="5px">
           <Button

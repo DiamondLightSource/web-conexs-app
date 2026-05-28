@@ -18,6 +18,7 @@ import StateIconButton from "../StateIconButton";
 import PublishIcon from "@mui/icons-material/Publish";
 import useStateIconButton from "../useStateIconButton";
 import NoStructures from "../NoStructures";
+import { TIMEOUT_TIME } from "../../utils";
 
 interface ChemicalStructureInfo {
   const: number;
@@ -92,7 +93,7 @@ function QEFormikForm(props: {
 
     setTimeout(() => {
       navigate("/simulations");
-    }, 2000);
+    }, TIMEOUT_TIME);
   };
 
   const errorCallback = () => {
@@ -109,7 +110,7 @@ function QEFormikForm(props: {
             onSettled: () => {
               setTimeout(() => {
                 setSubmitting(false);
-              }, 2000);
+              }, TIMEOUT_TIME);
             },
           });
         }}

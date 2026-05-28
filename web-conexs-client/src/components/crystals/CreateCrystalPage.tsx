@@ -58,7 +58,7 @@ export default function CreateCystalPage() {
 
   const [crystal, setCrytal] = useState<CrystalInput | null>(templateCrystal);
   const [renderedCrystal, setRenderedCrytal] = useState<CrystalInput | null>(
-    templateCrystal
+    templateCrystal,
   );
 
   return (
@@ -72,7 +72,12 @@ export default function CreateCystalPage() {
         overflow="auto"
       >
         <Stack spacing="10px" margin="10px" padding="10px">
-          <CrystalEditor crystal={crystal} setCrystal={setCrytal} />
+          <CrystalEditor
+            crystal={crystal}
+            setCrystal={(crystal) => {
+              setCrytal(crystal);
+            }}
+          />
           <StateIconButton
             endIcon={<PublishIcon />}
             resetState={resetState}

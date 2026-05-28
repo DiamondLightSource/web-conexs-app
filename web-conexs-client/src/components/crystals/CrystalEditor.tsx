@@ -3,7 +3,11 @@ import { useState } from "react";
 import { CrystalInput, LatticeParameter } from "../../models";
 import LatticeEditor from "./LatticeEditor";
 import XYZEditor from "../XYZEditor";
-import { inputToXYZNoHeader, siteFromString } from "../../utils";
+import {
+  inputToXYZNoHeader,
+  isCrystalInput,
+  siteFromString,
+} from "../../utils";
 
 const templateCrystal: CrystalInput = {
   lattice: {
@@ -33,7 +37,7 @@ export default function CrystalEditor(props: {
     ...templateCrystal.lattice,
   });
   const [structure, setStructure] = useState<string | null>(
-    inputToXYZNoHeader(templateCrystal)
+    inputToXYZNoHeader(templateCrystal),
   );
 
   const updateStructure = (structure: string | null) => {
@@ -101,6 +105,11 @@ export default function CrystalEditor(props: {
         structure={inputToXYZNoHeader(templateCrystal)}
         setStructure={updateStructure}
         isFractional={true}
+        setFull={(structure) => {
+          if (isCrystalInput(structure)) {
+            props.setCrystal(structure);
+          }
+        }}
       ></XYZEditor>
     </Stack>
   );

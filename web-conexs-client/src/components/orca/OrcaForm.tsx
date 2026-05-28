@@ -191,7 +191,12 @@ function OrcaInnerForm(props: {
   errors: FormikErrors<OrcaSimulationInput>;
 }) {
   const { values, handleChange, handleSubmit, isSubmitting } = { ...props };
-  const basis_sets: string[] = ["def2-SVP", "def2-SV(P)", "def2-TZVP"];
+  const basis_sets: string[] = [
+    "def2-SVP",
+    "def2-SV(P)",
+    "def2-TZVP",
+    "SARC-ZORA-TZVP",
+  ];
   const functional: string[] = ["BP86", "BLYP", "B3LYP RIJCOSX"];
   const technique: string[] = ["xas", "xes", "opt", "scf"];
   const solvent: string[] = [

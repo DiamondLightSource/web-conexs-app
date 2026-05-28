@@ -16,12 +16,12 @@ from .models.models import (
     CrystalStructure,
     CrystalStructureInput,
     FdmnesSimulation,
+    LatticeBase,
     MolecularStructure,
     OrcaCalculation,
     OrcaSimulation,
     QESimulation,
 )
-from .models.models import Lattice as CrystalLattice
 from .periodictable import elements, periodic_table_by_z
 
 logger = logging.getLogger(__name__)
@@ -383,7 +383,7 @@ def fdmnes_molecule_to_crystal(
 
     crystal: ChemicalStructure = ChemicalStructure(
         label=moleculeStructure.label,
-        lattice=CrystalLattice(
+        lattice=LatticeBase(
             a=abs_max[0],
             b=abs_max[1],
             c=abs_max[2],
@@ -400,12 +400,14 @@ def fdmnes_molecule_to_crystal(
 def pymatstruct_to_crystal(structure: Structure, label="materials project structure"):
     site_list: List[ChemicalSite] = []
 
+    # print(structure.cart_coords)
+
     for i, site in enumerate(structure.sites):
         site_list.append(
             ChemicalSite(element_z=site.specie.Z, x=site.a, y=site.b, z=site.c, index=i)
         )
 
-    lattice: CrystalLattice = CrystalLattice(
+    lattice: LatticeBase = LatticeBase(
         a=structure.lattice.a,
         b=structure.lattice.b,
         c=structure.lattice.c,
@@ -419,36 +421,67 @@ def pymatstruct_to_crystal(structure: Structure, label="materials project struct
     return s
 
 
-def cif_string_to_molecule(cif_string: str):
+def extract_molecule(structure: Structure):
+    sg = StructureGraph.from_local_env_strategy(structure, JmolNN())
+
+    if len(sg) > 250:
+        logger.warning("Could not parse cif to molecule - graph too large")
+        return None
+
+    my_molecules = sg.get_subgraphs_as_molecules()
+
+    if len(my_molecules) == 0 or len(my_molecules[0]) == 0:
+        return None
+
+    new_sites = []
+
+    for i, s in enumerate(my_molecules[0]):
+        new_sites.append(
+            ChemicalSite(
+                element_z=s.specie.number,
+                x=s.x,
+                y=s.y,
+                z=s.z,
+                index=i,
+            )
+        )
+
+    molecule: ChemicalStructure = ChemicalStructure(
+        label="Generated from cif",
+        sites=new_sites,
+    )
+    return molecule
+
+
+def cif_string_to_molecule(cif_string: str, extract: bool):
     try:
         cif_file = io.StringIO(cif_string)
         parser = CifParser(cif_file)
         structure = parser.parse_structures(primitive=True)
         structure = structure[0]
-        sg = StructureGraph.from_local_env_strategy(structure, JmolNN())
-        my_molecules = sg.get_subgraphs_as_molecules()
 
-        if len(my_molecules) == 0 or len(my_molecules[0]) == 0:
-            return None
+        if extract:
+            return extract_molecule(structure)
+        else:
+            new_sites = []
 
-        new_sites = []
-
-        for i, s in enumerate(my_molecules[0]):
-            new_sites.append(
-                ChemicalSite(
-                    element_z=s.specie.number,
-                    x=s.x,
-                    y=s.y,
-                    z=s.z,
-                    index=i,
+            for i, s in enumerate(structure.sites):
+                new_sites.append(
+                    ChemicalSite(
+                        element_z=s.specie.number,
+                        x=s.x,
+                        y=s.y,
+                        z=s.z,
+                        index=i,
+                    )
                 )
-            )
 
-        molecule: ChemicalStructure = ChemicalStructure(
-            label="Generated from cif",
-            sites=new_sites,
-        )
-        return molecule
+            molecule: ChemicalStructure = ChemicalStructure(
+                label="Generated from cif",
+                sites=new_sites,
+            )
+            return molecule
+
     except Exception as e:
         logger.exception(f"Could not parse cif to molecule {e}")
         return None

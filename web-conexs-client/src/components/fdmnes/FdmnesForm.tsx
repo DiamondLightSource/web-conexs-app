@@ -19,6 +19,7 @@ import { periodic_table } from "../../periodictable";
 import { useNavigate } from "react-router-dom";
 import useStateIconButton from "../useStateIconButton";
 import NoStructures from "../NoStructures";
+import { TIMEOUT_TIME } from "../../utils";
 
 interface ChemicalStructureInfo {
   const: number;
@@ -152,7 +153,7 @@ function FdmnesFormikForm(props: {
 
     setTimeout(() => {
       navigate("/simulations");
-    }, 2000);
+    }, TIMEOUT_TIME);
   };
 
   const errorCallback = () => {
@@ -170,7 +171,7 @@ function FdmnesFormikForm(props: {
             onSettled: () => {
               setTimeout(() => {
                 setSubmitting(false);
-              }, 2000);
+              }, TIMEOUT_TIME);
             },
           });
         }}
