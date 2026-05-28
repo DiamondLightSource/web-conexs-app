@@ -12,7 +12,7 @@ cif_h_string = (
 
 
 def test_cif_string_to_molecule():
-    molecule = cif_string_to_molecule(cif_h_string)
+    molecule = cif_string_to_molecule(cif_h_string, False)
     assert len(molecule.sites) == 2
 
 

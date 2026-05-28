@@ -1,6 +1,8 @@
 import { Crystal, CrystalInput, MoleculeInput, Site, Molecule } from "./models";
 import { elementMap, elementSet, periodic_table } from "./periodictable";
 
+export const TIMEOUT_TIME = 2000;
+
 function sortSites(sites: Site[]) {
   const s = [...sites];
 
@@ -158,5 +160,11 @@ export function siteFromString(data: string): Site[] {
 }
 
 export const isCrystal = (model: Crystal | Molecule): model is Crystal => {
+  return typeof model === "object" && "lattice" in model;
+};
+
+export const isCrystalInput = (
+  model: CrystalInput | MoleculeInput,
+): model is CrystalInput => {
   return typeof model === "object" && "lattice" in model;
 };

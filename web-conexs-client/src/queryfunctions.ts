@@ -31,7 +31,7 @@ const clusterUrl = "/api/cluster/status";
 
 export const getSimulationPage = async (
   cursor: string | null,
-  size: number
+  size: number,
 ) => {
   let url = simulationUrl + "?size=" + size;
 
@@ -48,7 +48,7 @@ export const getSimulationPage = async (
 
 export const getSimulation = async (id: number) => {
   const { data } = await axios.get<Simulation, AxiosResponse<Simulation>>(
-    simulationUrl + id
+    simulationUrl + id,
   );
   return data;
 };
@@ -71,7 +71,7 @@ export const getFdmnesSimulation = async (id: number) => {
 
 export const getQESimulation = async (id: number) => {
   const { data } = await axios.get<QESimulation, AxiosResponse<QESimulation>>(
-    qeUrl + id
+    qeUrl + id,
   );
   return data;
 };
@@ -86,7 +86,7 @@ export const getMolecules = async () => {
 
 export const getMolecule = async (id: number) => {
   const { data } = await axios.get<Molecule, AxiosResponse<Molecule>>(
-    structureUrl + id
+    structureUrl + id,
   );
   return data;
 };
@@ -109,7 +109,7 @@ export const getCrystals = async () => {
 
 export const getCrystal = async (id: number) => {
   const { data } = await axios.get<Crystal, AxiosResponse<Crystal>>(
-    structureUrl + id
+    structureUrl + id,
   );
   return data;
 };
@@ -125,7 +125,20 @@ export const getStructure = async (id: number) => {
 export const postConvertMolecule = async (input: string) => {
   const response = await axios.post<Molecule, AxiosResponse<Molecule>>(
     structureUrl + "convert/molecule",
-    input
+    input,
+  );
+
+  if (response.status != 200) {
+    throw new Error("Failed to convert file to molecule");
+  }
+
+  return response.data;
+};
+
+export const postExtractMolecule = async (input: string) => {
+  const response = await axios.post<Molecule, AxiosResponse<Molecule>>(
+    structureUrl + "convert/moleculeextract",
+    input,
   );
 
   if (response.status != 200) {
@@ -138,7 +151,7 @@ export const postConvertMolecule = async (input: string) => {
 export const postConvertCrystal = async (input: string) => {
   const response = await axios.post<Crystal, AxiosResponse<Crystal>>(
     structureUrl + "convert/crystal",
-    input
+    input,
   );
 
   if (response.status != 200) {
@@ -166,14 +179,14 @@ export const postOrca = async (input: OrcaSimulationInput) => {
 
 export const getOrcaLog = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
-    orcaUrl + id + "/output"
+    orcaUrl + id + "/output",
   );
   return data;
 };
 
 export const getOrcaXyz = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
-    orcaUrl + id + "/xyz"
+    orcaUrl + id + "/xyz",
   );
   return data;
 };
@@ -196,63 +209,63 @@ export const getOrcaCoreOrbitalInfo = async (id: number) => {
 
 export const getOrcaCube = async (id: number, cube_id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
-    orcaUrl + id + "/cube/" + cube_id
+    orcaUrl + id + "/cube/" + cube_id,
   );
   return data;
 };
 
 export const getFdmnesLog = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
-    fdmnesUrl + id + "/output"
+    fdmnesUrl + id + "/output",
   );
   return data;
 };
 
 export const getFdmnesJobfile = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
-    fdmnesUrl + id + "/jobfile"
+    fdmnesUrl + id + "/jobfile",
   );
   return data;
 };
 
 export const getFdmnesXas = async (id: number) => {
   const { data } = await axios.get<XASData, AxiosResponse<XASData>>(
-    fdmnesUrl + id + "/xas"
+    fdmnesUrl + id + "/xas",
   );
   return data;
 };
 
 export const getOrcaXas = async (id: number) => {
   const { data } = await axios.get<XASData, AxiosResponse<XASData>>(
-    orcaUrl + id + "/xas"
+    orcaUrl + id + "/xas",
   );
   return data;
 };
 
 export const getOrcaJobfile = async (id: number) => {
   const { data } = await axios.get<XASData, AxiosResponse<XASData>>(
-    orcaUrl + id + "/jobfile"
+    orcaUrl + id + "/jobfile",
   );
   return data;
 };
 
 export const getQEXas = async (id: number) => {
   const { data } = await axios.get<XASData, AxiosResponse<XASData>>(
-    qeUrl + id + "/xas"
+    qeUrl + id + "/xas",
   );
   return data;
 };
 
 export const getQELog = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
-    qeUrl + id + "/output"
+    qeUrl + id + "/output",
   );
   return data;
 };
 
 export const getQEJobFile = async (id: number) => {
   const { data } = await axios.get<string, AxiosResponse<string>>(
-    qeUrl + id + "/jobfile"
+    qeUrl + id + "/jobfile",
   );
   return data;
 };
@@ -285,7 +298,7 @@ export const postQe = async (input: QESimulationInput) => {
 
 export const cancelSimulation = async (id: number) => {
   const { data } = await axios.patch<Simulation, AxiosResponse<Simulation>>(
-    simulationUrl + id + "/status"
+    simulationUrl + id + "/status",
   );
   return data;
 };
@@ -293,10 +306,10 @@ export const cancelSimulation = async (id: number) => {
 export const getMatProjStructure = async (
   id: string,
   successCallback: () => void,
-  errorCallback: () => void
+  errorCallback: () => void,
 ) => {
   const response = await axios.get<Crystal, AxiosResponse<Crystal>>(
-    matprojUrl + id
+    matprojUrl + id,
   );
 
   if (response.status != 200) {
@@ -309,7 +322,7 @@ export const getMatProjStructure = async (
 
 export const getClusterStatus = async () => {
   const response = await axios.get<HPCCluster, AxiosResponse<HPCCluster>>(
-    clusterUrl
+    clusterUrl,
   );
 
   if (response.status != 200) {

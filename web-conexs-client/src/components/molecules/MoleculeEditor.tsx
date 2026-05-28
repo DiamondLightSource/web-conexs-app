@@ -2,7 +2,11 @@ import { Stack, TextField } from "@mui/material";
 import { MoleculeInput } from "../../models";
 import XYZEditor from "../XYZEditor";
 import { useState } from "react";
-import { inputToXYZNoHeader, siteFromString } from "../../utils";
+import {
+  inputToXYZNoHeader,
+  isCrystalInput,
+  siteFromString,
+} from "../../utils";
 
 const templateMolecule: MoleculeInput = {
   label: "Benzene",
@@ -72,6 +76,11 @@ export default function MoleculeEditor(props: {
         structure={inputToXYZNoHeader(templateMolecule)}
         setStructure={(structure) => updateStructure(structure)}
         isFractional={false}
+        setFull={(structure) => {
+          if (!isCrystalInput(structure)) {
+            props.setMolecule(structure);
+          }
+        }}
       ></XYZEditor>
     </Stack>
   );

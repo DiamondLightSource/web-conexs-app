@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getOrcaXyz } from "../../queryfunctions";
 import { MolStarMoleculeWrapper } from "../MolstarMoleculeViewer";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
-import { cleanOrcaXYZ } from "../../utils";
+import { cleanOrcaXYZ, TIMEOUT_TIME } from "../../utils";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import useStateIconButton from "../useStateIconButton";
@@ -36,11 +36,11 @@ export default function OrcaXYZViewer(props: { id: number }) {
 
       await navigator.clipboard.writeText(xyz);
       setState("ok");
-      setTimeout(() => resetState, 2000);
+      setTimeout(() => resetState, TIMEOUT_TIME);
     } catch (err) {
       console.error("Failed to copy text: ", err);
       setState("error");
-      setTimeout(() => resetState, 2000);
+      setTimeout(() => resetState, TIMEOUT_TIME);
     }
   };
 

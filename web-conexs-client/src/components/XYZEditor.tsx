@@ -2,11 +2,13 @@ import { Stack, TextField } from "@mui/material";
 import { useState } from "react";
 import { inputToXYZNoHeader, validateMoleculeData } from "../utils";
 import ConvertFromCif from "./ConvertFromCif";
+import { CrystalInput, MoleculeInput } from "../models";
 
 export default function XYZEditor(props: {
   structure: string;
   setStructure: (structure: string | null) => void;
   isFractional: boolean;
+  setFull: (full: MoleculeInput | CrystalInput) => void;
 }) {
   const [data, setData] = useState<string>(props.structure);
   const [errorMessage, setErrorMessage] = useState("");
@@ -51,8 +53,8 @@ export default function XYZEditor(props: {
           if (structure == null) {
             return;
           }
+          props.setFull(structure);
           const s = inputToXYZNoHeader(structure);
-          props.setStructure(s);
           setData(s);
           setErrorMessage("");
         }}

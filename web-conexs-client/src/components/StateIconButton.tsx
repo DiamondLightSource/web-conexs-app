@@ -11,6 +11,7 @@ import {
 import ErrorIcon from "@mui/icons-material/Error";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import { useState } from "react";
+import { TIMEOUT_TIME } from "../utils";
 
 export interface StateIconButtonProps extends ButtonProps {
   state: "ok" | "running" | "error" | "default";
@@ -23,8 +24,9 @@ export default function StateIconButton(props: StateIconButtonProps) {
 
   const handleSnackClose = (
     _event?: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
+    reason?: SnackbarCloseReason,
   ) => {
+  
     if (reason === "clickaway") {
       return;
     }
@@ -32,29 +34,33 @@ export default function StateIconButton(props: StateIconButtonProps) {
     setSnackOpen(false);
   };
 
-  if ((props.state == "ok" || props.state == "error") && snackOpen == false) {
-    setSnackOpen(true);
-  }
-
   const errorMessage = "Error during submission!";
   const successMessage = "Submission Sucessful!";
 
   if (state == "running") {
     buttonProps.endIcon = <CircularProgress size="1em" />;
   } else if (props.state == "error") {
+    if (!snackOpen) {
+      setSnackOpen(true);
+    }
     buttonProps.endIcon = <ErrorIcon />;
-    setTimeout(() => resetState(), 2000);
+    setTimeout(() => {
+      resetState();
+    }, TIMEOUT_TIME);
   } else if (state == "ok") {
+    if (!snackOpen) {
+      setSnackOpen(true);
+    }
     buttonProps.endIcon = <CheckCircleIcon />;
-    setTimeout(() => props.resetState(), 2000);
+    setTimeout(() => {
+      resetState();
+      handleSnackClose();
+    }, TIMEOUT_TIME);
   }
+
   return (
     <Box>
-      <Snackbar
-        open={snackOpen}
-        autoHideDuration={4000}
-        onClose={handleSnackClose}
-      >
+      <Snackbar open={snackOpen} onClose={handleSnackClose}>
         <Alert
           onClose={handleSnackClose}
           severity={state == "error" ? "error" : "success"}

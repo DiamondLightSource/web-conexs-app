@@ -13,6 +13,8 @@ async function enableMocking() {
 
   axios.defaults.headers.common["Authorization"] = "Bearer test_user";
 
+  return;
+
   const { worker } = await import("./mocks/browser");
   // `worker.start()` returns a Promise that resolves
   // once the Service Worker is up and ready to intercept requests.
@@ -25,6 +27,6 @@ enableMocking().then(() => {
       <BrowserRouter>
         <App />
       </BrowserRouter>
-    </StrictMode>
+    </StrictMode>,
   );
 });
