@@ -3,7 +3,7 @@ from pathlib import Path
 
 from slurm_submission_service.filetransfer import (
     check_filesystem,
-    clean_up,
+    clean_up_directory,
     copy_directory,
     copy_multiple_files,
     transfer_inputs,
@@ -146,9 +146,14 @@ def test_clean_dir(tmp_path: Path):
     p_wfc = s / filename_dotwfc
     p_wfc.write_text("tmp")
 
-    clean_up(str(s))
+    clean_up_directory(str(s), False)
 
     assert p.exists()
     assert not p_tmp.exists()
     assert not p_opt.exists()
     assert not p_wfc.exists()
+
+    clean_up_directory(str(s), True)
+
+    assert not p.exists()
+    assert not s.exists()

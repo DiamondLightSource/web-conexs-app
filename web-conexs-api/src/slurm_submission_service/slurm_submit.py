@@ -6,15 +6,16 @@ from pathlib import Path
 from pprint import pformat
 
 import requests
+from sqlmodel import Session
 
-from web_conexs_api.models.models import SimulationStatus
+from web_conexs_api.models.models import Simulation, SimulationStatus
 
 from .crud import (
     get_active_simulations,
     get_request_cancelled_simulations,
     update_simulation,
 )
-from .filetransfer import clean_up, transfer_results
+from .filetransfer import clean_up_directory, transfer_results
 
 logger = logging.getLogger(__name__)
 
@@ -159,13 +160,12 @@ def clean_request_cancelled(session):
 
             sim.status = SimulationStatus.cancelled
             sim.completion_date = datetime.datetime.now()
-            update_simulation(session, sim)
             user = sim.person.identifier
             calc_dir = Path(user) / Path(sim.working_directory)
             iris_dir = Path(ROOT_DIR) / calc_dir
             storage_dir = Path(STORAGE_DIR) / calc_dir
-            transfer_results(sim.simulation_type_id, str(iris_dir), storage_dir)
-            clean_up(str(iris_dir))
+
+            clean_up_on_job_end(sim, iris_dir, storage_dir, session)
 
 
 def update_active_simulations(session):
@@ -220,27 +220,27 @@ def update_active_simulations(session):
             elif state == JOB_COMPLETED and a.status != SimulationStatus.completed:
                 a.status = SimulationStatus.completed
                 a.completion_date = datetime.datetime.now()
-                transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
-                update_simulation(session, a)
-                clean_up(str(iris_dir))
+                clean_up_on_job_end(a, iris_dir, storage_dir, session)
             elif state == JOB_FAILED and a.status != SimulationStatus.failed:
                 a.status = SimulationStatus.failed
                 a.completion_date = datetime.datetime.now()
-                transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
-                update_simulation(session, a)
-                clean_up(str(iris_dir))
+                clean_up_on_job_end(a, iris_dir, storage_dir, session)
             elif state == JOB_TIMEOUT and a.status != SimulationStatus.failed:
                 a.status = SimulationStatus.failed
                 a.completion_date = datetime.datetime.now()
-                transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
-                update_simulation(session, a)
-                clean_up(str(iris_dir))
+                clean_up_on_job_end(a, iris_dir, storage_dir, session)
 
         else:
             # TODO Slurm API query on job id?
             logger.error(f"Active job with id {a.job_id} not in job_map")
-            transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
             a.status = SimulationStatus.failed
             a.completion_date = datetime.datetime.now()
-            update_simulation(session, a)
-            clean_up(str(iris_dir))
+            clean_up_on_job_end(a, iris_dir, storage_dir, session)
+
+
+def clean_up_on_job_end(
+    a: Simulation, iris_dir: Path, storage_dir: Path, session: Session
+):
+    success = transfer_results(a.simulation_type_id, str(iris_dir), storage_dir)
+    update_simulation(session, a)
+    clean_up_directory(str(iris_dir), success)
