@@ -331,12 +331,13 @@ class QEEdge(enum.Enum):
     k = "k"
     l1 = "l1"
     l2 = "l2"
+    l2 = "l3"
     l23 = "l23"
 
 
 class QESimulationInput(SQLModel):
     absorbing_atom: int
-    edge: Edge
+    edge: QEEdge
     conductivity: ConductivityType
 
 
