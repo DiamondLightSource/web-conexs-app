@@ -47,64 +47,79 @@ def transfer_inputs(file_map: dict[str, str], destination):
 def transfer_results(simulation_type_id, result_dir, storage_dir):
     logger.info(f"Attempting to transfer {result_dir} to {storage_dir}")
 
-    ignore_pattern = None
+    try:
+        ignore_pattern = None
 
-    if simulation_type_id == 1:
-        # orca
-        ignore_files = [
-            "*.tmp*",
-            "*.gbw",
-            "*.prop",
-            "*.cis",
+        if simulation_type_id == 1:
+            # orca
+            ignore_files = [
+                "*.tmp*",
+                "*.gbw",
+                "*.prop",
+                "*.cis",
+                "*.cube",
+                "*.full_log",
+                "*.scfp",
+                "*.scfr",
+            ]
+            ignore_pattern = shutil.ignore_patterns(*ignore_files)
+        elif simulation_type_id == 3:
+            # qe
+            ignore_files = ["*.UPF", "*.wfc", "xanes.sav"]
+            ignore_pattern = shutil.ignore_patterns(*ignore_files)
+
+        store_path = Path(storage_dir)
+        parent = store_path.parent
+
+        if not parent.exists():
+            parent.mkdir()
+
+        if not store_path.exists():
+            store_path.mkdir()
+
+        shutil.copytree(
+            result_dir,
+            storage_dir,
+            ignore=ignore_pattern,
+            dirs_exist_ok=True,
+        )
+
+        return True
+    except Exception as e:
+        logger.exception("Could not transfer files", e)
+        return False
+
+
+def clean_up_directory(directory, all):
+
+    if all:
+        try:
+            shutil.rmtree(directory)
+        except Exception as e:
+            # Handle any errors that occur during deletion
+            logger.exception(f"Could not remove {directory}: {e}")
+    else:
+        # Just remove unnecessary files - copy may have failed
+        remove = [
+            "*.tmp",
             "*.cube",
-            "*.full_log",
-            "*.scfp",
-            "*.scfr",
+            "*.UPF",
+            "*.wfc*",
+            ".save",
+            "job.gbw",
+            "job.scfp",
+            "result_bav.txt",
+            "job.opt",
+            "orca_result.full_log",
         ]
-        ignore_pattern = shutil.ignore_patterns(*ignore_files)
-    elif simulation_type_id == 3:
-        # qe
-        ignore_files = ["*.UPF", "*.wfc", "xanes.sav"]
-        ignore_pattern = shutil.ignore_patterns(*ignore_files)
 
-    store_path = Path(storage_dir)
-    parent = store_path.parent
+        p = Path(directory)
 
-    if not parent.exists():
-        parent.mkdir()
-
-    if not store_path.exists():
-        store_path.mkdir()
-
-    shutil.copytree(
-        result_dir,
-        storage_dir,
-        ignore=ignore_pattern,
-        dirs_exist_ok=True,
-    )
-
-
-def clean_up(directory):
-    remove = [
-        "*.tmp",
-        "*.cube",
-        "*.UPF",
-        "*.wfc*",
-        ".save",
-        "job.gbw",
-        "job.scfp",
-        "result_bav.txt",
-        "job.opt",
-        "orca_result.full_log",
-    ]
-
-    p = Path(directory)
-
-    for r in remove:
-        for filepath in glob.glob(str(p / r), include_hidden=True):
-            try:
-                # Attempt to delete the file
-                os.remove(filepath)
-            except Exception as e:
-                # Handle any errors that occur during deletion
-                logger.exception(f"Not unlinked {filepath}: {e}")
+        for r in remove:
+            for filepath in glob.glob(str(p / r), include_hidden=True):
+                try:
+                    # Attempt to delete the file
+                    os.remove(filepath)
+                except Exception as e:
+                    # Handle any errors that occur during deletion
+                    logger.exception(f"Not unlinked {filepath}: {e}")
