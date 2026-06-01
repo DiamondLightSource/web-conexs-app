@@ -1,4 +1,4 @@
-import { Button, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { CrystalInput } from "../../models";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -60,6 +60,7 @@ export default function CreateCystalPage() {
             setCrystal={(crystal) => {
               setCrytal(crystal);
             }}
+            triggerRender={() => setRenderedCrytal(crystal)}
           />
           <StateIconButton
             endIcon={<PublishIcon />}
@@ -79,14 +80,6 @@ export default function CreateCystalPage() {
           </StateIconButton>
         </Stack>
         <Stack flex={1}>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              setRenderedCrytal(crystal);
-            }}
-          >
-            Re-Render Structure
-          </Button>
           <MolStarCrystalWrapper
             cif={
               renderedCrystal == null
