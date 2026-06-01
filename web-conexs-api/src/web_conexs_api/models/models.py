@@ -329,7 +329,6 @@ class ConductivityType(enum.Enum):
 
 class QEEdge(enum.Enum):
     k = "k"
-    l1 = "l1"
     l2 = "l2"
     l3 = "l3"
     l23 = "l23"

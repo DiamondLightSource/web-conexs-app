@@ -145,7 +145,7 @@ function QEInnerForm(props: {
   setSelectedAtom: (id: number) => void;
 }) {
   const { values, handleChange, handleSubmit, isSubmitting } = { ...props };
-  const edges: string[] = ["k", "l1", "l2", "l23"];
+  const edges: string[] = ["k", "l2", "l3", "l23"];
   const conductivity: string[] = ["metallic", "semiconductor", "insulator"];
 
   return (
