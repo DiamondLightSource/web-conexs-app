@@ -11,24 +11,7 @@ import { crystalInputToCIF } from "../../utils";
 import StateIconButton from "../StateIconButton";
 import PublishIcon from "@mui/icons-material/Publish";
 import useStateIconButton from "../useStateIconButton";
-
-const templateCrystal: CrystalInput = {
-  lattice: {
-    a: 4.1043564,
-    b: 4.1043564,
-    c: 4.1043564,
-    alpha: 90,
-    beta: 90,
-    gamma: 90,
-  },
-  label: "test",
-  sites: [
-    { element_z: 47, x: 0.0, y: 0.0, z: 0.0, index: 1 },
-    { element_z: 47, x: 0.5, y: 0.5, z: 0.0, index: 2 },
-    { element_z: 47, x: 0.5, y: 0.0, z: 0.5, index: 3 },
-    { element_z: 47, x: 0.0, y: 0.5, z: 0.5, index: 4 },
-  ],
-};
+import { defaultCrystal } from "../../defaultstructures";
 
 export default function CreateCystalPage() {
   const queryClient = useQueryClient();
@@ -56,9 +39,9 @@ export default function CreateCystalPage() {
     },
   });
 
-  const [crystal, setCrytal] = useState<CrystalInput | null>(templateCrystal);
+  const [crystal, setCrytal] = useState<CrystalInput | null>(defaultCrystal);
   const [renderedCrystal, setRenderedCrytal] = useState<CrystalInput | null>(
-    templateCrystal,
+    defaultCrystal,
   );
 
   return (

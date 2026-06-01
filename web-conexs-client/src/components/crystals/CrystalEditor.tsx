@@ -8,36 +8,19 @@ import {
   isCrystalInput,
   siteFromString,
 } from "../../utils";
-
-const templateCrystal: CrystalInput = {
-  lattice: {
-    a: 4.1043564,
-    b: 4.1043564,
-    c: 4.1043564,
-    alpha: 90,
-    beta: 90,
-    gamma: 90,
-  },
-  label: "test",
-  sites: [
-    { element_z: 47, x: 0.0, y: 0.0, z: 0.0, index: 1 },
-    { element_z: 47, x: 0.5, y: 0.5, z: 0.0, index: 2 },
-    { element_z: 47, x: 0.5, y: 0.0, z: 0.5, index: 3 },
-    { element_z: 47, x: 0.0, y: 0.5, z: 0.5, index: 4 },
-  ],
-};
+import { defaultCrystal } from "../../defaultstructures";
 
 export default function CrystalEditor(props: {
   crystal: CrystalInput | null;
   setCrystal: (structureInput: CrystalInput | null) => void;
 }) {
-  const [label, setLabel] = useState(templateCrystal.label);
+  const [label, setLabel] = useState(defaultCrystal.label);
   const [labelError, setLabelError] = useState("");
   const [lattice, setLattice] = useState<LatticeParameter>({
-    ...templateCrystal.lattice,
+    ...defaultCrystal.lattice,
   });
   const [structure, setStructure] = useState<string | null>(
-    inputToXYZNoHeader(templateCrystal),
+    inputToXYZNoHeader(defaultCrystal),
   );
 
   const updateStructure = (structure: string | null) => {
@@ -102,7 +85,7 @@ export default function CrystalEditor(props: {
         setLattice={updateLattice}
       ></LatticeEditor>
       <XYZEditor
-        structure={inputToXYZNoHeader(templateCrystal)}
+        structure={inputToXYZNoHeader(defaultCrystal)}
         setStructure={updateStructure}
         isFractional={true}
         setFull={(structure) => {

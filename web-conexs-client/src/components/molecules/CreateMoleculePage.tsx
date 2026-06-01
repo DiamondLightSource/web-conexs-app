@@ -11,28 +11,11 @@ import { moleculeInputToXYZ } from "../../utils";
 import PublishIcon from "@mui/icons-material/Publish";
 import StateIconButton from "../StateIconButton";
 import useStateIconButton from "../useStateIconButton";
-
-const templateMolecule: MoleculeInput = {
-  label: "Benzene",
-  sites: [
-    { index: 1, element_z: 6, x: 0.0, y: 1.40272, z: 0.0 },
-    { index: 2, element_z: 1, x: 0.0, y: 2.49029, z: 0.0 },
-    { index: 3, element_z: 6, x: -1.21479, y: 0.70136, z: 0.0 },
-    { index: 4, element_z: 1, x: -2.15666, y: 1.24515, z: 0.0 },
-    { index: 5, element_z: 6, x: -1.21479, y: -0.70136, z: 0.0 },
-    { index: 6, element_z: 1, x: -2.15666, y: -1.24515, z: 0.0 },
-    { index: 7, element_z: 6, x: 0.0, y: -1.40272, z: 0.0 },
-    { index: 8, element_z: 1, x: 0.0, y: -2.49029, z: 0.0 },
-    { index: 9, element_z: 6, x: 1.21479, y: -0.70136, z: 0.0 },
-    { index: 10, element_z: 1, x: 2.15666, y: -1.24515, z: 0.0 },
-    { index: 11, element_z: 6, x: 1.21479, y: 0.70136, z: 0.0 },
-    { index: 12, element_z: 1, x: 2.15666, y: 1.24515, z: 0.0 },
-  ],
-};
+import { defaultMolecule } from "../../defaultstructures";
 
 export default function CreateMoleculePage() {
   const [molecule, setMolecule] = useState<MoleculeInput | null>(
-    templateMolecule
+    defaultMolecule,
   );
 
   const [renderedMolecule, setRenderedMolecule] =
