@@ -7,30 +7,14 @@ import {
   isCrystalInput,
   siteFromString,
 } from "../../utils";
-
-const templateMolecule: MoleculeInput = {
-  label: "Benzene",
-  sites: [
-    { index: 1, element_z: 6, x: 0.0, y: 1.40272, z: 0.0 },
-    { index: 2, element_z: 1, x: 0.0, y: 2.49029, z: 0.0 },
-    { index: 3, element_z: 6, x: -1.21479, y: 0.70136, z: 0.0 },
-    { index: 4, element_z: 1, x: -2.15666, y: 1.24515, z: 0.0 },
-    { index: 5, element_z: 6, x: -1.21479, y: -0.70136, z: 0.0 },
-    { index: 6, element_z: 1, x: -2.15666, y: -1.24515, z: 0.0 },
-    { index: 7, element_z: 6, x: 0.0, y: -1.40272, z: 0.0 },
-    { index: 8, element_z: 1, x: 0.0, y: -2.49029, z: 0.0 },
-    { index: 9, element_z: 6, x: 1.21479, y: -0.70136, z: 0.0 },
-    { index: 10, element_z: 1, x: 2.15666, y: -1.24515, z: 0.0 },
-    { index: 11, element_z: 6, x: 1.21479, y: 0.70136, z: 0.0 },
-    { index: 12, element_z: 1, x: 2.15666, y: 1.24515, z: 0.0 },
-  ],
-};
+import { defaultMolecule } from "../../defaultstructures";
 
 export default function MoleculeEditor(props: {
   molecule: MoleculeInput | null;
   setMolecule: (moleculeInput: MoleculeInput | null) => void;
+  triggerRender: () => void;
 }) {
-  const [label, setLabel] = useState(templateMolecule.label);
+  const [label, setLabel] = useState(defaultMolecule.label);
   const [labelError, setLabelError] = useState("");
 
   const updateStructure = (structure: string | null) => {
@@ -63,7 +47,7 @@ export default function MoleculeEditor(props: {
   };
 
   return (
-    <Stack spacing={"10px"} minWidth={"350px"}>
+    <Stack spacing={"10px"} minWidth={{ sm: "350px", md: "550px" }}>
       <TextField
         error={labelError.length != 0}
         helperText={labelError}
@@ -73,7 +57,7 @@ export default function MoleculeEditor(props: {
         onChange={(e) => updateLabel(e.target.value)}
       />
       <XYZEditor
-        structure={inputToXYZNoHeader(templateMolecule)}
+        structure={inputToXYZNoHeader(defaultMolecule)}
         setStructure={(structure) => updateStructure(structure)}
         isFractional={false}
         setFull={(structure) => {
@@ -81,6 +65,7 @@ export default function MoleculeEditor(props: {
             props.setMolecule(structure);
           }
         }}
+        triggerRender={props.triggerRender}
       ></XYZEditor>
     </Stack>
   );

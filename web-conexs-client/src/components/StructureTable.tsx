@@ -122,7 +122,7 @@ export default function StructureTable(props: {
                 selectedRow: selectedRow,
                 clickStructure: clickStructure,
                 setSelectedRow: setSelectedRow,
-              })
+              }),
             )}
           </TableBody>
         </Table>

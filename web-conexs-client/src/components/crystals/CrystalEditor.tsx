@@ -13,6 +13,7 @@ import { defaultCrystal } from "../../defaultstructures";
 export default function CrystalEditor(props: {
   crystal: CrystalInput | null;
   setCrystal: (structureInput: CrystalInput | null) => void;
+  triggerRender: () => void;
 }) {
   const [label, setLabel] = useState(defaultCrystal.label);
   const [labelError, setLabelError] = useState("");
@@ -71,7 +72,7 @@ export default function CrystalEditor(props: {
   };
 
   return (
-    <Stack spacing={2} minWidth={"350px"}>
+    <Stack spacing={2} minWidth={{ sm: "350px", md: "550px" }}>
       <TextField
         error={labelError.length != 0}
         helperText={labelError}
@@ -93,6 +94,7 @@ export default function CrystalEditor(props: {
             props.setCrystal(structure);
           }
         }}
+        triggerRender={props.triggerRender}
       ></XYZEditor>
     </Stack>
   );

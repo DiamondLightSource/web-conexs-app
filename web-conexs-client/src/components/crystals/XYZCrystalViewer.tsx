@@ -19,7 +19,7 @@ export default function XYZCrystalViewer(props: {
         };
 
   return (
-    <Stack spacing={3} minWidth={"350px"}>
+    <Stack spacing={"10px"} minWidth={"350px"} padding={"10px"}>
       <TextField
         id="Label"
         label="Label"

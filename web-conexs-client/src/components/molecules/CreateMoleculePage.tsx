@@ -1,4 +1,4 @@
-import { Button, Stack, Typography } from "@mui/material";
+import { Stack, Typography } from "@mui/material";
 import { MoleculeInput } from "../../models";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -60,6 +60,7 @@ export default function CreateMoleculePage() {
           <MoleculeEditor
             molecule={molecule}
             setMolecule={setMolecule}
+            triggerRender={() => setRenderedMolecule(molecule)}
           ></MoleculeEditor>
           <StateIconButton
             endIcon={<PublishIcon />}
@@ -79,14 +80,6 @@ export default function CreateMoleculePage() {
           </StateIconButton>
         </Stack>
         <Stack flex={1}>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              setRenderedMolecule(molecule);
-            }}
-          >
-            Re-Render Structure
-          </Button>
           <MolStarMoleculeWrapper
             xyz={
               renderedMolecule == null
