@@ -24,6 +24,12 @@ export default function CrystalEditor(props: {
     inputToXYZNoHeader(defaultCrystal),
   );
 
+  const setFull = (crystal: CrystalInput) => {
+    props.setCrystal(crystal);
+    setLattice(crystal.lattice);
+    setLabel(crystal.label);
+  };
+
   const updateStructure = (structure: string | null) => {
     setStructure(structure);
     if (structure == null || lattice === null || label == null) {
@@ -91,7 +97,7 @@ export default function CrystalEditor(props: {
         isFractional={true}
         setFull={(structure) => {
           if (isCrystalInput(structure)) {
-            props.setCrystal(structure);
+            setFull(structure);
           }
         }}
         triggerRender={props.triggerRender}

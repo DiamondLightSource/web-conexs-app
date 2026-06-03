@@ -400,8 +400,6 @@ def fdmnes_molecule_to_crystal(
 def pymatstruct_to_crystal(structure: Structure, label="materials project structure"):
     site_list: List[ChemicalSite] = []
 
-    # print(structure.cart_coords)
-
     for i, site in enumerate(structure.sites):
         site_list.append(
             ChemicalSite(element_z=site.specie.Z, x=site.a, y=site.b, z=site.c, index=i)
@@ -486,11 +484,9 @@ def cif_string_to_molecule(cif_string: str, extract: bool):
 
 
 def cif_string_to_crystal(cif_string: str):
-    try:
-        cif_file = io.StringIO(cif_string)
-        parser = CifParser(cif_file)
-        structure = parser.parse_structures(primitive=True)
-        structure = structure[0]
-        return pymatstruct_to_crystal(structure, label="Generated from cif")
-    except Exception as e:
-        logger.exception(f"Could not parse cif to crystal {e}")
+
+    cif_file = io.StringIO(cif_string)
+    parser = CifParser(cif_file)
+    structure = parser.parse_structures(primitive=True)
+    structure = structure[0]
+    return pymatstruct_to_crystal(structure, label="Generated from cif")

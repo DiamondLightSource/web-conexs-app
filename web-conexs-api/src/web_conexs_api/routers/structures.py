@@ -61,7 +61,10 @@ def convert_to_molecule(
     body: str = Depends(get_body),
     user_id: str = Depends(get_current_user),
 ) -> MolecularStructureInput:
-    molecule = cif_string_to_molecule(body.decode(), False)
+    try:
+        molecule = cif_string_to_molecule(body.decode(), False)
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
     if molecule is None:
         raise HTTPException(
@@ -95,7 +98,10 @@ def convert_to_crystal(
     body: str = Depends(get_body),
     user_id: str = Depends(get_current_user),
 ) -> CrystalStructureInput:
-    crystal = cif_string_to_crystal(body.decode())
+    try:
+        crystal = cif_string_to_crystal(body.decode())
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
     if not crystal:
         raise HTTPException(
