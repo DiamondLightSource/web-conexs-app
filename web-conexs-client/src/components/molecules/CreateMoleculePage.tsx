@@ -7,7 +7,7 @@ import { postMolecule } from "../../queryfunctions";
 import MoleculeEditor from "./MoleculeEditor";
 import MainPanel from "../MainPanel";
 import { MolStarMoleculeWrapper } from "../MolstarMoleculeViewer";
-import { moleculeInputToXYZ } from "../../utils";
+import { getDetailFromError, moleculeInputToXYZ } from "../../utils";
 import PublishIcon from "@mui/icons-material/Publish";
 import StateIconButton from "../StateIconButton";
 import useStateIconButton from "../useStateIconButton";
@@ -23,6 +23,7 @@ export default function CreateMoleculePage() {
 
   const [disabled, setDisabled] = useState(false);
   const { state, setState, resetState } = useStateIconButton();
+  const [message, setMessage] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
@@ -40,7 +41,9 @@ export default function CreateMoleculePage() {
       queryClient.invalidateQueries({ queryKey: ["molecules"] });
       callback();
     },
-    onError: () => {
+    onError: (error) => {
+      const detail = getDetailFromError(error);
+      setMessage(detail);
       setState("error");
       setDisabled(false);
     },
@@ -68,8 +71,10 @@ export default function CreateMoleculePage() {
             state={state}
             disabled={disabled || molecule == null}
             variant="contained"
+            message={message}
             onClick={() => {
               setDisabled(true);
+              setMessage(null);
               setState("running");
               if (molecule != null) {
                 mutation.mutate(molecule);

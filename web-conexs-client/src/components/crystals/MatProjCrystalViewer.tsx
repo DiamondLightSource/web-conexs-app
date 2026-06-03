@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import XYZCrystalViewer from "./XYZCrystalViewer";
 import { MolStarCrystalWrapper } from "../MolstarCrystalViewer";
-import { crystalInputToCIF } from "../../utils";
+import { crystalInputToCIF, getDetailFromError } from "../../utils";
 import StateIconButton from "../StateIconButton";
 import PublishIcon from "@mui/icons-material/Publish";
 import useStateIconButton from "../useStateIconButton";
@@ -29,7 +29,7 @@ function MatProjCrystalViewer(props: {
         () => {
           props.setRequestStatus("error");
           props.setRequestComplete();
-        }
+        },
       );
     },
     retry: false,
@@ -38,6 +38,7 @@ function MatProjCrystalViewer(props: {
   const [checked, setChecked] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const { state, setState, resetState } = useStateIconButton();
+  const [message, setMessage] = useState<string | null>(null);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setChecked(event.target.checked);
@@ -59,7 +60,9 @@ function MatProjCrystalViewer(props: {
       queryClient.invalidateQueries({ queryKey: ["crystals"] });
       callback();
     },
-    onError: () => {
+    onError: (error) => {
+      const detail = getDetailFromError(error);
+      setMessage(detail);
       setState("error");
       setDisabled(false);
     },
@@ -104,6 +107,7 @@ function MatProjCrystalViewer(props: {
               onClick={() => {
                 setDisabled(true);
                 setState("running");
+                setMessage(null);
                 const structure = query.data;
 
                 if (checked && structure && structure.lattice) {
@@ -123,6 +127,7 @@ function MatProjCrystalViewer(props: {
 
                 mutation.mutate(structure);
               }}
+              message={message}
             >
               Create Crystal
             </StateIconButton>

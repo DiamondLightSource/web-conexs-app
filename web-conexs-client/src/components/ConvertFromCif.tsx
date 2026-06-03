@@ -19,7 +19,7 @@ import GrainIcon from "./icons/GrainIcon";
 import MoleculeIcon from "./icons/MoleculeIcon";
 import useStateIconButton from "./useStateIconButton";
 import StateIconButton from "./StateIconButton";
-import { TIMEOUT_TIME } from "../utils";
+import { getDetailFromError, TIMEOUT_TIME } from "../utils";
 
 export default function ConvertFromCif(props: {
   isFractional: boolean;
@@ -31,6 +31,7 @@ export default function ConvertFromCif(props: {
   const { state, setState, resetState } = useStateIconButton();
   const [submitting, setSubmitting] = useState(false);
   const [extractMolecule, setExtractMolecule] = useState(true);
+  const [message, setMessage] = useState<string | null>(null);
 
   const getMutation = () => {
     if (props.isFractional) {
@@ -51,7 +52,9 @@ export default function ConvertFromCif(props: {
       setState("ok");
       setTimeout(() => resetState, TIMEOUT_TIME);
     },
-    onError: () => {
+    onError: (error) => {
+      const detail = getDetailFromError(error);
+      setMessage(detail);
       setSubmitting(false);
       setState("error");
       setTimeout(() => resetState, TIMEOUT_TIME);
@@ -124,9 +127,11 @@ export default function ConvertFromCif(props: {
               if (textFile != null) {
                 setSubmitting(true);
                 setState("running");
+                setMessage(null);
                 mutation.mutate(textFile);
               }
             }}
+            message={message}
           >
             Run Convert
           </StateIconButton>

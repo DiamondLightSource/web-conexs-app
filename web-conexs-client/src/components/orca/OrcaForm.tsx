@@ -14,10 +14,11 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getMolecules, postOrca } from "../../queryfunctions";
 import { useNavigate } from "react-router-dom";
 import StateIconButton from "../StateIconButton";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import PublishIcon from "@mui/icons-material/Publish";
 import useStateIconButton from "../useStateIconButton";
 import NoStructures from "../NoStructures";
+import { getDetailFromError } from "../../utils";
 interface ChemicalStructureInfo {
   const: number;
   title: string;
@@ -70,6 +71,7 @@ function OrcaFormikForm(props: {
   }, [structId, setStructureId]);
 
   const { state, setState, resetState } = useStateIconButton();
+  const [message, setMessage] = useState<string | null>(null);
 
   const callback = () => {
     setState("ok");
@@ -80,10 +82,6 @@ function OrcaFormikForm(props: {
     // navigate("/simulations");
   };
 
-  const errorCallback = () => {
-    setState("error");
-  };
-
   const mutation = useMutation({
     mutationFn: postOrca,
     onSuccess: () => {
@@ -91,8 +89,10 @@ function OrcaFormikForm(props: {
       queryClient.invalidateQueries({ queryKey: ["orca"] });
       callback();
     },
-    onError: () => {
-      errorCallback();
+    onError: (error) => {
+      const detail = getDetailFromError(error);
+      setMessage(detail);
+      setState("error");
     },
   });
 
@@ -172,6 +172,7 @@ function OrcaFormikForm(props: {
             state={state}
             resetState={resetState}
             errors={errors}
+            message={message}
           ></OrcaInnerForm>
         )}
       </Formik>
@@ -189,6 +190,7 @@ function OrcaInnerForm(props: {
   resetState: () => void;
   state: "ok" | "running" | "error" | "default";
   errors: FormikErrors<OrcaSimulationInput>;
+  message: string | null;
 }) {
   const { values, handleChange, handleSubmit, isSubmitting } = { ...props };
   const basis_sets: string[] = [
@@ -368,6 +370,7 @@ function OrcaInnerForm(props: {
           state={props.state}
           disabled={isSubmitting || Object.keys(props.errors).length != 0}
           variant="contained"
+          message={props.message}
         >
           Submit Simulation
         </StateIconButton>

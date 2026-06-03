@@ -19,7 +19,7 @@ import { periodic_table } from "../../periodictable";
 import { useNavigate } from "react-router-dom";
 import useStateIconButton from "../useStateIconButton";
 import NoStructures from "../NoStructures";
-import { TIMEOUT_TIME } from "../../utils";
+import { getDetailFromError, TIMEOUT_TIME } from "../../utils";
 
 interface ChemicalStructureInfo {
   const: number;
@@ -133,6 +133,7 @@ function FdmnesFormikForm(props: {
   }, [structId, setStructureId]);
 
   const { state, setState, resetState } = useStateIconButton();
+  const [message, setMessage] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -143,8 +144,10 @@ function FdmnesFormikForm(props: {
       queryClient.invalidateQueries({ queryKey: ["fdmnes"] });
       callback();
     },
-    onError: () => {
-      errorCallback();
+    onError: (error) => {
+      const detail = getDetailFromError(error);
+      setMessage(detail);
+      setState("error");
     },
   });
 
@@ -154,10 +157,6 @@ function FdmnesFormikForm(props: {
     setTimeout(() => {
       navigate("/simulations");
     }, TIMEOUT_TIME);
-  };
-
-  const errorCallback = () => {
-    setState("error");
   };
 
   return (
@@ -186,6 +185,7 @@ function FdmnesFormikForm(props: {
             structures={props.structures}
             state={state}
             resetState={resetState}
+            message={message}
           ></FdmnesInnerForm>
         )}
       </Formik>
@@ -202,6 +202,7 @@ function FdmnesInnerForm(props: {
   structures: ChemicalStructureInfo[];
   resetState: () => void;
   state: "ok" | "running" | "error" | "default";
+  message: string | null;
 }) {
   const { values, handleChange, handleSubmit, isSubmitting } = { ...props };
   const edges: string[] = ["k", "l1", "l2", "l3", "m1", "m2", "m3", "m4", "m5"];
@@ -292,6 +293,7 @@ function FdmnesInnerForm(props: {
           state={props.state}
           disabled={isSubmitting}
           variant="contained"
+          message={props.message}
         >
           Submit Simulation
         </StateIconButton>
