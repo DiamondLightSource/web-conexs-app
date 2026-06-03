@@ -76,7 +76,11 @@ def convert_to_molecule_extract(
     body: str = Depends(get_body),
     user_id: str = Depends(get_current_user),
 ) -> MolecularStructureInput:
-    molecule = cif_string_to_molecule(body.decode(), True)
+
+    try:
+        molecule = cif_string_to_molecule(body.decode(), True)
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=str(e))
 
     if molecule is None:
         raise HTTPException(

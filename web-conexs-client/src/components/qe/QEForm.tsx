@@ -18,7 +18,7 @@ import StateIconButton from "../StateIconButton";
 import PublishIcon from "@mui/icons-material/Publish";
 import useStateIconButton from "../useStateIconButton";
 import NoStructures from "../NoStructures";
-import { TIMEOUT_TIME } from "../../utils";
+import { getDetailFromError, TIMEOUT_TIME } from "../../utils";
 
 interface ChemicalStructureInfo {
   const: number;
@@ -74,6 +74,7 @@ function QEFormikForm(props: {
   }, [structId, setStructureId]);
 
   const { state, setState, resetState } = useStateIconButton();
+  const [message, setMessage] = useState<string | null>(null);
 
   const mutation = useMutation({
     mutationFn: postQe,
@@ -82,8 +83,10 @@ function QEFormikForm(props: {
       queryClient.invalidateQueries({ queryKey: ["qe"] });
       callback();
     },
-    onError: () => {
-      errorCallback();
+    onError: (error) => {
+      const detail = getDetailFromError(error);
+      setMessage(detail);
+      setState("error");
     },
   });
 
@@ -94,10 +97,6 @@ function QEFormikForm(props: {
     setTimeout(() => {
       navigate("/simulations");
     }, TIMEOUT_TIME);
-  };
-
-  const errorCallback = () => {
-    setState("error");
   };
 
   return (
@@ -126,6 +125,7 @@ function QEFormikForm(props: {
             state={state}
             resetState={resetState}
             setSelectedAtom={props.setSelectedAtom}
+            message={message}
           ></QEInnerForm>
         )}
       </Formik>
@@ -143,6 +143,7 @@ function QEInnerForm(props: {
   resetState: () => void;
   state: "ok" | "running" | "error" | "default";
   setSelectedAtom: (id: number) => void;
+  message: string | null;
 }) {
   const { values, handleChange, handleSubmit, isSubmitting } = { ...props };
   const edges: string[] = ["k", "l2", "l3", "l23"];
@@ -228,6 +229,7 @@ function QEInnerForm(props: {
           state={props.state}
           disabled={isSubmitting}
           variant="contained"
+          message={props.message}
         >
           Submit Simulation
         </StateIconButton>

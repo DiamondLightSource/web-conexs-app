@@ -425,8 +425,7 @@ def extract_molecule(structure: Structure):
     sg = StructureGraph.from_local_env_strategy(structure, JmolNN())
 
     if len(sg) > 250:
-        logger.warning("Could not parse cif to molecule - graph too large")
-        return None
+        raise Exception("Structure graph too large for analysis!")
 
     my_molecules = sg.get_subgraphs_as_molecules()
 
@@ -436,15 +435,16 @@ def extract_molecule(structure: Structure):
     new_sites = []
 
     for i, s in enumerate(my_molecules[0]):
-        new_sites.append(
-            ChemicalSite(
-                element_z=s.specie.number,
-                x=s.x,
-                y=s.y,
-                z=s.z,
-                index=i,
+        if hasattr(s, "specie"):
+            new_sites.append(
+                ChemicalSite(
+                    element_z=s.specie.number,
+                    x=s.x,
+                    y=s.y,
+                    z=s.z,
+                    index=i,
+                )
             )
-        )
 
     molecule: ChemicalStructure = ChemicalStructure(
         label="Generated from cif",
@@ -454,37 +454,35 @@ def extract_molecule(structure: Structure):
 
 
 def cif_string_to_molecule(cif_string: str, extract: bool):
-    try:
-        cif_file = io.StringIO(cif_string)
-        parser = CifParser(cif_file)
-        structure = parser.parse_structures(primitive=True)
-        structure = structure[0]
+    cif_file = io.StringIO(cif_string)
+    parser = CifParser(cif_file)
+    structure = parser.parse_structures(primitive=True)
+    structure = structure[0]
 
-        if extract:
-            return extract_molecule(structure)
-        else:
-            new_sites = []
+    if not structure.is_ordered:
+        raise Exception("Structure has partial occupancies!")
 
-            for i, s in enumerate(structure.sites):
-                new_sites.append(
-                    ChemicalSite(
-                        element_z=s.specie.number,
-                        x=s.x,
-                        y=s.y,
-                        z=s.z,
-                        index=i,
-                    )
+    if extract:
+        return extract_molecule(structure)
+    else:
+        new_sites = []
+
+        for i, s in enumerate(structure.sites):
+            new_sites.append(
+                ChemicalSite(
+                    element_z=s.specie.number,
+                    x=s.x,
+                    y=s.y,
+                    z=s.z,
+                    index=i,
                 )
-
-            molecule: ChemicalStructure = ChemicalStructure(
-                label="Generated from cif",
-                sites=new_sites,
             )
-            return molecule
 
-    except Exception as e:
-        logger.exception(f"Could not parse cif to molecule {e}")
-        return None
+        molecule: ChemicalStructure = ChemicalStructure(
+            label="Generated from cif",
+            sites=new_sites,
+        )
+        return molecule
 
 
 def cif_string_to_crystal(cif_string: str):

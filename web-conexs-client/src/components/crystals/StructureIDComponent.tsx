@@ -26,6 +26,7 @@ export default function StructureIDComponent(props: {
         state={props.state}
         disabled={props.disabled}
         variant="contained"
+        message={null}
         onClick={() => {
           if (tmpmMpid != null) {
             if (tmpmMpid != props.currentID) {

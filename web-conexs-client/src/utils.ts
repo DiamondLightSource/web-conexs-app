@@ -1,3 +1,4 @@
+import axios from "axios";
 import { Crystal, CrystalInput, MoleculeInput, Site, Molecule } from "./models";
 import { elementMap, elementSet, periodic_table } from "./periodictable";
 
@@ -168,3 +169,14 @@ export const isCrystalInput = (
 ): model is CrystalInput => {
   return typeof model === "object" && "lattice" in model;
 };
+
+export function getDetailFromError(error: Error): string | null {
+  if (axios.isAxiosError(error)) {
+    if (error.response && "detail" in error.response.data) {
+      return error.response.data.detail;
+    }
+  } else {
+    console.error(error);
+  }
+  return null;
+}

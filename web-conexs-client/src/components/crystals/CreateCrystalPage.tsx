@@ -7,7 +7,7 @@ import { postCrystal } from "../../queryfunctions";
 import CrystalEditor from "./CrystalEditor";
 import MainPanel from "../MainPanel";
 import { MolStarCrystalWrapper } from "../MolstarCrystalViewer";
-import { crystalInputToCIF } from "../../utils";
+import { crystalInputToCIF, getDetailFromError } from "../../utils";
 import StateIconButton from "../StateIconButton";
 import PublishIcon from "@mui/icons-material/Publish";
 import useStateIconButton from "../useStateIconButton";
@@ -17,6 +17,7 @@ export default function CreateCystalPage() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [disabled, setDisabled] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
 
   const { state, setState, resetState } = useStateIconButton();
 
@@ -33,7 +34,9 @@ export default function CreateCystalPage() {
       queryClient.invalidateQueries({ queryKey: ["crystals"] });
       callback();
     },
-    onError: () => {
+    onError: (error) => {
+      const detail = getDetailFromError(error);
+      setMessage(detail);
       setState("error");
       setDisabled(false);
     },
@@ -71,10 +74,12 @@ export default function CreateCystalPage() {
             onClick={() => {
               setDisabled(true);
               setState("running");
+              setMessage(null);
               if (crystal != null) {
                 mutation.mutate(crystal);
               }
             }}
+            message={message}
           >
             Create Crystal
           </StateIconButton>

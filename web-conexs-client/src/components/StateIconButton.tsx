@@ -5,69 +5,55 @@ import {
   ButtonProps,
   CircularProgress,
   Snackbar,
-  SnackbarCloseReason,
 } from "@mui/material";
 
 import ErrorIcon from "@mui/icons-material/Error";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import { useState } from "react";
 import { TIMEOUT_TIME } from "../utils";
 
 export interface StateIconButtonProps extends ButtonProps {
   state: "ok" | "running" | "error" | "default";
   resetState: () => void;
+  message: string | null;
 }
 
 export default function StateIconButton(props: StateIconButtonProps) {
   const { state, resetState, ...buttonProps } = props;
-  const [snackOpen, setSnackOpen] = useState(false);
 
-  const handleSnackClose = (
-    _event?: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason,
-  ) => {
-  
-    if (reason === "clickaway") {
-      return;
-    }
-
-    setSnackOpen(false);
-  };
-
-  const errorMessage = "Error during submission!";
-  const successMessage = "Submission Sucessful!";
+  const errorMessage = "Error During Submission!";
+  const successMessage = "Submission Successful!";
 
   if (state == "running") {
     buttonProps.endIcon = <CircularProgress size="1em" />;
   } else if (props.state == "error") {
-    if (!snackOpen) {
-      setSnackOpen(true);
-    }
     buttonProps.endIcon = <ErrorIcon />;
     setTimeout(() => {
       resetState();
     }, TIMEOUT_TIME);
   } else if (state == "ok") {
-    if (!snackOpen) {
-      setSnackOpen(true);
-    }
     buttonProps.endIcon = <CheckCircleIcon />;
     setTimeout(() => {
       resetState();
-      handleSnackClose();
     }, TIMEOUT_TIME);
   }
 
   return (
     <Box>
-      <Snackbar open={snackOpen} onClose={handleSnackClose}>
+      <Snackbar
+        open={state == "error" || state == "ok"}
+        //use short exit duration to avoid changes in alert state
+        transitionDuration={{ enter: 100, exit: 10 }}
+      >
         <Alert
-          onClose={handleSnackClose}
           severity={state == "error" ? "error" : "success"}
           variant="filled"
           sx={{ width: "100%" }}
         >
-          {state == "error" ? errorMessage : successMessage}
+          {props.message != null
+            ? props.message
+            : state == "error"
+              ? errorMessage
+              : successMessage}
         </Alert>
       </Snackbar>
       <Button {...buttonProps}></Button>
