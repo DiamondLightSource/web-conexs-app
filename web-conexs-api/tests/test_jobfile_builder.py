@@ -69,12 +69,39 @@ def test_orca_xas_filebuilder():
 
     assert "%tddft" in jobfile
     assert "H " in jobfile
+    assert "SARC-ZORA-TZVP" not in jobfile
 
     test_model.solvent = OrcaSolvent.Water
 
     jobfile = build_orca_input_file(test_model, test_structure)
 
     assert "CPCM(Water)" in jobfile
+
+
+def test_orca_xas_heavy_filebuilder():
+    test_simulation = Simulation(n_cores=1, memory=1)
+
+    test_model = OrcaSimulation(
+        basis_set="test",
+        functional="test",
+        multiplicity=1,
+        calculation_type=OrcaCalculation.xas,
+    )
+
+    test_model.simulation = test_simulation
+
+    test_structure = ChemicalStructure(
+        label="test",
+        person_id=1,
+        sites=[ChemicalSite(element_z=92, x=0, y=0, z=0, index=0)],
+        id=1,
+    )
+
+    jobfile = build_orca_input_file(test_model, test_structure)
+
+    assert "%tddft" in jobfile
+    assert "U " in jobfile
+    assert "SARC-ZORA-TZVP" in jobfile
 
 
 def test_orca_opt_filebuilder():

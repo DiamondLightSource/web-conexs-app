@@ -95,6 +95,14 @@ def build_orca_input_file(
 ):
     calc_type = orca_simulation.calculation_type
 
+    heavy = set()
+
+    for s in structure.sites:
+        # identify heavy elements for basis set replacement
+        if s.element_z > 36:
+            element = periodic_table_by_z[s.element_z]
+            heavy.add(element)
+
     if calc_type == OrcaCalculation.xes:
         prefix = "! UKS "
     else:
@@ -127,6 +135,12 @@ def build_orca_input_file(
     jobfile += "%maxcore " + str(memory_per_core) + "\n\n"
     jobfile += "%pal nprocs " + str(orca_simulation.simulation.n_cores) + "\n"
     jobfile += "end" + "\n\n"
+
+    if len(heavy) != 0:
+        jobfile += "%basis\n"
+        for h in heavy:
+            jobfile += "  NewGTO " + h + ' "SARC-ZORA-TZVP" end\n'
+        jobfile += "end\n\n"
 
     if calc_type == OrcaCalculation.xas:
         jobfile += "%tddft" + "\n"
