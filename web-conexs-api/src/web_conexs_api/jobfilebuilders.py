@@ -99,7 +99,7 @@ def build_orca_input_file(
 
     for s in structure.sites:
         # identify heavy elements for basis set replacement
-        if s.element_z > 36:
+        if s.element_z > 86:
             element = periodic_table_by_z[s.element_z]
             heavy.add(element)
 
@@ -108,13 +108,22 @@ def build_orca_input_file(
     else:
         prefix = "! "
 
-    jobfile = (
-        prefix
-        + orca_simulation.functional
-        + " DKH2 "
-        + orca_simulation.basis_set
-        + " SARC/J"
-    )
+    if "x2c" in orca_simulation.basis_set:
+        jobfile = (
+            prefix
+            + orca_simulation.functional
+            + " X2C "
+            + orca_simulation.basis_set
+            + " X2C/J"
+        )
+    else:
+        jobfile = (
+            prefix
+            + orca_simulation.functional
+            + " DKH2 "
+            + orca_simulation.basis_set
+            + " SARC/J"
+        )
 
     if calc_type == OrcaCalculation.opt:
         jobfile += " OPT "
