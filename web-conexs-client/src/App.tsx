@@ -12,7 +12,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SimulationReviewPage from "./components/SimulationReviewPage";
 import { UserProvider } from "./UserContext";
 
-import { ThemeProvider, DiamondTheme } from "@diamondlightsource/sci-react-ui";
 import QeSubmitPage from "./components/qe/QESubmitPage";
 import RequireAuth from "./components/RequireAuth";
 import SideDrawer from "./components/SideDrawer";
@@ -21,6 +20,7 @@ import MatProjPage from "./components/crystals/MatProjPage";
 import SimulationView from "./components/SimulationView";
 import AboutPage from "./components/AboutPage";
 import OrcaRegistrationPage from "./components/orca/OrcaRegistrationPage";
+import { DiamondTheme, ThemeProvider } from "@diamondlightsource/sci-react-ui";
 
 const queryClient = new QueryClient();
 
