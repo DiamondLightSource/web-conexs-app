@@ -11,7 +11,7 @@ classifiers = [
 ]
 description = "REST api for conexs simulation-as-a-service platform"
 dependencies = [
-    "fastapi",
+    "fastapi < 0.137.0",
     "uvicorn[standard]",
     "sqlmodel",
     "fastapi-pagination",
