@@ -149,6 +149,8 @@ def build_orca_input_file(
         jobfile += "%basis\n"
         for h in heavy:
             jobfile += "  NewGTO " + h + ' "SARC-ZORA-TZVP" end\n'
+            jobfile += "  AddAuxJGTO " + h + ' "AutoAux" end\n'
+        jobfile += "  AutoAuxLMax true\n"
         jobfile += "end\n\n"
 
     if calc_type == OrcaCalculation.xas:
