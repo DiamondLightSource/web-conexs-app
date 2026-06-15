@@ -1,11 +1,9 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import Header from "./Header";
 import { ThemeProvider } from "@mui/material";
 import { DiamondTheme } from "@diamondlightsource/sci-react-ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useContext } from "react";
-import { UserContext } from "../UserContext";
+import ClusterBadge from "./ClusterBadge";
 
 const queryClient = new QueryClient();
 
@@ -18,20 +16,22 @@ const themeProvider = ({ children }) => {
   );
 };
 
-describe("App", () => {
-  it("renders the App component", () => {
-    render(
-      <UserContext.Provider
-        value={{
-          person: { identifier: "test_user", accepted_orca_eula: false },
-          person_status: "OK",
-        }}
-      >
-        <Header />
-      </UserContext.Provider>,
-      { wrapper: themeProvider },
-    );
+vi.mock("../queryfunction", () => {
+  return {
+    getClusterStatus: () => {
+      return { updated: Date.now().toString(), id: 1 };
+    },
+  };
+});
 
-    expect(screen.getByText("test_user")).toBeDefined();
+describe("App", () => {
+  it("renders the App component", async () => {
+    render(<ClusterBadge />, { wrapper: themeProvider });
+
+    await waitFor(() =>
+      expect(screen.getByTestId("chiptooltip").ariaLabel).toContain(
+        "submitted immediately",
+      ),
+    );
   });
 });

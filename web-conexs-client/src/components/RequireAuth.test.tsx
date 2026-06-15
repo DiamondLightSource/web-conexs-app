@@ -1,10 +1,10 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it, vi } from "vitest";
+import { describe, expect, it } from "vitest";
 import Header from "./Header";
-import { ThemeProvider } from "@mui/material";
+import { ThemeProvider, Typography } from "@mui/material";
 import { DiamondTheme } from "@diamondlightsource/sci-react-ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useContext } from "react";
+import RequireAuth from "./RequireAuth";
 import { UserContext } from "../UserContext";
 
 const queryClient = new QueryClient();
@@ -19,7 +19,7 @@ const themeProvider = ({ children }) => {
 };
 
 describe("App", () => {
-  it("renders the App component", () => {
+  it("renders the child", () => {
     render(
       <UserContext.Provider
         value={{
@@ -27,11 +27,35 @@ describe("App", () => {
           person_status: "OK",
         }}
       >
-        <Header />
+        <RequireAuth requireOrcaEULA={false}>
+          <Typography>Passed</Typography>
+        </RequireAuth>
+        ,
       </UserContext.Provider>,
+
       { wrapper: themeProvider },
     );
 
-    expect(screen.getByText("test_user")).toBeDefined();
+    expect(screen.getByText("Passed")).toBeDefined();
+  });
+
+  it("doesnt render the child", () => {
+    render(
+      <UserContext.Provider
+        value={{
+          person: { identifier: "test_user", accepted_orca_eula: false },
+          person_status: "FORBIDDEN",
+        }}
+      >
+        <RequireAuth requireOrcaEULA={false}>
+          <Typography>Passed</Typography>
+        </RequireAuth>
+        ,
+      </UserContext.Provider>,
+
+      { wrapper: themeProvider },
+    );
+
+    expect(screen.getByText("not authorised", { exact: false })).toBeDefined();
   });
 });
