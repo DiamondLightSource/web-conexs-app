@@ -62,8 +62,8 @@ export default function MoleculeEditor(props: {
         isFractional={false}
         setFull={(structure) => {
           if (!isCrystalInput(structure)) {
-            props.setMolecule(structure);
             updateLabel(structure.label);
+            props.setMolecule(structure);
           }
         }}
         triggerRender={props.triggerRender}
