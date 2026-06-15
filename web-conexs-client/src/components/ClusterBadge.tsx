@@ -36,7 +36,7 @@ export default function ClusterBadge() {
   }
 
   return (
-    <Tooltip title={status} arrow>
+    <Tooltip data-testid="chiptooltip" title={status} arrow>
       <Box>
         <Chip
           sx={{
@@ -46,6 +46,7 @@ export default function ClusterBadge() {
           size="large"
           variant="outlined"
           label="HPC"
+          data-testid="chip"
           icon={
             <StorageIcon
               color={theme.palette.primary.contrastText}
