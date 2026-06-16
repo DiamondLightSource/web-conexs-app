@@ -439,7 +439,9 @@ def pymatstruct_to_crystal(structure: Structure, label="materials project struct
         gamma=structure.lattice.gamma,
     )
 
-    s = CrystalStructureInput(label=label, sites=site_list, lattice=lattice)
+    full_label = label + f" ({structure.formula})"
+
+    s = CrystalStructureInput(label=full_label, sites=site_list, lattice=lattice)
 
     return s
 

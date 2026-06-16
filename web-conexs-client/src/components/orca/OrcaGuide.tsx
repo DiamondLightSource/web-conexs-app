@@ -134,15 +134,20 @@ export default function OrcaGuide() {
           </Typography>
           <Typography margin="10px">
             We recommend trying each of the functionals, look for differences in
-            the final geometries af- ter optimisation and spectra after XAS and
+            the final geometries after optimisation and spectra after XAS and
             XES calculations. Note that the hybrid functional B3LYP can be
             considered “the most accurate” available on Web-CONEXS.
           </Typography>
           <Typography margin="10px">
             Basis sets increase in size with def-SVP being the smallest and
-            def-TZVP being the largest. Similarly we recommend exploring each of
-            these, but it is worth noting that molecules with heavier elements
-            will require the larger def-TZVP basis set for calculation.
+            x2c-TZVPall being the largest. Similarly we recommend exploring each
+            of these, but it is worth noting that molecules with heavier
+            elements will require specific basis sets for calculation. For
+            systems which contain elements beyond atomic number 36 select basis
+            set x2c-TZVPall, which provides an all-electron description of
+            elements up to and including Rn. For systems containing Lanthanide
+            and Actinide elements Web-CONEXS automatically applies the
+            SARC-ZORA-TZVP basis set for these elements.
           </Typography>
           <Typography
             margin="0px 10px"
