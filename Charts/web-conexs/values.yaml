@@ -187,6 +187,7 @@ oauth2-proxy:
     hosts: []
     path: /
     annotations:
+      nginx.ingress.kubernetes.io/proxy-body-size: "10M"
       nginx.ingress.kubernetes.io/proxy-buffer-size: "8k"
   alphaConfig:
     enabled: true
