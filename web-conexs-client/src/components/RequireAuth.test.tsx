@@ -1,6 +1,5 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
-import Header from "./Header";
 import { ThemeProvider, Typography } from "@mui/material";
 import { DiamondTheme } from "@diamondlightsource/sci-react-ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
