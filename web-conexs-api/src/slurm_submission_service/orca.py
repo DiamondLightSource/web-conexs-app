@@ -55,7 +55,7 @@ def submit_orca(session, sim: Simulation):
             + "}\n"
             + "trap 'cleanup' EXIT\n"
             + "cut(){ if [ -f orca_result.full_log ]; then\n"
-            + "tail orca_result.full_log -n 100 > orca_result.txt;fi }\n"
+            + "tail orca_result.full_log -n 300 > orca_result.txt;fi }\n"
             + "cutter(){ while true; do cut; sleep 10; done }\n"
             + "cutter &\n"
             + f"singularity exec {orca_sif}"
