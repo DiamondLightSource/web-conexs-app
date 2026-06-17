@@ -10,9 +10,8 @@ import {
 } from "@h5web/lib";
 import "@h5web/lib/dist/styles.css";
 
-import GridOnIcon from "@mui/icons-material/GridOn";
-
 import Paper from "@mui/material/Paper";
+import { MdGridOn } from "react-icons/md";
 
 import { Theme, useTheme } from "@mui/material";
 import { ReactElement, useState } from "react";
@@ -20,7 +19,6 @@ import { ReactElement, useState } from "react";
 import ndarray from "ndarray";
 import { Box } from "@mui/material";
 import { XASData } from "../models";
-// import { XASData } from "../models";
 
 // function CurveOption(props: { option: CurveType }) {
 //   const { option } = props;
@@ -90,6 +88,8 @@ function XASChart(props: { xas: XASData }) {
   const domain = getDomain(ydata);
   const domainx = getDomain(xdata);
 
+  console.log("RENDER");
+
   return (
     <Paper
       sx={{
@@ -105,7 +105,7 @@ function XASChart(props: { xas: XASData }) {
           <ToggleBtn
             label="Grid"
             value={useGrid}
-            icon={GridOnIcon}
+            Icon={MdGridOn}
             onToggle={() => setUseGrid(!useGrid)}
           ></ToggleBtn>
         </Toolbar>
@@ -114,12 +114,15 @@ function XASChart(props: { xas: XASData }) {
         <VisCanvas
           abscissaConfig={{
             showGrid: useGrid,
-            visDomain: domainx,
+            visDomain: domainx ? domainx : [0, 1],
             label: "Energy / eV",
+            formatTick: (val) => {
+              return val.toFixed(2);
+            },
           }}
           ordinateConfig={{
             showGrid: useGrid,
-            visDomain: domain,
+            visDomain: domain ? domain : [0, 1],
           }}
         >
           <DefaultInteractions />

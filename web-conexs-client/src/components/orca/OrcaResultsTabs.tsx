@@ -47,22 +47,22 @@ function getTabs(calcType: string, id: number, value: number) {
     panels.push(
       <CustomTabPanel key={index} value={value} index={index++}>
         <OrcaXYZViewer id={id} />
-      </CustomTabPanel>
+      </CustomTabPanel>,
     );
   }
 
   if (calcType == "xas") {
     tabs.push(<Tab key={index} label="XAS Plot" {...a11yProps(index)} />);
     panels.push(
-      <CustomTabPanel value={value} index={index++}>
+      <CustomTabPanel key={index} value={value} index={index++}>
         <OrcaChart id={id}></OrcaChart>
-      </CustomTabPanel>
+      </CustomTabPanel>,
     );
     tabs.push(<Tab key={index} label="Orbital Viewer" {...a11yProps(index)} />);
     panels.push(
       <CustomTabPanel key={index} value={value} index={index++}>
         <OrcaOrbitalView id={id} />
-      </CustomTabPanel>
+      </CustomTabPanel>,
     );
   }
 
@@ -71,7 +71,7 @@ function getTabs(calcType: string, id: number, value: number) {
     panels.push(
       <CustomTabPanel key={index} value={value} index={index++}>
         <OrcaChart id={id}></OrcaChart>
-      </CustomTabPanel>
+      </CustomTabPanel>,
     );
   }
 
@@ -80,7 +80,7 @@ function getTabs(calcType: string, id: number, value: number) {
     panels.push(
       <CustomTabPanel key={index} value={value} index={index++}>
         <OrcaCoreOrbitals id={id} />
-      </CustomTabPanel>
+      </CustomTabPanel>,
     );
   }
 
@@ -88,14 +88,14 @@ function getTabs(calcType: string, id: number, value: number) {
   panels.push(
     <CustomTabPanel key={index} value={value} index={index++}>
       <OrcaLogViewer id={id} />
-    </CustomTabPanel>
+    </CustomTabPanel>,
   );
 
   tabs.push(<Tab key={index} label="Input Job File" {...a11yProps(index)} />);
   panels.push(
     <CustomTabPanel key={index} value={value} index={index++}>
       <OrcaJobFileViewer id={id} />
-    </CustomTabPanel>
+    </CustomTabPanel>,
   );
 
   return [tabs, panels];
