@@ -21,7 +21,6 @@ api:
     replicas: 1
     image:
       repository: ghcr.io/diamondlightsource/web-conexs-app-web-conexs-api
-      tag: latest
     resources:
       limits:
         cpu: "1"
@@ -42,7 +41,6 @@ client:
     replicas: 1
     image:
       repository: ghcr.io/diamondlightsource/web-conexs-app-web-conexs-client
-      tag: latest
     resources:
       limits:
         cpu: "1"
