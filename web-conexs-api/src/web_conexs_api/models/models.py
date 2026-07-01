@@ -247,14 +247,17 @@ class OrcaCubeInfo(SQLModel):
     intensity: float
 
 
+class OrcaCoreElectrons(SQLModel):
+    index: List[int]
+    energy: List[float]
+    percent: List[float]
+    orbital: List[str]
+
+
 class OrcaCoreOrbitalInfo(SQLModel):
-    el: str
-    idx: int
-    orb_1s: Optional[int] = None
-    orb_2s: Optional[int] = None
-    orb_2px: Optional[int] = None
-    orb_2py: Optional[int] = None
-    orb_2pz: Optional[int] = None
+    element: str
+    index: int
+    electrons: OrcaCoreElectrons
 
 
 class OrcaSpectrumInput(SQLModel):

@@ -37,7 +37,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 function OrbitalMetadata(props: {
   key: number;
-  popInfo: OrcaCoreOrbitalInfo | null;
+  index: number;
+  orbital: string;
+  percent: number;
+  energy: number;
   selectedRow: number;
   clickRow: (index: number) => void;
 }): JSX.Element {
@@ -50,32 +53,15 @@ function OrbitalMetadata(props: {
       selected={props.selectedRow === props.key}
       sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
     >
-      <StyledTableCell align="left">
-        {props.popInfo?.idx ?? "\xa0"}
-      </StyledTableCell>
-      <StyledTableCell align="center">
-        {props.popInfo?.el ?? ""}
-      </StyledTableCell>
-      <StyledTableCell align="center">
-        {props.popInfo?.orb_1s ?? ""}
-      </StyledTableCell>
-      <StyledTableCell align="center">
-        {props.popInfo?.orb_2s ?? ""}
-      </StyledTableCell>
-      <StyledTableCell align="center">
-        {props.popInfo?.orb_2px ?? ""}
-      </StyledTableCell>
-      <StyledTableCell align="center">
-        {props.popInfo?.orb_2py ?? ""}
-      </StyledTableCell>
-      <StyledTableCell align="center">
-        {props.popInfo?.orb_2pz ?? ""}
-      </StyledTableCell>
+      <StyledTableCell align="left">{props.index}</StyledTableCell>
+      <StyledTableCell align="center">{props.orbital}</StyledTableCell>
+      <StyledTableCell align="center">{props.percent}</StyledTableCell>
+      <StyledTableCell align="center">{props.energy}</StyledTableCell>
     </StyledTableRow>
   );
 }
 export default function CoreOrbitalTable(props: {
-  population: OrcaCoreOrbitalInfo[];
+  orbitalInfo: OrcaCoreOrbitalInfo | null;
 }) {
   const [selectedRow, setSelectedRow] = useState(0);
 
@@ -83,29 +69,35 @@ export default function CoreOrbitalTable(props: {
     setSelectedRow(index);
   };
 
+  if (props.orbitalInfo == null) {
+    return <Box></Box>;
+  }
+
+  const orbInfo: OrcaCoreOrbitalInfo = props.orbitalInfo;
+
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
       <TableContainer component={Paper} sx={{ height: "20em" }}>
         <Table sx={{ minWidth: 350 }} size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
-              <TableCell align="left">Atom</TableCell>
-              <TableCell align="center">Element</TableCell>
-              <TableCell align="center">1s</TableCell>
-              <TableCell align="center">2s</TableCell>
-              <TableCell align="center">2px </TableCell>
-              <TableCell align="center">2py</TableCell>
-              <TableCell align="center">2pz</TableCell>
+              <TableCell align="left">Electron Index</TableCell>
+              <TableCell align="center">Orbital</TableCell>
+              <TableCell align="center">Percent Population</TableCell>
+              <TableCell align="center">Energy </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {props.population.map((orbital, key) =>
+            {orbInfo.electrons.index.map((i, key) =>
               OrbitalMetadata({
                 key: key,
-                popInfo: orbital,
+                index: i,
+                energy: orbInfo.electrons.energy[key],
+                orbital: orbInfo.electrons.orbital[key],
+                percent: orbInfo.electrons.percent[key],
                 selectedRow: selectedRow,
                 clickRow: clickRow,
-              })
+              }),
             )}
           </TableBody>
         </Table>

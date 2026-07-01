@@ -117,8 +117,7 @@ export interface OrcaSimulation extends OrcaSimulationInput {
 }
 
 export interface QESimulationSubmission
-  extends QESimulationInput,
-    SimulationInputBase {}
+  extends QESimulationInput, SimulationInputBase {}
 
 export const orcaDefaultValues: OrcaSimulationInput = {
   calculation_type: "xas",
@@ -163,14 +162,17 @@ export interface OrcaCubeInfo {
   intensity: number;
 }
 
+export interface OrcaCoreElectrons {
+  index: number[];
+  energy: number[];
+  percent: number[];
+  orbital: string[];
+}
+
 export interface OrcaCoreOrbitalInfo {
-  el: string;
-  idx: number;
-  orb_1s: number | undefined;
-  orb_2s: number | undefined;
-  orb_2px: number | undefined;
-  orb_2py: number | undefined;
-  orb_2pz: number | undefined;
+  element: string;
+  index: number;
+  electrons: OrcaCoreElectrons;
 }
 
 export interface QESimulation extends QESimulationInput {
