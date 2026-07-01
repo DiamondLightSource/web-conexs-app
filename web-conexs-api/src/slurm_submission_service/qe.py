@@ -20,6 +20,8 @@ WFC_DIR = os.environ.get("WFC_DIR")
 QE_IMAGE = os.environ.get("QE_IMAGE")
 CONTAINER_IMAGE_DIR = os.environ.get("CONTAINER_IMAGE_DIR")
 
+CONEXS_N_CORES = int(os.environ.get("CONEXS_N_CORES", "16"))
+
 
 def submit_qe(session, sim: Simulation):
     jobfile, absorbing_atom, abs_edge, pp, pp_abs = get_qe_jobfile(session, sim.id)
@@ -63,13 +65,13 @@ def submit_qe(session, sim: Simulation):
     script = (
         "#!/bin/bash\n"
         + f"singularity exec {qe_sif} mpirun"
-        + f" -np {sim.n_cores} pw.x -in job.inp > result.pwo \n"
+        + f" -np {CONEXS_N_CORES} pw.x -in job.inp > result.pwo \n"
         + f"singularity exec {qe_sif} mpirun"
-        + f" -np {sim.n_cores} xspectra.x -in 0.xspectra_input.inp > xspectra.out\n"
+        + f" -np {CONEXS_N_CORES} xspectra.x -in 0.xspectra_input.inp > xspectra.out\n"
         + f"singularity exec {qe_sif} mpirun"
-        + f" -np {sim.n_cores} xspectra.x -in 1.xspectra_input.inp >> xspectra.out\n"
+        + f" -np {CONEXS_N_CORES} xspectra.x -in 1.xspectra_input.inp >> xspectra.out\n"
         + f"singularity exec {qe_sif} mpirun"
-        + f" -np {sim.n_cores} xspectra.x -in 2.xspectra_input.inp >> xspectra.out\n"
+        + f" -np {CONEXS_N_CORES} xspectra.x -in 2.xspectra_input.inp >> xspectra.out\n"
         + "paste 100xanes.dat 010xanes.dat 001xanes.dat | tail -n +5 |"
         + " awk '{print $1, $2+$4+$6}' > xanes.dat"
     )

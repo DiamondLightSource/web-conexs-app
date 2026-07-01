@@ -188,8 +188,6 @@ CREATE TABLE simulation (
     person_id INTEGER NOT NULL,
     chemical_structure_id INTEGER NOT NULL,
     working_directory TEXT,
-    n_cores INTEGER NOT NULL DEFAULT 4,
-    memory INTEGER NOT NULL DEFAULT 32,
     status simulation_status_enum DEFAULT 'requested',
     message TEXT,
     job_id INTEGER,

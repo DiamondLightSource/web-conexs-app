@@ -141,8 +141,7 @@ class SimulationBase(SQLModel):
     chemical_structure_id: Optional[int] = Field(
         foreign_key="chemical_structure.id", default=None
     )
-    n_cores: int
-    memory: int
+
     message: Optional[str] = None
     job_id: Optional[int] = None
     request_date: Optional[datetime.datetime]
