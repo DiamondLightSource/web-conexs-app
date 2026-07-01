@@ -1,43 +1,62 @@
 import json
 
+EXCLUDED_ATOMS = {"H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne"}
 
-def parse_block(fh, indices):
+
+def parse_block(fh, indices, atoms_info_list):
+    en_line = next(fh)
+    enes = [float(val) for val in en_line.strip().split()]
     next(fh)
     next(fh)
-    next(fh)
-    labels = []
     ncols = len(indices)
-    datasets = []
-
-    for i in range(ncols):
-        datasets.append([])
 
     for line in fh:
         if line.strip() == "":
             break
 
         vals = line.strip().split()
-        labels.append(vals[:3])
 
-        for i in range(ncols):
-            datasets[i].append(float(vals[3 + i]))
+        if vals[1] in EXCLUDED_ATOMS:
+            continue
 
-    output = []
+        index = int(vals[0])
 
-    for i in range(ncols):
-        if max(datasets[i]) > 75:
-            output.append(labels[datasets[i].index(max(datasets[i]))] + [indices[i]])
+        if atoms_info_list[index] is None:
+            atom = {"element": vals[1]}
+            atom["index"] = index
+            electron_info = {"index": [], "percent": [], "energy": [], "orbital": []}
+            atom["electrons"] = electron_info
+            atoms_info_list[index] = atom
 
-    return output
+        info = atoms_info_list[index]
+        el = info["electrons"]
+
+        if vals[2] in {"s", "px", "py", "pz"}:
+            for i in range(ncols):
+                fval = float((vals[3 + i]))
+                if fval > 0.5 and sum(el["percent"]) < 500:
+                    el["index"].append(indices[i])
+                    el["percent"].append(fval)
+                    el["orbital"].append(vals[2])
+                    el["energy"].append(enes[i])
 
 
 def parse(fh):
     in_region = False
 
-    all_aos = []
+    atoms_info_list = None
+
+    n_atoms = None
 
     for line in fh:
+        if n_atoms is None and line.startswith("Number of atoms"):
+            n_atoms = int(line.strip().split()[-1])
+            atoms_info_list = [None] * n_atoms
+
         if "LOEWDIN REDUCED ORBITAL POPULATIONS PER MO" in line:
+            if n_atoms is None:
+                print("Could not determine number of atoms!")
+                exit(1)
             in_region = True
             # skip 2
             next(fh)
@@ -52,45 +71,24 @@ def parse(fh):
             if line.strip() == "":
                 break
             indices = [int(val) for val in line.strip().split()]
-            result = parse_block(fh, indices)
+            parse_block(fh, indices, atoms_info_list)
 
-            if len(result) != 0:
-                all_aos.extend(result)
+    atoms_info_list = list(filter(None, atoms_info_list))
 
-    atom_info_map = {}
+    # Sort all lists by electron index
+    for atom in atoms_info_list:
+        el = atom["electrons"]
+        if len(el["index"]) == 0:
+            continue
+        t = sorted(zip(el["index"], el["percent"], el["energy"], el["orbital"]))
+        a, b, c, d = zip(*t)
+        el["index"] = list(a)
+        el["percent"] = list(b)
+        el["energy"] = list(c)
+        el["orbital"] = list(d)
 
-    for i in range(len(all_aos)):
-        n = int(all_aos[i][0])
-        v = atom_info_map.get(n, {})
-
-        orb = all_aos[i][2]
-
-        if "el" not in v:
-            v["el"] = all_aos[i][1]
-
-        if "idx" not in v:
-            v["idx"] = n
-
-        if orb == "s":
-            if "orb_1s" not in v:
-                v["orb_1s"] = all_aos[i][3]
-            elif "orb_2s" not in v:
-                v["orb_2s"] = all_aos[i][3]
-        elif orb == "px":
-            if "orb_2px" not in v:
-                v["orb_2px"] = all_aos[i][3]
-        elif orb == "py":
-            if "orb_2py" not in v:
-                v["orb_2py"] = all_aos[i][3]
-        elif orb == "pz":
-            if "orb_2pz" not in v:
-                v["orb_2pz"] = all_aos[i][3]
-        atom_info_map[n] = v
-
-    atom_info_out = list(atom_info_map.values())
-    atom_info_out.sort(key=lambda v: v["idx"])
     with open("orbitals.json", "w") as jf:
-        json.dump(atom_info_out, jf)
+        json.dump(atoms_info_list, jf)
 
 
 if __name__ == "__main__":
