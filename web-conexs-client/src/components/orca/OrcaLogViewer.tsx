@@ -10,11 +10,12 @@ export default function OrcaLogViewer(props: { id: number }) {
 
   return (
     <Typography
-      fontSize={{ xs: "8px", sm: "10px", md: "12px", lg: "16px" }}
+      fontSize="16px"
       sx={{
         fontFamily: "Monospace",
         whiteSpace: "pre-wrap",
         overflow: "auto",
+        overflowWrap: "anywhere",
       }}
     >
       {query.data ? query.data : "No Log"}

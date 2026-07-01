@@ -13,7 +13,17 @@ import {
   XASData,
 } from "../models";
 
-const orcaMockOutput = "********\n**ORCA RESULT**\n********";
+let orcaMockOutput =
+  "     ***************\n     **ORCA RESULT**\n     ***************\nBut with like a really,really,really,really," +
+  "really,really,really,really,really,really,really,really," +
+  "really,really,really,really,really,really,really,really," +
+  "really,really,really,really,really,really,really,really," +
+  " unbroken long line\n";
+
+for (let i = 0; i < 100; i++) {
+  orcaMockOutput += "And more text \n";
+}
+
 const orcaMockJobfile = "********\n**ORCA JOBFILE**\n********";
 
 const mockCrystalStructure: Crystal = {
