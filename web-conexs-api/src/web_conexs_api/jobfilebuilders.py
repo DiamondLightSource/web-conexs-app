@@ -1,5 +1,6 @@
 import io
 import logging
+import os
 from pathlib import Path
 from typing import List
 
@@ -25,6 +26,9 @@ from .models.models import (
 from .periodictable import elements, periodic_table_by_z
 
 logger = logging.getLogger(__name__)
+
+CONEXS_N_CORES = int(os.environ.get("CONEXS_N_CORES", "16"))
+CONEXS_MEMORY = int(os.environ.get("CONEXS_MEMORY", "49152"))
 
 
 def sites_to_string(sites: List[ChemicalSite], use_symbol=True, absorbing_index=None):
@@ -137,12 +141,10 @@ def build_orca_input_file(
         jobfile += "!ReducedPop UNO\n"
         jobfile += "%output\nPrint[P_ReducedOrbPopMO_L] 1\nend\n"
 
-    memory_per_core = int(
-        ((orca_simulation.simulation.memory) / 1.3) / orca_simulation.simulation.n_cores
-    )
+    memory_per_core = int(((CONEXS_MEMORY) / 1.3) / CONEXS_N_CORES)
 
     jobfile += "%maxcore " + str(memory_per_core) + "\n\n"
-    jobfile += "%pal nprocs " + str(orca_simulation.simulation.n_cores) + "\n"
+    jobfile += "%pal nprocs " + str(CONEXS_N_CORES) + "\n"
     jobfile += "end" + "\n\n"
 
     if len(heavy) != 0:

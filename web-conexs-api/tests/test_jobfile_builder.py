@@ -22,7 +22,7 @@ from web_conexs_api.models.models import (
 
 
 def test_orca_scf_filebuilder():
-    test_simulation = Simulation(n_cores=1, memory=1)
+    test_simulation = Simulation()
 
     test_model = OrcaSimulation(
         basis_set="test",
@@ -47,7 +47,7 @@ def test_orca_scf_filebuilder():
 
 
 def test_orca_xas_filebuilder():
-    test_simulation = Simulation(n_cores=1, memory=1)
+    test_simulation = Simulation()
 
     test_model = OrcaSimulation(
         basis_set="test",
@@ -79,7 +79,7 @@ def test_orca_xas_filebuilder():
 
 
 def test_orca_xas_heavy_filebuilder():
-    test_simulation = Simulation(n_cores=1, memory=1)
+    test_simulation = Simulation()
 
     test_model = OrcaSimulation(
         basis_set="test",
@@ -105,7 +105,7 @@ def test_orca_xas_heavy_filebuilder():
 
 
 def test_orca_opt_filebuilder():
-    test_simulation = Simulation(n_cores=1, memory=1)
+    test_simulation = Simulation()
 
     test_model = OrcaSimulation(
         basis_set="test",
@@ -130,7 +130,7 @@ def test_orca_opt_filebuilder():
 
 
 def test_qe_filebuilder():
-    test_simulation = Simulation(n_cores=1)
+    test_simulation = Simulation()
     test_model = QESimulation(
         absorbing_atom=1, edge=QEEdge.k, conductivity=ConductivityType.metallic
     )
@@ -263,7 +263,7 @@ def test_qe_filebuilder():
 
 
 def test_fdmnes_crystal_filebuilder():
-    test_simulation = Simulation(n_cores=1)
+    test_simulation = Simulation()
     test_model = FdmnesSimulation(edge=Edge.k, greens_approach=True, element=1)
 
     test_model.simulation = test_simulation
@@ -309,7 +309,7 @@ def test_fdmnes_molecule_to_crystal():
 
     # TODO check crystal
 
-    test_simulation = Simulation(n_cores=1)
+    test_simulation = Simulation()
     test_model = FdmnesSimulation(edge=Edge.k, greens_approach=True, element=1)
     test_model.simulation = test_simulation
     job_file = build_fdmnes_inputfile(test_model, crystal, True)
