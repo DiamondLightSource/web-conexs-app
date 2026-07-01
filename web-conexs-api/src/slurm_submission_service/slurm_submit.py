@@ -31,6 +31,7 @@ SLURM_RESPONSE_KEY = os.environ.get("SLURM_RESPONSE_KEY", "account")
 SLURM_TIME_LIMIT = os.environ.get("SLURM_TIME_LIMIT", "30")
 
 CONEXS_N_CORES = int(os.environ.get("CONEXS_N_CORES", "16"))
+CONEXS_MEMORY = int(os.environ.get("CONEXS_MEMORY", "49152"))
 
 JOB_RUNNING = "RUNNING"
 JOB_COMPLETED = "COMPLETED"
@@ -121,7 +122,7 @@ def submit_simulation(script, job_name, sim, user, session, as_tasks):
 
     try:
         job_id = build_job_and_run(
-            script, job_name, CONEXS_N_CORES, sim.memory, cluster_dir, as_tasks
+            script, job_name, CONEXS_N_CORES, CONEXS_MEMORY, cluster_dir, as_tasks
         )
         sim.job_id = job_id
         sim.working_directory = job_name
