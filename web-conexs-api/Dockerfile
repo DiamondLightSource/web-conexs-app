@@ -1,29 +1,42 @@
 # The devcontainer should use the developer target and run as root with podman
 # or docker with user namespaces.
-ARG PYTHON_VERSION=3.11
-FROM python:${PYTHON_VERSION} AS developer
+FROM astral/uv:python3.11-trixie AS developer
 
 # Add any system dependencies for the developer/build environment here
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    graphviz \
+    graphviz git\
     libldap2-dev libsasl2-dev slapd ldap-utils \
     && rm -rf /var/lib/apt/lists/*
 
-# Set up a virtual environment and put it in PATH
-RUN python -m venv /venv
-ENV PATH=/venv/bin:$PATH
 
-# The build stage installs the context into the venv
 FROM developer AS build
-COPY . /context
-WORKDIR /context
-RUN touch dev-requirements.txt && pip install -c dev-requirements.txt .
 
-# The runtime stage copies the built venv into a slim runtime container
-FROM python:${PYTHON_VERSION}-slim AS runtime
+# Change the working directory to the `app` directory
+# and copy in the project
+WORKDIR /app
+COPY . /app
+RUN chmod o+wrX .
+
+# Tell uv sync to install python in a known location so we can copy it out later
+ENV UV_PYTHON_INSTALL_DIR=/python
+
+# Sync the project without its dev dependencies
+RUN --mount=type=cache,target=/root/.cache/uv \
+    uv sync --locked --no-editable --no-dev --managed-python
+# The runtime stage copies the built venv into a runtime container
+FROM ubuntu:resolute AS runtime
+
 # Add apt-get system dependecies for runtime here if needed
-COPY --from=build /venv/ /venv/
-ENV PATH=/venv/bin:$PATH
+# RUN apt-get update -y && apt-get install -y --no-install-recommends \
+#     some-library \
+#     && apt-get dist-clean
+
+# Copy the python installation from the build stage
+COPY --from=build /python /python
+
+# Copy the environment, but not the source code
+COPY --from=build /app/.venv /app/.venv
+ENV PATH=/app/.venv/bin:$PATH
 
 RUN apt-get update && apt-get install libpq5 libldap2-dev libsasl2-dev slapd ldap-utils -y
 

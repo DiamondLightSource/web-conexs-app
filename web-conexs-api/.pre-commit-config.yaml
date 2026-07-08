@@ -3,6 +3,7 @@ repos:
     rev: v4.5.0
     hooks:
       - id: check-added-large-files
+        exclude: ^web-conexs-api/uv.lock
       - id: check-yaml
         exclude: ^Charts/web-conexs/templates/
         args: [--allow-multiple-documents]
