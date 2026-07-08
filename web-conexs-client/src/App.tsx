@@ -12,7 +12,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import SimulationReviewPage from "./components/SimulationReviewPage";
 import { UserProvider } from "./UserContext";
 
-import { ThemeProvider, DiamondTheme } from "@diamondlightsource/sci-react-ui";
+import {
+  ThemeProvider,
+  DiamondDSTheme,
+} from "@diamondlightsource/sci-react-ui";
 import QeSubmitPage from "./components/qe/QESubmitPage";
 import RequireAuth from "./components/RequireAuth";
 import SideDrawer from "./components/SideDrawer";
@@ -26,7 +29,7 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <ThemeProvider theme={DiamondTheme}>
+    <ThemeProvider theme={DiamondDSTheme}>
       <CssBaseline />
       <QueryClientProvider client={queryClient}>
         <UserProvider>
