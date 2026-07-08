@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import Header from "./Header";
 import { ThemeProvider } from "@mui/material";
-import { DiamondTheme } from "@diamondlightsource/sci-react-ui";
+import { DiamondDSTheme } from "@diamondlightsource/sci-react-ui";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { UserContext } from "../UserContext";
 
@@ -12,7 +12,7 @@ const queryClient = new QueryClient();
 const themeProvider = ({ children }) => {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={DiamondTheme}>{children}</ThemeProvider>
+      <ThemeProvider theme={DiamondDSTheme}>{children}</ThemeProvider>
     </QueryClientProvider>
   );
 };
