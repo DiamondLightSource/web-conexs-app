@@ -36,18 +36,17 @@ export function MolStarCrystalWrapper(props: {
 
       const data = await molstar.current.builders.data.rawData(
         { data: props.cif! },
-        { state: { isGhost: true } }
+        { state: { isGhost: true } },
       );
 
       const trajectory =
         await molstar.current.builders.structure.parseTrajectory(
           data,
-          "cifCore"
+          "cifCore",
         );
 
-      const model = await molstar.current.builders.structure.createModel(
-        trajectory
-      );
+      const model =
+        await molstar.current.builders.structure.createModel(trajectory);
 
       const s = await molstar.current.builders.structure.createStructure(model);
 
@@ -78,7 +77,7 @@ export function MolStarCrystalWrapper(props: {
       const hierarchy =
         await molstar.current.builders.structure.hierarchy.applyPreset(
           trajectory,
-          "default"
+          "default",
         );
 
       const struct = hierarchy!.structure.data!;
