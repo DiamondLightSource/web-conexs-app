@@ -100,10 +100,9 @@ export default function Header() {
       }
       logo={undefined}
       rightSlot={
-        <Stack direction="row" alignItems="center">
+        <Stack direction="row" alignItems="center" spacing="10px">
           <ClusterBadge />
           <User
-            colour="white"
             onLogin={handleLogin}
             onLogout={handleLogout}
             user={

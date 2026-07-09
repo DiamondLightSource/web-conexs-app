@@ -12,6 +12,7 @@ import PublishIcon from "@mui/icons-material/Publish";
 import StateIconButton from "../StateIconButton";
 import useStateIconButton from "../useStateIconButton";
 import { defaultMolecule } from "../../defaultstructures";
+import MoleculeIcon from "../icons/MoleculeIcon";
 
 export default function CreateMoleculePage() {
   const [molecule, setMolecule] = useState<MoleculeInput | null>(
@@ -51,7 +52,12 @@ export default function CreateMoleculePage() {
 
   return (
     <MainPanel
-      toolbarElements={<Typography variant="h5">Create Molecule</Typography>}
+      toolbarElements={
+        <Stack direction="row" spacing="5px" alignItems="center">
+          <MoleculeIcon />
+          <Typography variant="h5">Create Molecule</Typography>
+        </Stack>
+      }
     >
       <Stack
         direction={{ sm: "column", md: "row" }}

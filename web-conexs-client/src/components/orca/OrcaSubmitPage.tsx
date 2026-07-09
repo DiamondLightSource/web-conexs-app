@@ -4,6 +4,7 @@ import { useState } from "react";
 import StructureViewer from "../StructureViewer";
 import OrcaGuide from "./OrcaGuide";
 import OrcaForm from "./OrcaForm";
+import MoleculeIcon from "../icons/MoleculeIcon";
 
 export default function OrcaSubmitPage() {
   const [structureId, setStructureId] = useState<undefined | number>(undefined);
@@ -11,7 +12,10 @@ export default function OrcaSubmitPage() {
   return (
     <MainPanel
       toolbarElements={
-        <Typography variant="h5">Submit Orca Simulation</Typography>
+        <Stack direction="row" spacing="5px" alignItems="center">
+          <MoleculeIcon />
+          <Typography variant="h5">Submit Orca Simulation</Typography>
+        </Stack>
       }
     >
       <Stack

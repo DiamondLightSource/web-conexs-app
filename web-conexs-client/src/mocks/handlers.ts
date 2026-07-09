@@ -3,6 +3,7 @@ import {
   Crystal,
   HPCCluster,
   Molecule,
+  OrcaCubeInfo,
   OrcaSimulation,
   OrcaSimulationInput,
   Person,
@@ -12,6 +13,7 @@ import {
   StructureWithMetadata,
   XASData,
 } from "../models";
+import { cube_data } from "./cube";
 
 let orcaMockOutput =
   "     ***************\n     **ORCA RESULT**\n     ***************\nBut with like a really,really,really,really," +
@@ -144,7 +146,7 @@ const mockSimulation: Simulation = {
   id: 1,
   message: "Mock simulation",
   person_id: 1,
-  simulation_type: { id: 1, type: "MOCK" },
+  simulation_type: { id: 1, type: "orca" },
   status: "mock",
   working_directory: "/mock",
   request_date: "2025-02-27T09:22:41.035872",
@@ -166,7 +168,7 @@ const mockOrcaSimulation: OrcaSimulation = {
   orb_win_1_stop: 0,
   simulation: mockSimulation,
   solvent: "None",
-  calculation_type: "mock",
+  calculation_type: "xas",
 };
 
 const mockSimulations = [mockSimulation];
@@ -298,5 +300,14 @@ export const handlers = [
     }
 
     return new HttpResponse(null, { status: 404 });
+  }),
+
+  http.get("/api/orca/:id/cube", () => {
+    const ci: OrcaCubeInfo = { energy: 1, index: 2, intensity: 3 };
+    return HttpResponse.json([ci]);
+  }),
+
+  http.get("/api/orca/:id/cube/:cubeid", () => {
+    return HttpResponse.text(cube_data);
   }),
 ];

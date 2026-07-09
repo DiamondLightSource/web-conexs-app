@@ -11,6 +11,7 @@ import NavButton from "../NavButton";
 import GrainPlusIcon from "../icons/GrainPlusIcon";
 import StructureViewer from "../StructureViewer";
 import StructureTable from "../StructureTable";
+import GrainIcon from "../icons/GrainIcon";
 
 export default function CrystalPage() {
   const query = useQuery({
@@ -39,7 +40,14 @@ export default function CrystalPage() {
   };
 
   return (
-    <MainPanel toolbarElements={<Typography variant="h5">Crystals</Typography>}>
+    <MainPanel
+      toolbarElements={
+        <Stack direction="row" spacing="5px" alignItems="center">
+          <GrainIcon />
+          <Typography variant="h5">Crystals</Typography>
+        </Stack>
+      }
+    >
       <Stack overflow="auto">
         <Stack direction="row" padding={"1em"} spacing={"1em"}>
           <NavButton

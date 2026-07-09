@@ -5,6 +5,8 @@ import { useState } from "react";
 import StructureViewer from "../StructureViewer";
 import FdmnesGuide from "./FdmnesGuide";
 import FdmnesForm from "./FdmnesForm";
+import MoleculeIcon from "../icons/MoleculeIcon";
+import GrainIcon from "../icons/GrainIcon";
 
 export default function FdmnesSubmitPage(props: { isCrystal: boolean }) {
   const title =
@@ -15,7 +17,14 @@ export default function FdmnesSubmitPage(props: { isCrystal: boolean }) {
   const [structureId, setStructureId] = useState<undefined | number>(undefined);
 
   return (
-    <MainPanel toolbarElements={<Typography variant="h5">{title}</Typography>}>
+    <MainPanel
+      toolbarElements={
+        <Stack direction="row" spacing="5px" alignItems="center">
+          {props.isCrystal ? <GrainIcon /> : <MoleculeIcon />}
+          <Typography variant="h5">{title}</Typography>
+        </Stack>
+      }
+    >
       <Stack
         direction={{ sm: "column", md: "row" }}
         flex={1}
