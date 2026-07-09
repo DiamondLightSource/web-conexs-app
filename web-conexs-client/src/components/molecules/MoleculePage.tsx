@@ -10,6 +10,7 @@ import OrcaIcon from "../icons/OrcaIcon";
 import FDMNESIcon from "../icons/FDMNESIcon";
 import StructureViewer from "../StructureViewer";
 import StructureTable from "../StructureTable";
+import MoleculeIcon from "../icons/MoleculeIcon";
 
 export default function MoleculePage() {
   const query = useQuery({
@@ -27,7 +28,7 @@ export default function MoleculePage() {
 
   if (query.data && query.data.length != 0 && selectedMoleculeId) {
     finalMolecule = query.data.find(
-      (d) => d.structure.id == selectedMoleculeId
+      (d) => d.structure.id == selectedMoleculeId,
     );
     if (finalMolecule == undefined) {
       finalMolecule = null;
@@ -41,7 +42,12 @@ export default function MoleculePage() {
 
   return (
     <MainPanel
-      toolbarElements={<Typography variant="h5">Molecules</Typography>}
+      toolbarElements={
+        <Stack direction="row" spacing="5px" alignItems="center">
+          <MoleculeIcon />
+          <Typography variant="h5">Molecules</Typography>{" "}
+        </Stack>
+      }
     >
       <Stack overflow="auto">
         <Stack direction="row" padding={"1em"} spacing={"1em"}>

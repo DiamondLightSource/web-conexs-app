@@ -4,6 +4,7 @@ import QEForm from "./QEForm";
 import StructureViewer from "../StructureViewer";
 import QEGuide from "./QEGuide";
 import { useState } from "react";
+import GrainIcon from "../icons/GrainIcon";
 
 export default function QeSubmitPage() {
   const [structureId, setStructureId] = useState<undefined | number>(undefined);
@@ -12,7 +13,10 @@ export default function QeSubmitPage() {
   return (
     <MainPanel
       toolbarElements={
-        <Typography variant="h5">Submit QE Simulation</Typography>
+        <Stack direction="row" spacing="5px" alignItems="center">
+          <GrainIcon />
+          <Typography variant="h5">Submit QE Simulation</Typography>
+        </Stack>
       }
     >
       <Stack

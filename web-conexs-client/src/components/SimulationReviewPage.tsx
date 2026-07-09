@@ -18,7 +18,7 @@ import { useNavigate } from "react-router-dom";
 
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-
+import LabIcon from "./icons/LabIcon";
 
 export default function SimulationReviewPage() {
   const [cursor, setCursor] = useState<string | null>(null);
@@ -66,13 +66,16 @@ export default function SimulationReviewPage() {
             alignItems="center"
             margin="5px 20px"
           >
-            <Typography
-              variant="h5"
-              component="div"
-              fontSize={{ xs: "1rem", sm: "1.25rem", md: "1.5rem" }}
-            >
-              Simulation Results
-            </Typography>
+            <Stack direction="row" spacing="5px" alignItems="center">
+              <LabIcon />
+              <Typography
+                variant="h5"
+                component="div"
+                fontSize={{ xs: "1rem", sm: "1.25rem", md: "1.5rem" }}
+              >
+                Simulation Results
+              </Typography>
+            </Stack>
             <Button variant="contained" onClick={handleClickOpen}>
               Download
             </Button>

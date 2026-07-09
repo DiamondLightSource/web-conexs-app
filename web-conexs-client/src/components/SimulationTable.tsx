@@ -23,8 +23,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { cancelSimulation } from "../queryfunctions";
 
-const nResults = 10;
-
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -190,12 +188,6 @@ export default function SimulationTable(props: {
 
   const simulationList: (Simulation | null)[] = [...props.simulations];
 
-  if (props.simulations.length < nResults) {
-    while (simulationList.length < nResults) {
-      simulationList.push(null);
-    }
-  }
-
   return (
     <Box sx={{ display: "flex", flexDirection: "column", minHeight: 0 }}>
       <TableContainer>
@@ -229,7 +221,7 @@ export default function SimulationTable(props: {
                 setSelectedRow: setSelectedRow,
                 cancellationMutation: mutation.mutate,
                 compact: matches,
-              })
+              }),
             )}
           </TableBody>
         </Table>

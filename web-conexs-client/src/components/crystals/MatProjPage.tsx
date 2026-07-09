@@ -5,6 +5,7 @@ import MatProjCrystalViewer from "./MatProjCrystalViewer";
 import MatProjGuide from "./MatProjGuide";
 import StructureIDComponent from "./StructureIDComponent";
 import useStateIconButton from "../useStateIconButton";
+import GrainIcon from "../icons/GrainIcon";
 
 export default function MatProjPage() {
   const [mpid, setMpid] = useState<string | null>(null);
@@ -14,9 +15,12 @@ export default function MatProjPage() {
   return (
     <MainPanel
       toolbarElements={
-        <Typography variant="h5">
-          Crystal Structure from Materials Project
-        </Typography>
+        <Stack direction="row" spacing="5px" alignItems="center">
+          <GrainIcon />
+          <Typography variant="h5">
+            Crystal Structure from Materials Project
+          </Typography>
+        </Stack>
       }
     >
       <Stack overflow="auto">

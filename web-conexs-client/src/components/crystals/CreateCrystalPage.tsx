@@ -12,6 +12,7 @@ import StateIconButton from "../StateIconButton";
 import PublishIcon from "@mui/icons-material/Publish";
 import useStateIconButton from "../useStateIconButton";
 import { defaultCrystal } from "../../defaultstructures";
+import GrainIcon from "../icons/GrainIcon";
 
 export default function CreateCystalPage() {
   const queryClient = useQueryClient();
@@ -49,7 +50,12 @@ export default function CreateCystalPage() {
 
   return (
     <MainPanel
-      toolbarElements={<Typography variant="h5">Create Crystal</Typography>}
+      toolbarElements={
+        <Stack direction="row" spacing="5px" alignItems="center">
+          <GrainIcon />
+          <Typography variant="h5">Create Crystal</Typography>
+        </Stack>
+      }
     >
       <Stack
         direction={{ sm: "column", md: "row" }}
