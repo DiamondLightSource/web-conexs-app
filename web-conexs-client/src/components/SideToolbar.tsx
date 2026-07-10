@@ -57,7 +57,7 @@ function ListItemStyled(props: {
         padding: "13px 3px 0",
         borderBottom: "4px solid transparent",
 
-        color: theme.palette.primary.main,
+        color: theme.palette.text.primary,
       }}
     >
       <Stack

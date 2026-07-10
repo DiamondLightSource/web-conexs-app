@@ -120,7 +120,6 @@ export default function Header() {
     >
       <Typography
         variant="h4"
-        color={theme.palette.primary.contrastText}
         sx={{ padding: "10px 5px 2px 5px" }}
         height="100%"
         fontSize={{ xs: "1.5rem", sm: "1.5rem", md: "2.125rem" }}
