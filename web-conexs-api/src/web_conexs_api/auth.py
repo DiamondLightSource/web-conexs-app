@@ -68,7 +68,7 @@ async def get_current_user(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="Access Forbidden",
             )
-    elif authz_key == AUTH_LDAP:
+    elif authz_key == AUTH_NONE:
         return id
     else:
         raise HTTPException(
