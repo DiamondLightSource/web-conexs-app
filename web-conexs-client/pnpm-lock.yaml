@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@diamondlightsource/sci-react-ui':
-        specifier: ^0.6.2
+        specifier: 0.6.2
         version: 0.6.2(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(@jsonforms/core@3.5.1)(@jsonforms/material-renderers@3.5.1(88a4b28eafa02b06ad2e57d5e842d7d0))(@jsonforms/react@3.5.1(@jsonforms/core@3.5.1)(react@18.3.1))(@mui/material@7.0.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react@18.3.1))(@types/react@18.3.18)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@types/react@18.3.18)(react@18.3.1)
       '@emotion/react':
         specifier: ^11.14.0
@@ -59,9 +59,6 @@ importers:
       react-router-dom:
         specifier: ^7.1.4
         version: 7.1.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      sci-react-ui@0.6.2:
-        specifier: link:diamondlightsource/sci-react-ui@0.6.2
-        version: link:diamondlightsource/sci-react-ui@0.6.2
       web-conexs-client:
         specifier: 'link:'
         version: 'link:'
