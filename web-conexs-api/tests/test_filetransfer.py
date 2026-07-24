@@ -59,13 +59,13 @@ def test_transfer_inputs(tmp_path: Path):
 
 
 def test_transfer_results(tmp_path: Path):
-    os.umask(0o007)
+    os.umask(int("000", 8))
     job_text = "job"
     filename = "job.inp"
     bad_file = "test.gbw"
     s = tmp_path / "source"
     s.mkdir()
-    os.chmod(s, 0o770)
+    os.chmod(s, 0o700)
 
     p = s / filename
     p.write_text("job")
@@ -81,7 +81,7 @@ def test_transfer_results(tmp_path: Path):
 
     mode = oct(os.stat(orca).st_mode)
 
-    assert mode[-3:] == "770"
+    assert mode[-3:] == "777"
     print([str(x) for x in s.iterdir()])
     print([str(x) for x in orca.iterdir()])
 
