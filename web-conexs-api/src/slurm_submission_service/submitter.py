@@ -16,6 +16,7 @@ from .slurm_submit import clean_request_cancelled, update_active_simulations
 logger = logging.getLogger(__name__)
 
 ROOT_DIR = os.environ.get("CONEXS_ROOT_DIR")
+UMASK = os.environ.get("CONEXS_SUBMITTER_UMASK", "000")
 
 
 def submit_new_simulations(session):
@@ -46,7 +47,7 @@ def run_update():
 
 
 def main():
-    os.umask(0o007)
+    os.umask(int(UMASK, 8))
 
     rootlogger = logging.getLogger()
     formatter = logging.Formatter(

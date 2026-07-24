@@ -77,12 +77,16 @@ def transfer_results(simulation_type_id, result_dir, storage_dir):
         if not store_path.exists():
             store_path.mkdir()
 
-        shutil.copytree(
-            result_dir,
-            storage_dir,
-            ignore=ignore_pattern,
-            dirs_exist_ok=True,
-        )
+        with os.scandir(result_dir) as itr:
+            entries = list(itr)
+
+        ignored_names = ignore_pattern(os.fspath(result_dir), [x.name for x in entries])
+        for srcentry in entries:
+            if srcentry.name in ignored_names:
+                continue
+            srcname = os.path.join(result_dir, srcentry.name)
+            dstname = os.path.join(storage_dir, srcentry.name)
+            shutil.copy(srcname, dstname)
 
         return True
     except Exception as e:
