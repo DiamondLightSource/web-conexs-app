@@ -61,11 +61,19 @@ def transfer_results(simulation_type_id, result_dir, storage_dir):
                 "*.full_log",
                 "*.scfp",
                 "*.scfr",
+                "job.bas*",
+                "job.cis1",
+                "job.cissigma.*",
+                "job.cistrial.*",
+                "job.densit*",
+                "job.hostnames",
+                "job.property.txt",
+                "job.rel.inp",
             ]
             ignore_pattern = shutil.ignore_patterns(*ignore_files)
         elif simulation_type_id == 3:
             # qe
-            ignore_files = ["*.UPF", "*.wfc", "xanes.sav"]
+            ignore_files = ["*.UPF", ".*", "xanes.sav"]
             ignore_pattern = shutil.ignore_patterns(*ignore_files)
 
         store_path = Path(storage_dir)
@@ -81,12 +89,16 @@ def transfer_results(simulation_type_id, result_dir, storage_dir):
             entries = list(itr)
 
         ignored_names = ignore_pattern(os.fspath(result_dir), [x.name for x in entries])
+
         for srcentry in entries:
             if srcentry.name in ignored_names:
                 continue
+
             srcname = os.path.join(result_dir, srcentry.name)
             dstname = os.path.join(storage_dir, srcentry.name)
-            shutil.copy(srcname, dstname)
+
+            if os.path.isfile(srcname):
+                shutil.copyfile(srcname, dstname)
 
         return True
     except Exception as e:

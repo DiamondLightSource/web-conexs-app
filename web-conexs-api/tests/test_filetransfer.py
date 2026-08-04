@@ -58,7 +58,7 @@ def test_transfer_inputs(tmp_path: Path):
     assert output.read_text() == job_text
 
 
-def test_transfer_results(tmp_path: Path):
+def test_transfer_results_orca(tmp_path: Path):
     os.umask(int("000", 8))
     job_text = "job"
     filename = "job.inp"
@@ -100,6 +100,52 @@ def test_transfer_results(tmp_path: Path):
     assert output.read_text() != update_text
 
     transfer_results(1, str(s), str(orca))
+
+    assert output.read_text() == update_text
+
+
+def test_transfer_results_qe(tmp_path: Path):
+    os.umask(int("000", 8))
+    job_text = "job"
+    filename = "result.pwo"
+    bad_file = ".wfc10"
+    s = tmp_path / "source"
+    s.mkdir()
+    os.chmod(s, 0o700)
+
+    p = s / filename
+    p.write_text("job")
+
+    b = s / bad_file
+    b.touch()
+
+    qe = tmp_path / "qe"
+
+    transfer_results(3, str(s), str(qe))
+
+    print(oct(os.stat(qe).st_mode))
+
+    mode = oct(os.stat(qe).st_mode)
+
+    assert mode[-3:] == "777"
+    print([str(x) for x in s.iterdir()])
+    print([str(x) for x in qe.iterdir()])
+
+    output = qe / filename
+    bad = qe / bad_file
+
+    assert output.exists()
+    assert not bad.exists()
+
+    assert output.read_text() == job_text
+
+    update_text = "jobagain"
+
+    p.write_text(update_text)
+
+    assert output.read_text() != update_text
+
+    transfer_results(3, str(s), str(qe))
 
     assert output.read_text() == update_text
 
