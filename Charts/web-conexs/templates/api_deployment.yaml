@@ -15,8 +15,6 @@ spec:
     spec:
       securityContext:
         runAsUser: 1000
-        supplementalGroups:
-          - {{.Values.security.securityContext.runAsGroup}}
       volumes:
         - name: {{ include "web-conexs.name" . }}-data-volume
           persistentVolumeClaim:
