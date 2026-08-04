@@ -99,7 +99,7 @@ def test_transfer_results_orca(tmp_path: Path):
 
     assert output.read_text() != update_text
 
-    transfer_results(3, str(s), str(orca))
+    transfer_results(1, str(s), str(orca))
 
     assert output.read_text() == update_text
 
