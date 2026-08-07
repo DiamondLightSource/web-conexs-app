@@ -24,15 +24,13 @@ api:
     resources:
       limits:
         cpu: "1"
-        memory: 300M
+        memory: 500M
   authz:
     type: ""
     url : ""
     base: ""
     attrKey: ""
     attrValue: ""
-
-
 
 client:
   service:
@@ -44,14 +42,17 @@ client:
     resources:
       limits:
         cpu: "1"
-        memory: 300M
+        memory: 500M
 
 submitter:
   enabled: true
   deployment:
     image:
       repository: ghcr.io/diamondlightsource/web-conexs-app-web-conexs-api
-      tag: latest
+    resources:
+      limits:
+        cpu: "1"
+        memory: 1000M
   singularity:
       directory: ""
       pseudopotentialDir: ""

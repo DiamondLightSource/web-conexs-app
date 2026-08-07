@@ -26,7 +26,7 @@ spec:
           image:  "{{ .Values.api.deployment.image.repository }}:{{ .Values.api.deployment.image.tag | default .Chart.AppVersion }}"
           args: ["-m", "web_conexs_api"]
           resources:
-            {{- toYaml .Values.api.resources | nindent 12 }}
+            {{- toYaml .Values.api.deployment.resources | nindent 12 }}
           ports:
             - name: http
               containerPort: {{ .Values.api.service.targetPort }}

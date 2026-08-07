@@ -29,9 +29,7 @@ spec:
             image: "{{ .Values.api.deployment.image.repository }}:{{ .Values.api.deployment.image.tag | default .Chart.AppVersion }}"
             args: ["-m", "slurm_submission_service"]
             resources:
-              limits:
-                cpu: "1"
-                memory: 300M
+              {{- toYaml .Values.submitter.deployment.resources | nindent 14 }}
             volumeMounts:
               - name: {{ include "web-conexs.name" . }}-data-volume
                 mountPath: {{ .Values.data.mountPath}}
