@@ -12,17 +12,6 @@ def check_filesystem(path):
     Path(path).stat()
 
 
-def copy_directory(source, destination):
-    logger.info(f"Attempting to make copy {source} to {destination}")
-
-    parent = Path(destination).parent
-
-    if not parent.exists():
-        parent.mkdir()
-
-    shutil.copytree(source, destination)
-
-
 def copy_multiple_files(abs_paths: list[str], destination):
     logger.info(f"Attempting to make copy multiple files to {destination}")
     for p in abs_paths:
