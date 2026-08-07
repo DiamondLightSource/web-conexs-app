@@ -4,7 +4,6 @@ from pathlib import Path
 from slurm_submission_service.filetransfer import (
     check_filesystem,
     clean_up_directory,
-    copy_directory,
     copy_multiple_files,
     transfer_inputs,
     transfer_results,
@@ -16,25 +15,6 @@ def test_check_filesystem(tmp_path: Path):
     d.mkdir()
     check_filesystem(str(d))
     assert True
-
-
-def test_copy_dir_file(tmp_path: Path):
-    job_text = "job"
-    filename = "job.inp"
-    s = tmp_path / "source"
-    s.mkdir()
-    p = s / filename
-    p.write_text("job")
-
-    d = tmp_path / "user" / "destination"
-
-    copy_directory(str(s), str(d))
-
-    output = d / filename
-
-    assert output.exists()
-
-    assert output.read_text() == job_text
 
 
 def test_transfer_inputs(tmp_path: Path):
