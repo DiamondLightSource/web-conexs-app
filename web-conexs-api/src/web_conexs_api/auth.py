@@ -8,7 +8,7 @@ from fastapi import (
 )
 from fastapi.security.http import HTTPAuthorizationCredentials, HTTPBearer
 
-from .authz import authz_check
+from .authz import authz_check_ldap, authz_check_opa
 
 # False so we dont get a 403 when it should be a 401
 get_bearer_token = HTTPBearer(auto_error=False)
@@ -17,6 +17,7 @@ oidc_user_info_endpoint = os.environ.get("OIDC_USER_INFO_ENDPOINT")
 oidc_id_key = os.environ.get("OIDC_ID_KEY", "id")
 authz_key = os.environ.get("AUTHZ_CHECK")
 
+AUTH_OPA = "OPA"
 AUTH_LDAP = "LDAP"
 AUTH_NONE = "NONE"
 
@@ -60,8 +61,16 @@ async def get_current_user(
 
     id = response.json()[oidc_id_key]
 
-    if authz_key == AUTH_LDAP:
-        if authz_check(id):
+    if authz_key == AUTH_OPA:
+        if authz_check_opa(auth.credentials):
+            return id
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="Access Forbidden",
+            )
+    elif authz_key == AUTH_LDAP:
+        if authz_check_ldap(id):
             return id
         else:
             raise HTTPException(
