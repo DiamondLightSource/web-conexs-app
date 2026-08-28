@@ -30,7 +30,7 @@ spec:
               - mountPath: {{ .Values.data.mountPath}}
                 name: {{ include "web-conexs.name" . }}-data-volume
             env:
-            - name: PGPASSWORD
+            - name: POSTGRESS_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{.Values.database.passwordSecretName}}

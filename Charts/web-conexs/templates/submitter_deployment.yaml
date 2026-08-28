@@ -74,5 +74,10 @@ spec:
                 value: {{ .Values.data.location}}
               - name: SLURM_TIME_LIMIT
                 value: {{quote .Values.submitter.slurm.timelimit }}
+              - name: CONEXS_MEMORY
+                value: {{quote .Values.submitter.slurm.memory }}
+              - name: CONEXS_N_CORES
+                value: {{quote .Values.submitter.slurm.cpus }}
+
 
 {{- end }}
