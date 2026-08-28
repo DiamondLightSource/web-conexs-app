@@ -59,6 +59,8 @@ spec:
               value: {{ .Values.api.authz.key}}
             - name: LDAP_ATTR_VALUE
               value: {{ .Values.api.authz.value}}
+            - name: OPA_URL
+              value: {{ .Values.api.authz.opaurl}}
             - name: MPLCONFIGDIR
               value: /tmp
             - name: PMG_MAPI_KEY
