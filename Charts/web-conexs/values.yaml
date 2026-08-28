@@ -67,6 +67,8 @@ submitter:
       timelimit: ""
       responseKey: ""
       tokenFile: ""
+      memory: ""
+      cpus: ""
   extraVolumes: []
   extraVolumeMounts: []
 
@@ -88,7 +90,7 @@ data:
   storage: 10Gi
   rootDir: ""
   clusterRootDir: ""
-  storageDays: "90"
+  storageDays: "60"
   cleanupSchedule: "0 3 * * *"
   # extraVolumes:
   #   - name: data-pv-volume
