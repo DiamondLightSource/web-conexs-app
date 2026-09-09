@@ -24,8 +24,10 @@ def transfer_inputs(file_map: dict[str, str], destination):
 
     if not parent.exists():
         parent.mkdir()
+        os.chmod(parent, 0o775)
 
     dest.mkdir()
+    os.chmod(dest, 0o775)
 
     for k, v in file_map.items():
         input_file = dest / k
@@ -77,7 +79,12 @@ def transfer_results(simulation_type_id, result_dir, storage_dir):
         with os.scandir(result_dir) as itr:
             entries = list(itr)
 
-        ignored_names = ignore_pattern(os.fspath(result_dir), [x.name for x in entries])
+        if ignore_pattern is not None:
+            ignored_names = ignore_pattern(
+                os.fspath(result_dir), [x.name for x in entries]
+            )
+        else:
+            ignored_names = {}
 
         for srcentry in entries:
             if srcentry.name in ignored_names:
