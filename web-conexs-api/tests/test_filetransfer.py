@@ -30,8 +30,8 @@ def test_transfer_inputs(tmp_path: Path):
     output = d / filename
 
     mode = oct(os.stat(d).st_mode)
-
-    assert mode[-3:] == "770"
+    # input files should not be world readable on the cluster fs
+    assert mode[-3:] == "775"
 
     assert output.exists()
 
@@ -126,6 +126,46 @@ def test_transfer_results_qe(tmp_path: Path):
     assert output.read_text() != update_text
 
     transfer_results(3, str(s), str(qe))
+
+    assert output.read_text() == update_text
+
+
+def test_transfer_results_fdmnes(tmp_path: Path):
+    os.umask(int("000", 8))
+    job_text = "job"
+    filename = "result.txt"
+    s = tmp_path / "source"
+    s.mkdir()
+    os.chmod(s, 0o700)
+
+    p = s / filename
+    p.write_text("job")
+
+    fdmnes = tmp_path / "fdmnes"
+
+    transfer_results(2, str(s), str(fdmnes))
+
+    print(oct(os.stat(fdmnes).st_mode))
+
+    mode = oct(os.stat(fdmnes).st_mode)
+
+    assert mode[-3:] == "777"
+    print([str(x) for x in s.iterdir()])
+    print([str(x) for x in fdmnes.iterdir()])
+
+    output = fdmnes / filename
+
+    assert output.exists()
+
+    assert output.read_text() == job_text
+
+    update_text = "jobagain"
+
+    p.write_text(update_text)
+
+    assert output.read_text() != update_text
+
+    transfer_results(2, str(s), str(fdmnes))
 
     assert output.read_text() == update_text
 
