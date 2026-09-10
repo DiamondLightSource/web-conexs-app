@@ -33,7 +33,7 @@ COPY --from=build /python /python
 COPY --from=build /app/.venv /app/.venv
 ENV PATH=/app/.venv/bin:$PATH
 
-RUN apt-get update && apt-get install libpq5 libldap2-dev libsasl2-dev slapd ldap-utils -y
+RUN apt-get update && apt-get install libpq5 -y
 
 # change this entrypoint if it is not the same as the repo
 ENTRYPOINT ["python"]
