@@ -40,8 +40,8 @@ export default function QEGuide() {
               margin="10px"
               sx={{ fontWeight: "bold" }}
             >
-              If you publish calculation results performed with FDMNES code
-              please cite the original papers:
+              If you publish calculation results performed with Quantum ESPRESSO
+              code please cite the original papers:
             </Typography>
             <Typography
               sx={{ fontStyle: "italic", fontWeight: "bold" }}

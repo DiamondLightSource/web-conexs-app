@@ -206,19 +206,15 @@ oauth2-proxy:
     configData:
       providers: []
       injectRequestHeaders:
-        - name: Authorization
-          values:
-            - claim: access_token
-              prefix: "Bearer "
-        - name: x-forwarded-user
-          values:
-            - claim: user
-        - name: x-auth-request-user
-          values:
-            - claim: user
+         - name: Authorization
+           values:
+             - claimSource:
+                 claim: access_token
+                 prefix: "Bearer "
       injectResponseHeaders:
-        - name: Identity
-          values:
-            - claim: id_token
+         - name: Identity
+           values:
+             - claimSource:
+                 claim: id_token
   redis:
     enabled: false
