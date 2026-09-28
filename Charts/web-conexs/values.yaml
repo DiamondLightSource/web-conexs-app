@@ -79,6 +79,7 @@ database:
   dbname: webconexsdb
   protocol: "postgresql+psycopg2"
   passwordSecretName: application-passwords
+  passwordSecretKey: passwords
   host: ""
 
 auth:
@@ -109,57 +110,39 @@ security:
     supplementalGroups: []
   
 
-postgresql:
-  image:
-    registry: docker.io
-    repository: bitnamilegacy/postgresql
-    tag: 15.0.0-debian-11-r0
-    pullPolicy: IfNotPresent
-    debug: true
-  auth:
+postgres:
+  useDeployment: false
+  backup:
+    ## Enable backups through pgdumpall
+    enabled: false
+  ## Database and user (user is optional, but recommended, as 'postgres' would be the only user otherwise)
+  userDatabase:
+    ## Optional existing secret with database name, user and password
+    existingSecret: conexs-app-postgres-passwords
+    name: 
+      ## Name of the user database
+      secretKey: POSTGRES_DB
+    password:
+      ## Password of the database user
+      secretKey: USER_PASS
+    user:
+      ## Database user with full access rights
+      secretKey: USER_NAME
+    ## Set host to use a custom host, remove to use DB release name
+    #host: foo.diamond.ac.uk
+    port: 5432
+  ## Database configuration
+  settings:
+    ## Optional existing secret for the Postgrest superuser
     existingSecret: postgres-passwords
-    secretKeys:
-      adminPasswordKey: password
+    superuserPassword:
+      secretKey: password
+  extraScripts: dbtables-configmap
   tls:
     enabled: false
     certificatesSecret: ""
-    certFilename: ""
-    certKeyFilename: ""
-  primary:
-    sidecars: []
-    service:
-      type: LoadBalancer
-      loadBalancerIP: ""
-    podAntiAffinityPreset: hard
-    resources:
-      requests:
-        cpu: 500m
-        memory: 512Mi
-      limits:
-        cpu: 2
-        memory: 2Gi
-    initdb:
-      scriptsSecret: postgres-init-script
-    extraVolumeMounts:
-      - name: custom-init-scripts-volume
-        mountPath: /docker-entrypoint-initdb.d/tables
-    extraVolumes:
-      - name: custom-init-scripts-volume
-        configMap:
-          name: dbtables-configmap
-    persistence:
-      storageClass: db-nvme-storage
-      size: 8Gi
-    networkPolicy:
-      enabled: false
-  backup:
-    enabled: true
-    cronjob:
-      schedule: "@daily"
-      networkPolicy:
-        enabled: false
-      storage:
-        resourcePolicy: "keep"
+    certFilename: tls.crt
+    certKeyFilename: tls.key
 
 # alpha
 oauth2-proxy:
@@ -177,7 +160,7 @@ oauth2-proxy:
   config:
     configFile: |-
       email_domains = [ "*" ]
-      skip_auth_routes = ["GET=^/$","GET=^/assets","GET=^/conexs.svg$",]
+      skip_auth_routes = ["GET=^/$","GET=^/assets","GET=^/conexs.svg$"]
       api_routes = ["^/api"]
       skip_provider_button = true
       cookie_refresh="1m"

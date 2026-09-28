@@ -41,7 +41,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: {{.Values.database.passwordSecretName}}
-                    key: passwords
+                    key: {{.Values.database.passwordSecretKey}}
               - name: POSTGRESURL
                 value: {{ .Values.database.protocol }}://{{ .Values.database.username }}:$(POSTGRESS_PASSWORD)@{{.Values.database.host | default (printf "%s-postgresql.%s.svc.cluster.local" .Release.Name .Release.Namespace)}}/{{ .Values.database.dbname }}
               - name: ORCA_IMAGE
