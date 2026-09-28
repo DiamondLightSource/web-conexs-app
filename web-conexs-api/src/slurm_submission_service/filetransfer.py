@@ -24,10 +24,10 @@ def transfer_inputs(file_map: dict[str, str], destination):
 
     if not parent.exists():
         parent.mkdir()
-        os.chmod(parent, 0o775)
+        os.chmod(parent, 0o770)
 
     dest.mkdir()
-    os.chmod(dest, 0o775)
+    os.chmod(dest, 0o770)
 
     for k, v in file_map.items():
         input_file = dest / k

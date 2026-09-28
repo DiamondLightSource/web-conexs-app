@@ -31,7 +31,7 @@ def test_transfer_inputs(tmp_path: Path):
 
     mode = oct(os.stat(d).st_mode)
     # input files should not be world readable on the cluster fs
-    assert mode[-3:] == "775"
+    assert mode[-3:] == "770"
 
     assert output.exists()
 
