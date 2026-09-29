@@ -1,9 +1,9 @@
 dependencies:
 - name: postgres
-  repository: https://gitlab.diamond.ac.uk/api/v4/projects/7534/packages/helm/stable
-  version: 0.4.1
+  repository: https://groundhog2k.github.io/helm-charts
+  version: 1.6.7
 - name: oauth2-proxy
   repository: https://oauth2-proxy.github.io/manifests
   version: 10.7.0
-digest: sha256:fe34c16179d7e8c3010c786b11d5bdf3332174cc55a7cbdff21fcb56ecf81907
-generated: "2026-09-28T08:35:35.88716081+01:00"
+digest: sha256:8f318399a5bbcabb54bad8967388080577d08c07352e6d28837ef5b4d0a21eb9
+generated: "2026-09-29T09:00:44.368457719+01:00"
