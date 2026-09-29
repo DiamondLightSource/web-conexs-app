@@ -138,11 +138,11 @@ postgres:
     superuserPassword:
       secretKey: password
   extraScripts: dbtables-configmap
-  tls:
-    enabled: false
-    certificatesSecret: ""
-    certFilename: tls.crt
-    certKeyFilename: tls.key
+  # tls:
+  #   enabled: false
+  #   certificatesSecret: ""
+  #   certFilename: tls.crt
+  #   certKeyFilename: tls.key
 
 # alpha
 oauth2-proxy:
