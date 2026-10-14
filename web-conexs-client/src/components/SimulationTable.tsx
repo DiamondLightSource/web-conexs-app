@@ -68,7 +68,7 @@ function SimulationMetadata(props: {
   let request_string = "";
 
   if (request) {
-    const d = new Date(request + "+00:00");
+    const d = new Date(request);
     request_string = d.toDateString() + " " + d.toLocaleTimeString();
   }
 
@@ -77,7 +77,7 @@ function SimulationMetadata(props: {
   let complete_string = "";
 
   if (complete) {
-    const d = new Date(complete + "+00:00");
+    const d = new Date(complete);
     complete_string = d.toDateString() + " " + d.toLocaleTimeString();
   }
 

@@ -8,7 +8,8 @@ import {
   ResetZoomButton,
   DataCurve,
 } from "@h5web/lib";
-import "@h5web/lib/dist/styles.css";
+
+import "@h5web/lib/styles.css";
 
 import Paper from "@mui/material/Paper";
 import { MdGridOn } from "react-icons/md";
