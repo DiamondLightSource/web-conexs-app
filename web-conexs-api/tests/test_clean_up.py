@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 # import web_conexs_api.database as database
@@ -22,7 +22,7 @@ def create_working_dirs(tmp_path: Path):
     s3 = tmp_path / "user2" / "sim3"
     s3.mkdir(parents=True)
 
-    old = (datetime.now() - timedelta(days=40)).timestamp()
+    old = (datetime.now(timezone.utc) - timedelta(days=40)).timestamp()
 
     os.utime(s3, (old, old))
 
@@ -36,7 +36,7 @@ def create_working_dirs(tmp_path: Path):
 def test_clean_up_dry_run(tmp_path: Path):
     s1, s2, s3 = create_working_dirs(tmp_path)
 
-    del_date = datetime.now() - timedelta(days=30)
+    del_date = datetime.now(timezone.utc) - timedelta(days=30)
     del_stamp = del_date.timestamp()
 
     deleted = clean_up(tmp_path, del_stamp, dry_run=True)
@@ -73,7 +73,7 @@ def test_clean_up_database(tmp_path: Path, monkeypatch):
 
         build_test_database(session, working_dir_list=[wd1, wd2, wd3])
 
-        del_date = datetime.now() - timedelta(days=30)
+        del_date = datetime.now(timezone.utc) - timedelta(days=30)
         del_stamp = del_date.timestamp()
 
         statement = select(Simulation).where(Simulation.working_directory == wd3)

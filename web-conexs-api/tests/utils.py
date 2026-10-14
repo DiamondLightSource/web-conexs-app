@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List
 
 from sqlmodel import Session
@@ -55,11 +55,11 @@ def create_sim(person_id: int, structure_id: int, working_dir: str):
         "person_id": person_id,
         "chemical_structure_id": structure_id,
         "working_directory": working_dir,
-        "completion_date": datetime.min,
+        "completion_date": datetime.now(timezone.utc),
         "message": "test_message",
         "simulation_type_id": 1,
         "status": SimulationStatus.completed,
-        "request_date": datetime.min,
+        "request_date": datetime.now(timezone.utc),
     }
 
     simulation = Simulation.model_validate(simulation_model)

@@ -2,6 +2,7 @@ import datetime
 import json
 import logging
 import os
+from datetime import timezone
 from pathlib import Path
 from pprint import pformat
 
@@ -126,12 +127,12 @@ def submit_simulation(script, job_name, sim, user, session, as_tasks):
         )
         sim.job_id = job_id
         sim.working_directory = job_name
-        sim.submission_date = datetime.datetime.now()
+        sim.submission_date = datetime.datetime.now(timezone.utc)
         sim.status = SimulationStatus.submitted
         update_simulation(session, sim)
     except Exception:
         sim.status = SimulationStatus.failed
-        sim.completion_date = datetime.datetime.now()
+        sim.completion_date = datetime.datetime.now(timezone.utc)
         update_simulation(session, sim)
         logger.exception("Error submitting " + job_name)
 
@@ -145,7 +146,7 @@ def clean_request_cancelled(session):
         if sim.job_id is None:
             # No job id, hasn't been submitted, so just flag as cancelled
             sim.status = SimulationStatus.cancelled
-            sim.completion_date = datetime.datetime.now()
+            sim.completion_date = datetime.datetime.now(timezone.utc)
             update_simulation(session, sim)
         else:
             url = api + "/job/" + str(sim.job_id)
@@ -164,7 +165,7 @@ def clean_request_cancelled(session):
                 continue
 
             sim.status = SimulationStatus.cancelled
-            sim.completion_date = datetime.datetime.now()
+            sim.completion_date = datetime.datetime.now(timezone.utc)
             user = sim.person.identifier
             calc_dir = Path(user) / Path(sim.working_directory)
             iris_dir = Path(ROOT_DIR) / calc_dir
@@ -224,22 +225,22 @@ def update_active_simulations(session):
                 update_simulation(session, a)
             elif state == JOB_COMPLETED and a.status != SimulationStatus.completed:
                 a.status = SimulationStatus.completed
-                a.completion_date = datetime.datetime.now()
+                a.completion_date = datetime.datetime.now(timezone.utc)
                 clean_up_on_job_end(a, iris_dir, storage_dir, session)
             elif state == JOB_FAILED and a.status != SimulationStatus.failed:
                 a.status = SimulationStatus.failed
-                a.completion_date = datetime.datetime.now()
+                a.completion_date = datetime.datetime.now(timezone.utc)
                 clean_up_on_job_end(a, iris_dir, storage_dir, session)
             elif state == JOB_TIMEOUT and a.status != SimulationStatus.failed:
                 a.status = SimulationStatus.failed
-                a.completion_date = datetime.datetime.now()
+                a.completion_date = datetime.datetime.now(timezone.utc)
                 clean_up_on_job_end(a, iris_dir, storage_dir, session)
 
         else:
             # TODO Slurm API query on job id?
             logger.error(f"Active job with id {a.job_id} not in job_map")
             a.status = SimulationStatus.failed
-            a.completion_date = datetime.datetime.now()
+            a.completion_date = datetime.datetime.now(timezone.utc)
             clean_up_on_job_end(a, iris_dir, storage_dir, session)
 
 

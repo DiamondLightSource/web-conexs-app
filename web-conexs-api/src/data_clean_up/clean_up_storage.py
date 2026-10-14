@@ -4,7 +4,7 @@ import os
 import shutil
 import sys
 from contextlib import contextmanager
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import List
 
@@ -51,7 +51,7 @@ def main():
 
     logger.info(f"Running {message}clean-up on {STORAGE_DIR}")
 
-    del_date = datetime.now() - timedelta(days=days)
+    del_date = datetime.now(timezone.utc) - timedelta(days=days)
     del_stamp = del_date.timestamp()
     deleted = clean_up(Path(STORAGE_DIR), del_stamp, dry_run)
 
