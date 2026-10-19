@@ -36,7 +36,7 @@ export function MolStarOrbitalWrapper(props: {
 
       const data = await molstar.current.builders.data.rawData(
         { data: rawData! },
-        { state: { isGhost: true } }
+        { state: { isGhost: true } },
       );
 
       const parsed = await molstar.current.dataFormats
@@ -68,7 +68,7 @@ export function MolStarOrbitalWrapper(props: {
             },
             colorParams: { value: ColorNames.blue },
             size: "uniform",
-          })
+          }),
         );
 
       const negative = molstar.current
@@ -92,7 +92,7 @@ export function MolStarOrbitalWrapper(props: {
             },
 
             colorParams: { value: ColorNames.red },
-          })
+          }),
         );
 
       molstar.current
@@ -117,7 +117,7 @@ export function MolStarOrbitalWrapper(props: {
 
       await molstar.current.builders.structure.hierarchy.applyPreset(
         parsed.structure,
-        "default"
+        "default",
       );
 
       await positive.commit();
