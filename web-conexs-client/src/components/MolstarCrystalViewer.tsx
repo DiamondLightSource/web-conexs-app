@@ -48,6 +48,7 @@ export function MolStarCrystalWrapper(props: {
         await molstar.current.builders.structure.createModel(trajectory);
 
       const s = await molstar.current.builders.structure.createStructure(model);
+      const d = s.data;
 
       await molstar.current.builders.structure.representation.addRepresentation(
         s,
@@ -63,21 +64,13 @@ export function MolStarCrystalWrapper(props: {
 
       await molstar.current.builders.structure.tryCreateUnitcell(model);
 
-      const hierarchy =
-        await molstar.current.builders.structure.hierarchy.applyPreset(
-          trajectory,
-          "unitcell",
-        );
-
-      const struct = hierarchy!.structure.data!;
-
-      if (props.labelledAtomIndex != null) {
+      if (props.labelledAtomIndex != null && d) {
         const query = atoms({
           atomTest: (ctx) => {
             return ctx.element.element == props.labelledAtomIndex;
           },
         });
-        const selection = query(new QueryContext(struct));
+        const selection = query(new QueryContext(d));
         const loci = StructureSelection.toLociWithCurrentUnits(selection);
 
         molstar.current.managers.interactivity.lociSelects.select({
