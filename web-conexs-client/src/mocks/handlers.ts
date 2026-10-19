@@ -43,7 +43,7 @@ const mockCrystalStructure: Crystal = {
     { element_z: 47, x: 0.0, y: 0.0, z: 0.0, index: 1 },
     { element_z: 47, x: 0.5, y: 0.5, z: 0.0, index: 2 },
     { element_z: 47, x: 0.5, y: 0.0, z: 0.5, index: 3 },
-    { element_z: 47, x: 0.0, y: 0.5, z: 0.5, index: 4 },
+    { element_z: 6, x: 0.0, y: 0.5, z: 0.5, index: 4 },
   ],
 };
 

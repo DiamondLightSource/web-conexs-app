@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { DefaultPluginSpec, PluginSpec } from "molstar/lib/mol-plugin/spec";
 import { PluginContext } from "molstar/lib/mol-plugin/context";
 import { PluginConfig } from "molstar/lib/mol-plugin/config";
-import { StructureRepresentation3D } from "molstar/lib/mol-plugin-state/transforms/representation";
+
 import { Box } from "@mui/material";
 
 const Default3DSpec: PluginSpec = {
@@ -40,27 +40,17 @@ export function MolStarMoleculeWrapper(props: {
 
       const s = await molstar.current.builders.structure.createStructure(model);
 
-      molstar.current
-        .build()
-        .to(s)
-        .apply(StructureRepresentation3D, {
-          type: {
-            name: "ball-and-stick",
-            params: {
-              size: "physical",
-              celShaded: false,
-              ignoreLight: false,
-            },
+      await molstar.current.builders.structure.representation.addRepresentation(
+        s,
+        {
+          type: "ball-and-stick",
+          color: "element-symbol",
+          colorParams: {
+            carbonColor: { name: "element-symbol", params: {} },
           },
-          colorTheme: {
-            name: "element-symbol",
-            params: {
-              carbonColor: { name: "element-symbol", params: {} },
-            },
-          },
-          sizeTheme: { name: "physical", params: {} },
-        })
-        .commit();
+          size: "physical",
+        },
+      );
 
       await molstar.current.builders.structure.hierarchy.applyPreset(
         trajectory,

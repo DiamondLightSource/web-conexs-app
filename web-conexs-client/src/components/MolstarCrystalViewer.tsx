@@ -3,7 +3,6 @@ import { Box } from "@mui/material";
 import { DefaultPluginSpec, PluginSpec } from "molstar/lib/mol-plugin/spec";
 import { PluginContext } from "molstar/lib/mol-plugin/context";
 import { PluginConfig } from "molstar/lib/mol-plugin/config";
-import { StructureRepresentation3D } from "molstar/lib/mol-plugin-state/transforms/representation";
 
 import {
   QueryContext,
@@ -36,7 +35,7 @@ export function MolStarCrystalWrapper(props: {
 
       const data = await molstar.current.builders.data.rawData(
         { data: props.cif! },
-        { state: { isGhost: true } },
+        // { state: { isGhost: true } },
       );
 
       const trajectory =
@@ -50,34 +49,24 @@ export function MolStarCrystalWrapper(props: {
 
       const s = await molstar.current.builders.structure.createStructure(model);
 
-      molstar.current
-        .build()
-        .to(s)
-        .apply(StructureRepresentation3D, {
-          type: {
-            name: "ball-and-stick",
-            params: {
-              size: "physical",
-              celShaded: false,
-              ignoreLight: false,
-            },
+      await molstar.current.builders.structure.representation.addRepresentation(
+        s,
+        {
+          type: "ball-and-stick",
+          color: "element-symbol",
+          colorParams: {
+            carbonColor: { name: "element-symbol", params: {} },
           },
-          colorTheme: {
-            name: "element-symbol",
-            params: {
-              carbonColor: { name: "element-symbol", params: {} },
-            },
-          },
-          sizeTheme: { name: "physical", params: {} },
-        })
-        .commit();
+          size: "physical",
+        },
+      );
 
       await molstar.current.builders.structure.tryCreateUnitcell(model);
 
       const hierarchy =
         await molstar.current.builders.structure.hierarchy.applyPreset(
           trajectory,
-          "default",
+          "unitcell",
         );
 
       const struct = hierarchy!.structure.data!;
