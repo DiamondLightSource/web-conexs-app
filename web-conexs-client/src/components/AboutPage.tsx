@@ -7,7 +7,7 @@ export default function AboutPage() {
     <MainPanel
       toolbarElements={<Typography variant="h5">About Web-CONEXS</Typography>}
     >
-      <Stack margin={"10px"} spacing={"5px"} padding={"10px"}>
+      <Stack margin={"10px"} spacing={"10px"} padding={"10px"}>
         <Card>
           <CardContent>
             <Typography>
@@ -30,6 +30,33 @@ export default function AboutPage() {
               Physical Sciences Research Council (EPSRC) via CONEXS (grant Nos.
               EP/S021493/1 \& EP/S022058) and HPC-CONEXS (grant No. No.
               EP/X035514/1)
+            </Typography>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <Typography>
+              Web-CONEXS calculations run on the{" "}
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                to={"https://www.iris.ac.uk/"}
+              >
+                STFC's IRIS compute infrastructure
+              </Link>
+              .
+            </Typography>
+            <Typography>
+              For articles that benefited from using Web-CONEXS please include
+              the following acknowledgement:
+            </Typography>
+            <Typography>
+              <i>
+                <b>
+                  This work used IRIS computing resources funded by the Science
+                  and Technology Facilities Council.
+                </b>
+              </i>
             </Typography>
           </CardContent>
         </Card>
