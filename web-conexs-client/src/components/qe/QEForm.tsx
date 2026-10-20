@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getCrystals, postQe } from "../../queryfunctions";
+import { getCrystals, postQe, getStructure } from "../../queryfunctions";
 import {
   Box,
   FormControl,
@@ -19,6 +19,8 @@ import PublishIcon from "@mui/icons-material/Publish";
 import useStateIconButton from "../useStateIconButton";
 import NoStructures from "../NoStructures";
 import { getDetailFromError, TIMEOUT_TIME } from "../../utils";
+
+import { periodic_table } from "../../periodictable";
 
 interface ChemicalStructureInfo {
   const: number;
@@ -247,6 +249,11 @@ function DependentSelect(props: {
   const { setFieldValue } = useFormikContext();
   const [atoms, setAtoms] = useState<{ const: number; title: string }[]>([]);
 
+  const query = useQuery({
+    queryKey: ["structure", props.selectedStructure],
+    queryFn: () => getStructure(props.selectedStructure),
+  });
+
   useEffect(() => {
     const structure = props.structures.find((s) => {
       return s.const == props.selectedStructure;
@@ -255,12 +262,25 @@ function DependentSelect(props: {
     let oneOfAtoms: { const: number; title: string }[] = [];
 
     if (structure != undefined) {
-      oneOfAtoms = [...Array(structure.atom_count).keys()].map((i) => {
-        return {
-          const: i + 1,
-          title: String(i + 1),
-        };
-      });
+      if (
+        query.data == null ||
+        query.data.sites.length != structure.atom_count
+      ) {
+        oneOfAtoms = [...Array(structure.atom_count).keys()].map((i) => {
+          return {
+            const: i + 1,
+            title: String(i + 1),
+          };
+        });
+      } else {
+        oneOfAtoms = query.data.sites.map((s, i) => {
+          return {
+            const: i + 1,
+            title:
+              String(i + 1) + " : " + periodic_table[s.element_z - 1].symbol,
+          };
+        });
+      }
 
       setAtoms(oneOfAtoms);
 
@@ -277,7 +297,12 @@ function DependentSelect(props: {
     props.selectedStructure,
     setFieldValue,
     props.selectedAtom,
+    query.data,
   ]);
+
+  if (query.data == null) {
+    return <Typography>Nope</Typography>;
+  }
 
   const isValidElement =
     atoms.find((e) => {
@@ -286,14 +311,14 @@ function DependentSelect(props: {
 
   return (
     <FormControl fullWidth>
-      <InputLabel id="select-basis-set">Element</InputLabel>
+      <InputLabel id="select-basis-set">Absorbing Atom</InputLabel>
       <Select
         labelId="demo-simple-select-label"
         id="absorbing_atom"
         name="absorbing_atom"
         type="number"
         value={isValidElement ? props.selectedAtom : 0}
-        label="Element"
+        label="Absorbing Atom"
         onChange={props.handleChange}
       >
         {isValidElement &&
