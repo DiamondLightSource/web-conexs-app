@@ -21,7 +21,7 @@ export default function ClusterBadge() {
     const datestring = query.data.updated;
     if (datestring != null) {
       //time stamp stored in database as UTC without timezone
-      const date = Date.parse(datestring + "+00:00");
+      const date = Date.parse(datestring);
 
       if (!isNaN(date)) {
         const dif = Date.now() - date;
