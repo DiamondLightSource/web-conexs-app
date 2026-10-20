@@ -247,7 +247,7 @@ export const handlers = [
   http.get("/api/cluster/status", async () => {
     const clusterStatus: HPCCluster = {
       id: 1,
-      updated: new Date(Date.now()).toISOString().slice(0, -1),
+      updated: new Date(Date.now()).toISOString(),
     };
     return HttpResponse.json(clusterStatus);
   }),
