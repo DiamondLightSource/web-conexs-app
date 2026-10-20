@@ -20,7 +20,7 @@
     },
   "containerEnv": {"CONEXS_ROOT_DIR" : "${localEnv:ROOT_DIR}",
                    "CONEXS_CLUSTER_ROOT_DIR" : "${localEnv:ROOT_DIR}",
-                   "SLURM_USLURM_USERSER" : "${localEnv:USER}",
+                   "SLURM_USER" : "${localEnv:USER}",
                    "SLURM_API" : "${localEnv:SLURM_API}",
                    "SLURM_PARTITION": "${localEnv:SLURM_PARTITION}",
                    "ORCA_IMAGE": "${localEnv:ORCA_IMAGE}",
@@ -31,7 +31,7 @@
                    "WFC_DIR": "${localEnv:WFC_DIR}",
                    "SLURM_TOKEN": "${localEnv:SLURM_TOKEN}",
                    "POSTGRESURL": "${localEnv:POSTGRESURL}" },
-  "mounts" :["source=/dls/tmp/vdp96513/conexs,target=/dls/tmp/vdp96513/conexs,type=bind,consistency=cached"],
+  // "mounts" :["source=/dls/tmp/vdp96513/conexs,target=/dls/tmp/vdp96513/conexs,type=bind,consistency=cached"],
   "customizations": {
     "vscode": {
       // Set *default* container specific settings.json values on container create.
