@@ -13,16 +13,16 @@ from .routers import (
     user,
 )
 
-app = FastAPI(root_path="/api")
+app = FastAPI()
 
-app.include_router(orca.router, prefix="/orca")
-app.include_router(fdmnes.router, prefix="/fdmnes")
-app.include_router(qe.router, prefix="/qe")
-app.include_router(simulations.router, prefix="/simulations")
-app.include_router(user.router, prefix="/user")
-app.include_router(matproject.router, prefix="/matproj")
-app.include_router(structures.router, prefix="/structures")
-app.include_router(cluster.router, prefix="/cluster")
-app.include_router(archive.router, prefix="/archive")
+app.include_router(orca.router, prefix="/api/orca")
+app.include_router(fdmnes.router, prefix="/api/fdmnes")
+app.include_router(qe.router, prefix="/api/qe")
+app.include_router(simulations.router, prefix="/api/simulations")
+app.include_router(user.router, prefix="/api/user")
+app.include_router(matproject.router, prefix="/api/matproj")
+app.include_router(structures.router, prefix="/api/structures")
+app.include_router(cluster.router, prefix="/api/cluster")
+app.include_router(archive.router, prefix="/api/archive")
 
 add_pagination(app)
