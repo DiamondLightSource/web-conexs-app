@@ -64,7 +64,7 @@ name = "Jacob Filik"
 write_to = "src/web_conexs_api/_version.py"
 
 [tool.uv]
-exclude-newer = "2 weeks"
+exclude-newer = "1 weeks"
 
 [tool.mypy]
 ignore_missing_imports = true # Ignore missing stubs in imported modules
