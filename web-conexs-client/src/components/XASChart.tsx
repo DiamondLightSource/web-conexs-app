@@ -111,7 +111,7 @@ function XASChart(props: { xas: XASData }) {
           ></ToggleBtn>
         </Toolbar>
       </Box>
-      <Box style={plotstyle} flex={1} display="flex">
+      <Box style={plotstyle} flex={1} display="flex" sx={{ minHeight: "10px" }}>
         <VisCanvas
           abscissaConfig={{
             showGrid: useGrid,
